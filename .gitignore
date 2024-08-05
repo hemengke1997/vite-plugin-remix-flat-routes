@@ -1,0 +1,16 @@
+.DS_Store
+.idea
+*.cpuprofile
+*.local
+*.log
+/.vscode/
+dist
+dist-ssr
+explorations
+node_modules
+temp
+temp/*
+.eslintcache
+coverage
+temp-*
+playground

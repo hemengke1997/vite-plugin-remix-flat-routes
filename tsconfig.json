@@ -1,0 +1,7 @@
+{
+  "extends": "@minko-fe/tsconfig/tsconfig.lib",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  },
+  "exclude": ["**/node_modules/**", "**/dist/**"]
+}
