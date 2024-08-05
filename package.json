@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-remix-flat-routes",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "生成remix2规则路由的vite插件",
   "type": "module",
   "keywords": [
