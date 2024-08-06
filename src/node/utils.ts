@@ -1,94 +1,10 @@
 import type * as Vite from 'vite'
-import { type RouteManifest } from '@remix-run/dev/dist/config/routes'
 import { pascalSnakeCase } from 'change-case'
-import { parse as esModuleLexer } from 'es-module-lexer'
-import fs from 'fs-extra'
 import path from 'node:path'
 import { type RouteObject } from 'react-router-dom'
-import type { RemixOptions, Route, RouteExports } from './remix'
-import { importViteEsmSync } from './import-vite-esm-sync'
-
-export type RequireOnly<Object, Keys extends keyof Object> = Omit<Object, Keys> & Required<Pick<Object, Keys>>
-
-export type PluginContext = {
-  rootDirectory: string
-  routeManifest: RouteManifest
-  remixOptions: RemixOptions
-}
-
-/**
- * @see `getRouteModuleExports` in @remix-run/dev/vite/plugin.ts
- */
-const getRouteModuleExports = async (
-  viteChildCompiler: Vite.ViteDevServer | null,
-  ctx: PluginContext,
-  routeFile: string,
-  readRouteFile?: () => string | Promise<string>,
-): Promise<string[]> => {
-  if (!viteChildCompiler) {
-    throw new Error('Vite child compiler not found')
-  }
-
-  const ssr = false
-  const { pluginContainer, moduleGraph } = viteChildCompiler
-
-  const routePath = path.resolve(ctx.remixOptions.appDirectory, routeFile)
-  const url = resolveFileUrl(ctx, routePath)
-
-  const resolveId = async () => {
-    const result = await pluginContainer.resolveId(url, undefined, { ssr })
-    if (!result) throw new Error(`Could not resolve module ID for ${url}`)
-    return result.id
-  }
-
-  const [id, code] = await Promise.all([
-    resolveId(),
-    readRouteFile?.() ?? fs.readFile(routePath, 'utf-8'),
-    // pluginContainer.transform(...) fails if we don't do this first:
-    moduleGraph.ensureEntryFromUrl(url, ssr),
-  ])
-
-  const transformed = await pluginContainer.transform(code, id, { ssr })
-  const [, exports] = esModuleLexer(transformed.code)
-  const exportNames = exports.map((e) => e.n)
-
-  return exportNames
-}
-
-/**
- * @see `resolveFileUrl` in @remix-run/dev/vite/resolve-file-url.ts
- */
-const resolveFileUrl = ({ rootDirectory }: { rootDirectory: string }, filePath: string) => {
-  const relativePath = path.relative(rootDirectory, filePath)
-  const isWithinRoot = !relativePath.startsWith('..') && !path.isAbsolute(relativePath)
-
-  const vite = importViteEsmSync()
-
-  if (!isWithinRoot) {
-    // Vite will prevent serving files outside of the workspace
-    // unless user explicitly opts in with `server.fs.allow`
-    // https://vitejs.dev/config/server-options.html#server-fs-allow
-    return path.posix.join('/@fs', vite.normalizePath(filePath))
-  }
-
-  return `/${vite.normalizePath(relativePath)}`
-}
-
-/**
- * @see `getRouteManifestModuleExports` in @remix-run/dev/vite/plugin.ts
- */
-export const getRouteManifestModuleExports = async (
-  viteChildCompiler: Vite.ViteDevServer | null,
-  ctx: PluginContext,
-): Promise<Record<string, string[]>> => {
-  const entries = await Promise.all(
-    Object.entries(ctx.routeManifest).map(async ([key, route]) => {
-      const sourceExports = await getRouteModuleExports(viteChildCompiler, ctx, route.file)
-      return [key, sourceExports] as const
-    }),
-  )
-  return Object.fromEntries(entries)
-}
+import { findEntry, getRouteManifestModuleExports } from './remix'
+import { type PluginContext, type Route, type RouteExports, type RouteManifest } from './types'
+import { type LegacyRoute, type LegacyRouteManifest, type LegacyRouteObject } from './types-legacy'
 
 export function stringifyRoutes(routes: Route[], ctx: PluginContext) {
   const staticImport: string[] = []
@@ -100,10 +16,35 @@ export function stringifyRoutes(routes: Route[], ctx: PluginContext) {
   }
 }
 
-function routesToString(routes: Route[], staticImport: string[], ctx: PluginContext) {
-  return `[${routes.map((route) => routeToString(route, staticImport, ctx)).join(',')}]`
+function routesToString(routes: Route[] | LegacyRoute[], staticImport: string[], ctx: PluginContext) {
+  if (ctx.isLegacyMode) {
+    return `[${(routes as LegacyRoute[]).map((route) => legacyRouteToString(route, staticImport, ctx)).join(',')}]`
+  } else {
+    return `[${(routes as Route[]).map((route) => routeToString(route, staticImport, ctx)).join(',')}]`
+  }
 }
 
+function _setProps<T>(props: Map<T, string | boolean>, name: T, value: string | boolean) {
+  if (value) {
+    props.set(name, `${value}`)
+  }
+}
+
+function _isInExports<T>(route: Route | LegacyRoute, name: string) {
+  return route[`has${capitalize(name)}` as keyof RouteExports<T>]
+}
+
+function _reactElementInExports(route: Route | LegacyRoute, componentName: string, name: string, defaultName?: string) {
+  return _isInExports(route, name) ? `React.createElement(${componentName}.${defaultName || name})` : ''
+}
+
+function _constantInExports(route: Route | LegacyRoute, componentName: string, name: string) {
+  return _isInExports(route, name) ? `${componentName}.${name}` : ''
+}
+
+/**
+ * 数据路由模式下的路由转换
+ */
 function routeToString(route: Route, staticImport: string[], ctx: PluginContext): string {
   const componentPath = path.resolve(ctx.remixOptions.appDirectory, route.file)
   const componentName = pascalSnakeCase(route.id)
@@ -113,12 +54,10 @@ function routeToString(route: Route, staticImport: string[], ctx: PluginContext)
   const props = new Map<keyof RouteObject, string>()
 
   const setProps = (name: keyof RouteObject, value: string | boolean) => {
-    if (value) {
-      props.set(name, `${value}`)
-    }
+    _setProps(props, name, value)
   }
 
-  setProps('path', `'${route.path}'`)
+  setProps('path', route.index && !route.path ? `'/'` : `'${route.path}'`)
   setProps('id', `'${route.id}'`)
   setProps('index', `${route.index}`)
 
@@ -127,16 +66,12 @@ function routeToString(route: Route, staticImport: string[], ctx: PluginContext)
   } else if (route.hasElement) {
     staticImport.push(`import * as ${componentName} from '${componentPath}';`)
 
-    const isInExports = (name: keyof RouteObject) => {
-      return route[`has${capitalize(name)}` as keyof RouteExports]
-    }
-
     const reactElementInExports = (name: keyof RouteObject, defaultName?: string) => {
-      return isInExports(name) ? `React.createElement(${componentName}.${defaultName || name})` : ''
+      return _reactElementInExports(route, componentName, name, defaultName)
     }
 
     const constantInExports = (name: keyof RouteObject) => {
-      return isInExports(name) ? `${componentName}.${name}` : ''
+      return _constantInExports(route, componentName, name)
     }
 
     // React Element Exports
@@ -157,6 +92,123 @@ function routeToString(route: Route, staticImport: string[], ctx: PluginContext)
   }
 
   return `{${[...props.entries()].map(([k, v]) => `${k}:${v}`).join(',')}}`
+}
+
+/**
+ * 非数据路由模式下的路由转换
+ */
+function legacyRouteToString(route: LegacyRoute, staticImport: string[], ctx: PluginContext): string {
+  const componentPath = path.resolve(ctx.remixOptions.appDirectory, route.file)
+  const componentName = pascalSnakeCase(route.id)
+  const metaPath = route.meta ? path.resolve(ctx.remixOptions.appDirectory, route.meta) : null
+
+  // 与数据路由相反
+  const isLazyComponent = !route.hasComponent
+
+  const props = new Map<keyof LegacyRouteObject, string>()
+
+  const setProps = (name: keyof LegacyRouteObject, value: string | boolean) => {
+    _setProps(props, name, value)
+  }
+
+  if (metaPath) {
+    staticImport.push(`import * as ${componentName}_Meta from '${metaPath}';`)
+    setProps('meta', `${componentName}_Meta`)
+  }
+
+  const reactElementInExports = (name: keyof LegacyRouteObject, defaultName?: string) => {
+    return _reactElementInExports(route, componentName, name, defaultName)
+  }
+
+  if (isLazyComponent) {
+    setProps('lazy', `() => import('${componentPath}')`)
+  } else {
+    staticImport.push(`import * as ${componentName} from '${componentPath}';`)
+    setProps('element', reactElementInExports('Component'))
+  }
+
+  setProps('path', route.index && !route.path ? `'/'` : `'${route.path}'`)
+  setProps('id', `'${route.id}'`)
+  setProps('index', `${route.index}`)
+
+  if (route.children?.length) {
+    const children = routesToString(route.children, staticImport, ctx)
+    setProps('children', children)
+  }
+
+  return `{${[...props.entries()].map(([k, v]) => `${k}:${v}`).join(',')}}`
+}
+
+export async function processRouteManifest(viteChildCompiler: Vite.ViteDevServer, ctx: PluginContext) {
+  const routeManifestExports = await getRouteManifestModuleExports(viteChildCompiler, ctx)
+
+  let routeManifest: RouteManifest | LegacyRouteManifest
+  if (ctx.isLegacyMode) {
+    routeManifest = ctx.routeManifest as LegacyRouteManifest
+    for (const [key, route] of Object.entries(routeManifest)) {
+      const sourceExports = routeManifestExports[key]
+
+      const routeFileDir = path.dirname(route.file)
+      let metaFile = findEntry(path.join(ctx.remixOptions.appDirectory, routeFileDir), 'meta')
+      if (metaFile) {
+        metaFile = path.join(routeFileDir, metaFile)
+      }
+
+      routeManifest[key] = {
+        ...route,
+        file: route.file,
+        id: route.id,
+        path: route.path,
+        index: route.index,
+        parentId: route.parentId,
+        caseSensitive: route.caseSensitive,
+        // 注意：legacy模式下，懒加载组件是默认导出，非懒加载组件是 Component
+        // 与数据路由模式正好相反
+        // 因为 React.lazy 的入参必须是默认导出
+
+        // Non-lazy Component
+        hasElement: sourceExports.includes('default'),
+        // Lazy Component
+        hasComponent: sourceExports.includes('Component'),
+        meta: metaFile,
+      }
+    }
+  } else {
+    routeManifest = ctx.routeManifest as RouteManifest
+    for (const [key, route] of Object.entries(routeManifest)) {
+      const sourceExports = routeManifestExports[key]
+      routeManifest[key] = {
+        ...route,
+        file: route.file,
+        id: route.id,
+        parentId: route.parentId,
+        path: route.path,
+        index: route.index,
+        caseSensitive: route.caseSensitive,
+        /**
+         * @see https://reactrouter.com/en/main/route/route
+         */
+        hasAction: sourceExports.includes('action'),
+        hasLoader: sourceExports.includes('loader'),
+        hasHydrateFallback: sourceExports.includes('HydrateFallback'),
+        hasHandle: sourceExports.includes('handle'),
+        hasShouldRevalidate: sourceExports.includes('shouldRevalidate'),
+        hasErrorBoundary: sourceExports.includes('ErrorBoundary'),
+        /**
+         * @ses https://reactrouter.com/en/main/route/lazy
+         * Lazy Component
+         */
+        hasComponent: sourceExports.includes('Component'),
+        /**
+         * @ses https://reactrouter.com/en/main/route/lazy
+         * Non-lazy Component
+         */
+        hasElement: sourceExports.includes('default'),
+      }
+    }
+  }
+
+  return routeManifest
 }
 
 function capitalize(str: string) {

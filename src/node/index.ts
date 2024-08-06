@@ -3,11 +3,20 @@ import { init as initEsModuleLexer } from 'es-module-lexer'
 import fs from 'fs-extra'
 import path from 'node:path'
 import { type SetOptional } from 'type-fest'
+import { resolveLegacyMode } from './detect-legacy'
 import { importViteEsmSync, preloadViteEsm } from './import-vite-esm-sync'
-import { type RemixOptions, resolveRoutes } from './remix'
-import { type PluginContext, getRouteManifestModuleExports, stringifyRoutes } from './utils'
+import { createClientRoutes, resolveRoutes } from './remix'
+import { type PluginContext, type RemixOptions } from './types'
+import { processRouteManifest, stringifyRoutes } from './utils'
 
-export type Options = SetOptional<RemixOptions, 'appDirectory'> & {}
+export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
+  /**
+   * @default false
+   * @description 使用 react-router-dom<6.4.0 非数据路由（legacy）模式
+   * 插件默认会探测 react-router-dom 版本，如果版本小于 6.4.0，则使用legacy模式
+   */
+  legacy?: boolean
+}
 
 function validateRouteDir(dir: string): void {
   if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
@@ -19,10 +28,15 @@ const virtualModuleId = 'virtual:remix-flat-routes'
 const resolvedVirtualModuleId = `\0${virtualModuleId}`
 
 function remixFlatRoutes(options: Options = {}): Vite.Plugin {
-  const { appDirectory = 'app', flatRoutesOptions } = options
+  const { appDirectory = 'app', flatRoutesOptions, legacy } = options
 
   const routeDir = flatRoutesOptions?.routeDir || 'routes'
   const routeDirs = Array.isArray(routeDir) ? routeDir : [routeDir]
+
+  let isLegacyMode = legacy
+  if (typeof isLegacyMode === 'undefined') {
+    isLegacyMode = resolveLegacyMode()
+  }
 
   for (const routeDir of routeDirs) {
     validateRouteDir(path.join(path.resolve(process.cwd(), appDirectory), routeDir))
@@ -37,6 +51,7 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
     rootDirectory: process.cwd(),
     routeManifest: {},
     remixOptions: { appDirectory, flatRoutesOptions },
+    isLegacyMode,
   }
 
   return {
@@ -103,42 +118,13 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
     },
     async load(id) {
       if (id === resolvedVirtualModuleId) {
-        const { routes } = await resolveRoutes({ appDirectory, flatRoutesOptions }, async (routeManifest) => {
-          ctx.routeManifest = routeManifest
+        const { routeManifest } = await resolveRoutes({ appDirectory, flatRoutesOptions })
 
-          const routeManifestExports = await getRouteManifestModuleExports(viteChildCompiler, ctx)
+        ctx.routeManifest = routeManifest
 
-          for (const [key, route] of Object.entries(ctx.routeManifest)) {
-            const sourceExports = routeManifestExports[key]
-            routeManifest[key] = {
-              file: route.file,
-              id: route.id,
-              parentId: route.parentId,
-              path: route.path,
-              index: route.index,
-              caseSensitive: route.caseSensitive,
-              /**
-               * @see https://reactrouter.com/en/main/route/route
-               */
-              hasAction: sourceExports.includes('action'),
-              hasLoader: sourceExports.includes('loader'),
-              hasHydrateFallback: sourceExports.includes('HydrateFallback'),
-              hasHandle: sourceExports.includes('handle'),
-              hasShouldRevalidate: sourceExports.includes('shouldRevalidate'),
-              hasErrorBoundary: sourceExports.includes('ErrorBoundary'),
-              /**
-               * @ses https://reactrouter.com/en/main/route/lazy
-               * Lazy Component
-               */
-              hasComponent: sourceExports.includes('Component'),
-              /**
-               * @ses https://reactrouter.com/en/main/route/lazy
-               * Non-lazy Component
-               */
-              hasElement: sourceExports.includes('default'),
-            }
-          }
-        })
+        await processRouteManifest(viteChildCompiler!, ctx)
+
+        const routes = createClientRoutes(ctx.routeManifest)
 
         const { routesString, componentsString } = stringifyRoutes(routes, ctx)
 
