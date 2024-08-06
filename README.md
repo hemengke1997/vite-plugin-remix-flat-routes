@@ -202,7 +202,7 @@ export function Component() {
 }
 ```
 
-### meta 原数据
+### meta 元数据
 
 在与路由组件同级目录下创建 `meta.ts` 文件，导出任意对象，即可在路由组件中通过 `useMetas` 获取到
 
@@ -216,7 +216,7 @@ export const more_info = {
 }
 ```
 
-### 获取 meta 数据路由
+### 获取 meta 数据
 
 ```tsx
 import { useMetas } from 'vite-plugin-remix-flat-routes/client'
@@ -226,7 +226,7 @@ export function Component() {
 }
 ```
 
-### 注意事项
+## 注意事项
 
 1. routes目录下被 `flatRoutesOptions.routeRegex` 匹配的文件都被识别为路由组件，如果你不希望某些文件被视为路由组件，可以通过 `flatRoutesOptions.ignoreRouteFiles` 进行配置
 
