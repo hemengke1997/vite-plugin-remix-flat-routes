@@ -1,3 +1,12 @@
+# [2.0.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v1.0.1...v2.0.0) (2024-08-06)
+
+
+### Features
+
+* legacy react-router-dom mode ([c3704a3](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/c3704a39ec7d422d55df570512201f0bb3be79ea))
+
+
+
 ## [1.0.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v1.0.0...v1.0.1) (2024-08-05)
 
 
