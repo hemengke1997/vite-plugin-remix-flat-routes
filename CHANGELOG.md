@@ -1,3 +1,12 @@
+# [2.2.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.1.1...v2.2.0) (2024-08-07)
+
+
+### Features
+
+* refactor route hook ([f45effa](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/f45effac8347d2a5ba447a81d8b481ea10d00818))
+
+
+
 ## [2.1.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.1.0...v2.1.1) (2024-08-07)
 
 
