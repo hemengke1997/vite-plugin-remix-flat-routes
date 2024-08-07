@@ -1,9 +1,9 @@
 import { memo } from 'react'
 import { RouteContext } from './route-context'
 import RouterComponent from './router-component'
-import { type RouterPropsType } from './types'
+import { type RouterProps } from './types'
 
-function RouterProvider(props: RouterPropsType) {
+function RouterProvider(props: RouterProps) {
   return (
     <RouteContext.Provider>
       <RouterComponent {...props} />

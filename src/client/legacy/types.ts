@@ -1,14 +1,5 @@
 import { type ReactNode } from 'react'
-import { type RouteObject } from 'react-router-dom'
-
-interface MetaType {
-  __route__: {
-    id: string
-    path: string
-    index: boolean
-  }
-  [key: string]: any
-}
+import { type Location, type Params, type RouteObject } from 'react-router-dom'
 
 interface FunctionalImportType {
   (): Promise<any>
@@ -27,17 +18,39 @@ type RouteType = Merge<
 
 type RoutesType = RouteType[]
 
-type OnRouteBeforeResType = string | undefined
-
-interface onRouteWillMountType {
-  (payload: { pathname: string; meta: MetaType }): OnRouteBeforeResType | Promise<OnRouteBeforeResType>
+type Payload = {
+  location: Location
+  params: Params
+  meta: MetaType
 }
 
-type OnRouteMountType = (meta: MetaType) => void
+type OnRouteBeforeResType = string | void
 
-type OnRouteUnmountType = (meta: MetaType) => void
+type OnRouteWillMountType = (payload: Payload) => OnRouteBeforeResType | Promise<OnRouteBeforeResType>
 
-interface RouterPropsType {
+type OnRouteMountType = (payload: Payload) => void
+
+type OnRouteUnmountType = (payload: Payload) => void
+
+/**
+ * 路由元信息
+ */
+type MetaType = {
+  /**
+   * 内置路由元信息
+   */
+  __route__: {
+    id: string
+    path: string
+    index: boolean
+  }
+  /**
+   * 用户自定义元信息
+   */
+  [key: string]: any
+}
+
+interface RouterProps {
   /**
    * 路由配置
    */
@@ -45,7 +58,7 @@ interface RouterPropsType {
   /**
    * 路由挂载之前执行，用于拦截路由重定向
    */
-  onRouteWillMount?: onRouteWillMountType
+  onRouteWillMount?: OnRouteWillMountType
   /**
    * 路由挂载时执行
    */
@@ -69,10 +82,10 @@ export type {
   FunctionalImportType,
   MetaType,
   OnRouteBeforeResType,
-  onRouteWillMountType,
+  OnRouteWillMountType,
   OnRouteMountType,
   OnRouteUnmountType,
-  RouterPropsType,
+  RouterProps,
   RouteType,
   RoutesType,
 }

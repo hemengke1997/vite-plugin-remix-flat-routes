@@ -4,6 +4,7 @@ import { type MetaType } from './types'
 
 function useRouteContext() {
   const [metas, setMetas] = useState<MetaType[]>([])
+
   return {
     metas,
     setMetas,
@@ -13,6 +14,7 @@ function useRouteContext() {
 export const RouteContext = createContainer(useRouteContext)
 
 export function useMetas() {
-  const { metas } = RouteContext.usePicker(['metas'])
-  return { metas }
+  // const { metas } = RouteContext.usePicker(['metas'])
+  // return { metas }
+  return { metas: [] }
 }

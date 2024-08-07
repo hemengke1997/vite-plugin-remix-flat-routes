@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { useEffectOnce } from './react-hooks'
+import { useIsomorphicLayoutEffect } from './react-hooks'
 
 function Navigator(props: { to: string; replace: boolean }) {
   const { to, replace } = props
   const nav = useNavigate()
-  useEffectOnce(() => {
+  useIsomorphicLayoutEffect(() => {
     nav(to, { replace })
   }, [])
 

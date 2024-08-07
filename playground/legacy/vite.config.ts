@@ -4,6 +4,10 @@ import { remixFlatRoutes } from 'vite-plugin-remix-flat-routes'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    minify: false,
+    sourcemap: true,
+  },
   plugins: [
     react(),
     remixFlatRoutes({

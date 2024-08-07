@@ -1,14 +1,14 @@
 import isPromise from 'p-is-promise'
 import { type ReactNode } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Navigator } from './navigator'
-import { useEffectOnce } from './react-hooks'
+import { useIsomorphicLayoutEffect } from './react-hooks'
 import {
   type MetaType,
   type OnRouteBeforeResType,
   type OnRouteMountType,
   type OnRouteUnmountType,
-  type onRouteWillMountType,
+  type OnRouteWillMountType,
 } from './types'
 
 let cache: ReactNode | null = null
@@ -22,18 +22,24 @@ function Guard({
 }: {
   element: ReactNode
   meta: MetaType
-  onRouteWillMount?: onRouteWillMountType
+  onRouteWillMount?: OnRouteWillMountType
   onRouteMount?: OnRouteMountType
   onRouteUnmount?: OnRouteUnmountType
 }) {
-  useEffectOnce(() => {
-    onRouteMount?.(meta)
+  const location = useLocation()
+  const params = useParams()
+  const payload = {
+    location,
+    params,
+    meta,
+  }
+
+  useIsomorphicLayoutEffect(() => {
+    onRouteMount?.(payload)
     return () => {
-      onRouteUnmount?.(meta)
+      onRouteUnmount?.(payload)
     }
   }, [])
-
-  const { pathname } = useLocation()
 
   const navigate = useNavigate()
 
@@ -41,14 +47,16 @@ function Guard({
     if (cache === element) {
       return element
     }
-    const pathRes = onRouteWillMount({ pathname, meta })
+
+    const fullPath = location.pathname + location.search + location.hash
+    const pathRes = onRouteWillMount(payload)
     if (isPromise(pathRes)) {
       pathRes.then((res: OnRouteBeforeResType) => {
-        if (res && res !== pathname) {
+        if (res && res !== fullPath) {
           navigate(res, { replace: true })
         }
       })
-    } else if (pathRes && pathRes !== pathname) {
+    } else if (pathRes && pathRes !== fullPath) {
       element = <Navigator to={pathRes} replace />
     }
   }

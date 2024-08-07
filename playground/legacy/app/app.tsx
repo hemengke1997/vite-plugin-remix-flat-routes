@@ -32,7 +32,19 @@ export default function App() {
   return (
     <BrowserRouter>
       <GlobalContext.Provider>
-        <LegacyRouterProvider routes={routes} render={(children) => <Wrapper>{children}</Wrapper>} />
+        <LegacyRouterProvider
+          routes={routes}
+          onRouteMount={(payload) => {
+            console.log(payload, 'onMount')
+          }}
+          onRouteUnmount={(payload) => {
+            console.log(payload, 'onUnmount')
+          }}
+          onRouteWillMount={(payload) => {
+            console.log(payload, 'onRouteWillMount')
+          }}
+          render={(children) => <Wrapper>{children}</Wrapper>}
+        />
       </GlobalContext.Provider>
     </BrowserRouter>
   )

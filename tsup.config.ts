@@ -6,7 +6,7 @@ const commonConfig = (option: Options): Options => {
     sourcemap: !!option.watch,
     dts: true,
     minify: false,
-    external: [/^virtual:.*/],
+    external: [/^virtual:.*/, 'react', 'react-router-dom'],
     shims: true,
     splitting: true,
     treeshake: true,

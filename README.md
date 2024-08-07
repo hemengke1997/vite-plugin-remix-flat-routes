@@ -118,16 +118,16 @@ export const handle = {
 export function Component() {
   const matches = useMatches()
   useEffect(() => {
-    console.log(matches, 'matches')
-  })
+    console.log(matches, '可获取到handle')
+  }, [])
   return <div>懒加载的组件</div>
 }
 
 // 如果是默认导出组件，则不会懒加载
 // https://reactrouter.com/en/main/route/route#elementcomponent
-// export default function() {
-//   return <div>非懒加载的组件</div>
-// }
+export default function () {
+  return <div>非懒加载的组件</div>
+}
 
 // loader 函数，一般用于数据预取
 // https://reactrouter.com/en/main/route/route#loader
@@ -178,6 +178,39 @@ root.render(
     <LegacyRouterProvider routes={routes} />
   </BrowserRouter>,
 )
+```
+
+#### LegacyRouterProvider 配置项
+
+```ts
+type RouterProps = {
+  /**
+   * 路由配置
+   * 从 'virtual:remix-flat-routes' 中获取
+   */
+  routes: RoutesType
+  /**
+   * 路由挂载之前执行，用于拦截路由重定向
+   */
+  onRouteWillMount?: OnRouteWillMountType
+  /**
+   * 路由挂载时执行
+   */
+  onRouteMount?: OnRouteMountType
+  /**
+   * 路由卸载时执行
+   */
+  onRouteUnmount?: OnRouteUnmountType
+  /**
+   * 增强渲染函数，用于自定义渲染逻辑
+   * 可以跟动画库结合，实现路由切换动画
+   */
+  render?: (children: ReactNode | null) => ReactNode
+  /**
+   * 路由懒加载时的loading组件
+   */
+  suspense?: ReactNode
+}
 ```
 
 ### 从文件中导出路由组件

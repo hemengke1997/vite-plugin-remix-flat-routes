@@ -10,7 +10,7 @@ import { processRouteManifest, stringifyRoutes, validateRouteDir } from './utils
 
 export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
   /**
-   * @description 使用 react-router-dom<6.4.0 非数据路由（legacy）模式
+   * @description 使用 react-router-dom<6.4.0 传统路由模式
    * 插件默认会探测 react-router-dom 版本，如果版本小于 6.4.0，则使用legacy模式
    */
   legacy?: boolean
@@ -123,8 +123,9 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
 
         return {
           code: `import React from 'react';
-          ${componentsString}\n
-          export const routes = ${routesString};\n`,
+          ${componentsString}
+          export const routes = ${routesString};
+          `,
           map: null,
         }
       }

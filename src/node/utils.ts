@@ -96,7 +96,7 @@ function routeToString(route: Route, staticImport: string[], ctx: PluginContext)
 }
 
 /**
- * 非数据路由模式下的路由转换
+ * 传统路由模式下的路由转换
  */
 function legacyRouteToString(route: LegacyRoute, staticImport: string[], ctx: PluginContext): string {
   const componentPath = path.resolve(ctx.remixOptions.appDirectory, route.file)

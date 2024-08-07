@@ -5,20 +5,20 @@ import {
   type MetaType,
   type OnRouteMountType,
   type OnRouteUnmountType,
-  type onRouteWillMountType,
-  type RouterPropsType,
+  type OnRouteWillMountType,
+  type RouterProps,
   type RoutesType,
   type RouteType,
 } from './types'
 
-export class RouterUtil {
+export class Router {
   routes: RoutesType
-  onRouteWillMount?: onRouteWillMountType
+  onRouteWillMount?: OnRouteWillMountType
   onRouteMount?: OnRouteMountType
   onRouteUnmount?: OnRouteUnmountType
   suspense: ReactNode
 
-  constructor(option: RouterPropsType) {
+  constructor(option: RouterProps) {
     this.routes = option.routes || []
     this.onRouteWillMount = option.onRouteWillMount
     this.onRouteMount = option.onRouteMount
@@ -26,7 +26,7 @@ export class RouterUtil {
     this.suspense = option.suspense || <div />
   }
 
-  createClientRoutes(routes: RoutesType = this.routes) {
+  createClientRoutes(routes: RoutesType) {
     const useRoutesList: RouteObject[] = []
     const routeList = [...routes]
     routeList.forEach(async (route) => {
