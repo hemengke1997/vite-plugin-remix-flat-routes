@@ -23,6 +23,6 @@
     "typescript": "^5.5.4",
     "vite": "^5.3.5",
     "vite-plugin-istanbul-widget": "^1.8.1",
-    "vite-plugin-remix-flat-routes": "link: ./../../../"
+    "vite-plugin-remix-flat-routes": "workspace:*"
   }
 }
