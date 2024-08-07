@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.0.0...v2.1.0) (2024-08-07)
+
+
+### Features
+
+* **legacy:** render enhancement ([318d9ce](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/318d9ced4d2010c8a18aeebcb165a1b26a3e2fb3))
+
+
+
 # [2.0.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v1.0.1...v2.0.0) (2024-08-06)
 
 
