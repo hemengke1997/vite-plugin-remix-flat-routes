@@ -1,5 +1,6 @@
 import type * as Vite from 'vite'
 import { pascalSnakeCase } from 'change-case'
+import fs from 'fs-extra'
 import path from 'node:path'
 import { type RouteObject } from 'react-router-dom'
 import { findEntry, getRouteManifestModuleExports } from './remix'
@@ -209,6 +210,12 @@ export async function processRouteManifest(viteChildCompiler: Vite.ViteDevServer
   }
 
   return routeManifest
+}
+
+export function validateRouteDir(dir: string): void {
+  if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
+    throw new Error(`[vite-plugin-remix-flat-routes] routes directory not found: ${dir}`)
+  }
 }
 
 function capitalize(str: string) {

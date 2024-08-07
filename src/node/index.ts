@@ -1,27 +1,19 @@
 import type * as Vite from 'vite'
 import { init as initEsModuleLexer } from 'es-module-lexer'
-import fs from 'fs-extra'
 import path from 'node:path'
 import { type SetOptional } from 'type-fest'
 import { resolveLegacyMode } from './detect-legacy'
 import { importViteEsmSync, preloadViteEsm } from './import-vite-esm-sync'
 import { createClientRoutes, resolveRoutes } from './remix'
 import { type PluginContext, type RemixOptions } from './types'
-import { processRouteManifest, stringifyRoutes } from './utils'
+import { processRouteManifest, stringifyRoutes, validateRouteDir } from './utils'
 
 export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
   /**
-   * @default false
    * @description 使用 react-router-dom<6.4.0 非数据路由（legacy）模式
    * 插件默认会探测 react-router-dom 版本，如果版本小于 6.4.0，则使用legacy模式
    */
   legacy?: boolean
-}
-
-function validateRouteDir(dir: string): void {
-  if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
-    throw new Error(`[vite-plugin-remix-flat-routes] routes directory not found: ${dir}`)
-  }
 }
 
 const virtualModuleId = 'virtual:remix-flat-routes'
@@ -108,6 +100,7 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
             ),
         ],
       })
+
       await viteChildCompiler.pluginContainer.buildStart({})
     },
     async resolveId(id) {
@@ -141,6 +134,7 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
      * @see `buildEnd` in @remix-run/dev/vite/plugin.ts
      */
     async buildEnd() {
+      viteChildCompiler?.httpServer?.close()
       await viteChildCompiler?.close()
     },
     handleHotUpdate({ server }) {
