@@ -55,6 +55,11 @@ interface RouterPropsType {
    */
   onRouteUnmount?: OnRouteUnmountType
   /**
+   * 增强渲染函数，用于自定义渲染逻辑
+   * 可以跟动画库结合，实现路由切换动画
+   */
+  render?: (children: ReactNode | null) => ReactNode
+  /**
    * 路由加载时的loading组件
    */
   suspense?: ReactNode

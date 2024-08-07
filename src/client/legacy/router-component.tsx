@@ -4,7 +4,14 @@ import { RouteContext } from './route-context'
 import { RouterUtil } from './router-util'
 import { type RouterPropsType } from './types'
 
-function RouterComponent({ routes, onRouteWillMount, onRouteMount, onRouteUnmount, suspense }: RouterPropsType) {
+function RouterComponent({
+  routes,
+  onRouteWillMount,
+  onRouteMount,
+  onRouteUnmount,
+  render,
+  suspense,
+}: RouterPropsType) {
   const { setMetas } = RouteContext.usePicker(['setMetas'])
   const router = new RouterUtil({
     routes,
@@ -13,6 +20,9 @@ function RouterComponent({ routes, onRouteWillMount, onRouteMount, onRouteUnmoun
       setMetas((prev) => {
         const meta = args[0]
         if (meta) {
+          if (prev.some((item) => item.__route__.id === meta.__route__.id)) {
+            return prev
+          }
           return [...prev, meta]
         }
         return prev
@@ -23,7 +33,7 @@ function RouterComponent({ routes, onRouteWillMount, onRouteMount, onRouteUnmoun
       setMetas((prev) => {
         const meta = args[0]
         if (meta) {
-          return prev.filter((item) => item !== meta)
+          return prev.filter((item) => item.__route__.id !== meta.__route__.id)
         }
         return prev
       })
@@ -32,9 +42,9 @@ function RouterComponent({ routes, onRouteWillMount, onRouteMount, onRouteUnmoun
     suspense,
   })
 
-  const clientRoutes = router.createClientRoutes()
+  const elements = useRoutes(router.createClientRoutes())
 
-  return useRoutes(clientRoutes)
+  return render ? render(elements) : elements
 }
 
 export default memo(RouterComponent)
