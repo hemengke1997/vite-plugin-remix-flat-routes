@@ -1,3 +1,12 @@
+## [2.1.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.1.0...v2.1.1) (2024-08-07)
+
+
+### Bug Fixes
+
+* close viteChildCompiler server ([ed64544](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/ed64544f4eb23679480c6def1ca8cb8b6732b75e))
+
+
+
 # [2.1.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.0.0...v2.1.0) (2024-08-07)
 
 
