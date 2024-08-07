@@ -22,10 +22,8 @@ npm i vite-plugin-remix-flat-routes -D
 ```json
 {
   "compilerOptions": {
-    // ....
     "types": ["vite-plugin-remix-flat-routes/virtual"]
   }
-  // ...
 }
 ```
 
@@ -57,8 +55,8 @@ type Options = {
   flatRoutesOptions?: {
     routeDir?: string | string[] // 默认为 'routes'
     ignoreRouteFiles?: string[] // 默认为 []
-    basePath?: string // 默认为 '/''
-    paramPrefixChar?: string // 默认为 '$''
+    basePath?: string // 默认为 '/'
+    paramPrefixChar?: string // 默认为 '$'
     routeRegex?: RegExp
     visitFiles?: VisitFilesFunction
   }
