@@ -5,7 +5,7 @@ import { routes } from 'virtual:remix-flat-routes'
 import { LegacyRouterProvider } from 'vite-plugin-remix-flat-routes/client'
 import { GlobalContext } from './contexts/global-context'
 
-export const Wrapper = ({ children }: PropsWithChildren) => {
+export const RouteAnimation = ({ children }: PropsWithChildren) => {
   const location = useLocation()
 
   return (
@@ -34,16 +34,16 @@ export default function App() {
       <GlobalContext.Provider>
         <LegacyRouterProvider
           routes={routes}
-          onRouteMount={(payload) => {
-            console.log(payload, 'onMount')
+          onRouteMount={(_payload) => {
+            // console.log(payload, 'onRouteMount')
           }}
-          onRouteUnmount={(payload) => {
-            console.log(payload, 'onUnmount')
+          onRouteUnmount={(_payload) => {
+            // console.log(payload, 'onRouteUnmount')
           }}
-          onRouteWillMount={(payload) => {
-            console.log(payload, 'onRouteWillMount')
+          onRouteWillMount={(_payload) => {
+            // console.log(payload, 'onRouteWillMount')
           }}
-          render={(children) => <Wrapper>{children}</Wrapper>}
+          render={(children) => <RouteAnimation>{children}</RouteAnimation>}
         />
       </GlobalContext.Provider>
     </BrowserRouter>

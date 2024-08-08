@@ -1,6 +1,7 @@
 declare module 'virtual:remix-flat-routes' {
   import type { RouteObject } from 'react-router-dom'
   type Route<T> = {
+    id: string
     lazy?: () => Promise<any>
     meta?: any
     children?: Route<T>[]

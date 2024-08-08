@@ -26,7 +26,7 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
   const routeDirs = Array.isArray(routeDir) ? routeDir : [routeDir]
 
   let isLegacyMode = legacy
-  if (typeof isLegacyMode === 'undefined') {
+  if (isLegacyMode === undefined) {
     isLegacyMode = resolveLegacyMode()
   }
 

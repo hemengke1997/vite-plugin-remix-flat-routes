@@ -188,19 +188,19 @@ type RouterProps = {
    * 路由配置
    * 从 'virtual:remix-flat-routes' 中获取
    */
-  routes: RoutesType
+  routes: Route[]
   /**
-   * 路由挂载之前执行，用于拦截路由重定向
+   * 路由挂载之前执行，可用于拦截路由重定向
    */
-  onRouteWillMount?: OnRouteWillMountType
+  onRouteWillMount?: OnRouteWillMount
   /**
    * 路由挂载时执行
    */
-  onRouteMount?: OnRouteMountType
+  onRouteMount?: OnRouteMount
   /**
    * 路由卸载时执行
    */
-  onRouteUnmount?: OnRouteUnmountType
+  onRouteUnmount?: OnRouteUnmount
   /**
    * 增强渲染函数，用于自定义渲染逻辑
    * 可以跟动画库结合，实现路由切换动画
@@ -235,12 +235,14 @@ export function Component() {
 
 ### meta 元数据
 
-在与路由组件同级目录下创建 `meta.ts` 文件，导出任意对象，即可在路由组件中通过 `useMetas` 获取到
+在与路由组件同级目录下创建 `meta.ts(x)` 文件，导出任意值，即可在路由组件获取到 `meta` 数据
+
+> 注意：meta 中内置了 `route` 字段，请勿使用 `route` 命名
 
 ```tsx
 // meta.ts
 
-export const up_to_you = 'what ever you want'
+export const up_to_you = 'whatever you want'
 export const more_info = {
   title: 'title',
   description: 'description',
@@ -248,6 +250,18 @@ export const more_info = {
 ```
 
 ### 获取 meta 数据
+
+有以下方式获取 meta 数据
+
+#### 1. 从 `props` 中获取 meta 元信息
+
+```tsx
+export default function (props: PropsWithMeta) {
+  const { meta } = props
+}
+```
+
+#### 2. 使用 `useMetas` 获取 meta 元信息
 
 ```tsx
 import { useMetas } from 'vite-plugin-remix-flat-routes/client'

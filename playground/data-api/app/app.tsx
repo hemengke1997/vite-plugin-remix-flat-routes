@@ -6,6 +6,8 @@ console.log(routes, 'routes')
 
 const router = createBrowserRouter(routes)
 
+console.log(router.state, 'state')
+
 export default function App() {
   return (
     <GlobalContext.Provider>

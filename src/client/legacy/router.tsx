@@ -1,21 +1,20 @@
-import React, { type ReactNode } from 'react'
-import { type RouteObject } from 'react-router-dom'
+import cloneDeep from 'clone-deep'
+import React, { Fragment, type ReactNode } from 'react'
 import { Guard } from './guard'
 import {
-  type MetaType,
-  type OnRouteMountType,
-  type OnRouteUnmountType,
-  type OnRouteWillMountType,
+  type Meta,
+  type OnRouteMount,
+  type OnRouteUnmount,
+  type OnRouteWillMount,
+  type Route,
   type RouterProps,
-  type RoutesType,
-  type RouteType,
 } from './types'
 
 export class Router {
-  routes: RoutesType
-  onRouteWillMount?: OnRouteWillMountType
-  onRouteMount?: OnRouteMountType
-  onRouteUnmount?: OnRouteUnmountType
+  routes: Route[]
+  onRouteWillMount?: OnRouteWillMount
+  onRouteMount?: OnRouteMount
+  onRouteUnmount?: OnRouteUnmount
   suspense: ReactNode
 
   constructor(option: RouterProps) {
@@ -23,60 +22,57 @@ export class Router {
     this.onRouteWillMount = option.onRouteWillMount
     this.onRouteMount = option.onRouteMount
     this.onRouteUnmount = option.onRouteUnmount
-    this.suspense = option.suspense || <div />
+    this.suspense = option.suspense || <Fragment />
   }
 
-  createClientRoutes(routes: RoutesType) {
-    const useRoutesList: RouteObject[] = []
-    const routeList = [...routes]
-    routeList.forEach(async (route) => {
-      const item = { ...route }
-      if (item.path === undefined) {
+  createClientRoutes(_routes: Route[]) {
+    const clientRoutes: Route[] = []
+    cloneDeep(_routes).forEach(async (route) => {
+      if (route.path === undefined) {
         return
       }
 
-      const meta: MetaType = {
-        __route__: {
-          id: item.id!,
-          index: item.index!,
-          path: item.path,
+      const meta: Meta = {
+        route: {
+          id: route.id!,
+          index: route.index!,
+          path: route.path,
         },
       }
-      if (item.meta) {
-        Object.assign(meta, item.meta)
+
+      if (route.meta) {
+        Object.assign(meta, route.meta)
       }
 
-      if (item.lazy) {
-        const Component = React.lazy(item.lazy)
+      if (route.lazy) {
+        const Component = React.lazy(route.lazy)
         const element = (
           <React.Suspense fallback={this.suspense}>
-            <Component __meta__={meta} />
+            <Component meta={meta} />
           </React.Suspense>
         )
-        item.element = this.createGuard(element, meta)
-      } else if (item.element) {
-        if (item.element) {
-          item.element = this.createGuard(item.element, meta)
+        route.element = this.createGuard(element, meta)
+      } else if (route.element) {
+        if (route.element) {
+          route.element = this.createGuard(
+            React.cloneElement(route.element as React.ReactElement, {
+              meta,
+            }),
+            meta,
+          )
         }
       }
 
-      if (item.children) {
-        item.children = this.createClientRoutes(item.children)
+      if (route.children) {
+        route.children = this.createClientRoutes(route.children)
       }
 
-      useRoutesList.push(this.deleteCustomfProperty(item))
+      clientRoutes.push(route)
     })
-    return useRoutesList
+    return clientRoutes
   }
 
-  private deleteCustomfProperty(r: RouteType) {
-    delete r.lazy
-    delete r.meta
-
-    return r as RouteObject
-  }
-
-  private createGuard(element: ReactNode, meta: MetaType) {
+  private createGuard(element: ReactNode, meta: Meta) {
     return (
       <Guard
         element={element}

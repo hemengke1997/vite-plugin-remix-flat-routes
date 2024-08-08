@@ -8,7 +8,7 @@ function Navigator(props: { to: string; replace: boolean }) {
     nav(to, { replace })
   }, [])
 
-  return null
+  return <></>
 }
 
 export { Navigator }

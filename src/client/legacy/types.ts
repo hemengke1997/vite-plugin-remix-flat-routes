@@ -1,48 +1,41 @@
 import { type ReactNode } from 'react'
 import { type Location, type Params, type RouteObject } from 'react-router-dom'
 
-interface FunctionalImportType {
-  (): Promise<any>
-}
-
-type Merge<T, U, X = Pick<U, Exclude<keyof U, keyof T & keyof U>>> = Pick<T & X, keyof T | keyof X>
-
-type RouteType = Merge<
-  {
-    lazy?: FunctionalImportType
-    meta?: MetaType
-    children?: RouteType[]
-  },
-  RouteObject
->
-
-type RoutesType = RouteType[]
-
-type Payload = {
+export type Payload = {
   location: Location
   params: Params
-  meta: MetaType
+  meta: Meta
 }
 
-type OnRouteBeforeResType = string | void
+type OnRouteWillMountRes = string | void
 
-type OnRouteWillMountType = (payload: Payload) => OnRouteBeforeResType | Promise<OnRouteBeforeResType>
+export type OnRouteWillMount = (payload: Payload) => OnRouteWillMountRes | Promise<OnRouteWillMountRes>
 
-type OnRouteMountType = (payload: Payload) => void
+export type OnRouteMount = (payload: Payload) => void
 
-type OnRouteUnmountType = (payload: Payload) => void
+export type OnRouteUnmount = (payload: Payload) => void
+
+/**
+ * 路由对象
+ */
+export type Route = RouteObject & {
+  id: string
+  lazy?: () => Promise<any>
+  meta?: Meta
+  children?: Route[]
+}
 
 /**
  * 路由元信息
  */
-type MetaType = {
+export interface Meta {
   /**
    * 内置路由元信息
    */
-  __route__: {
+  route: {
     id: string
-    path: string
-    index: boolean
+    path?: string
+    index?: boolean
   }
   /**
    * 用户自定义元信息
@@ -50,42 +43,38 @@ type MetaType = {
   [key: string]: any
 }
 
-interface RouterProps {
+export type PropsWithMeta<T = unknown> = {
+  meta: Meta
+} & T
+
+export interface RouterProps {
   /**
    * 路由配置
    */
-  routes: RoutesType
+  routes: Route[]
   /**
-   * 路由挂载之前执行，用于拦截路由重定向
+   * 路由挂载之前执行，可用于拦截路由重定向
    */
-  onRouteWillMount?: OnRouteWillMountType
+  onRouteWillMount?: OnRouteWillMount
   /**
    * 路由挂载时执行
    */
-  onRouteMount?: OnRouteMountType
+  onRouteMount?: OnRouteMount
   /**
    * 路由卸载时执行
    */
-  onRouteUnmount?: OnRouteUnmountType
+  onRouteUnmount?: OnRouteUnmount
   /**
    * 增强渲染函数，用于自定义渲染逻辑
    * 可以跟动画库结合，实现路由切换动画
    */
   render?: (children: ReactNode | null) => ReactNode
   /**
-   * 路由加载时的loading组件
+   * 路由懒加载时的loading组件
    */
   suspense?: ReactNode
-}
-
-export type {
-  FunctionalImportType,
-  MetaType,
-  OnRouteBeforeResType,
-  OnRouteWillMountType,
-  OnRouteMountType,
-  OnRouteUnmountType,
-  RouterProps,
-  RouteType,
-  RoutesType,
+  /**
+   * basename
+   */
+  basename?: string
 }
