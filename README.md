@@ -1,6 +1,6 @@
 # vite-plugin-remix-flat-routes
 
-> 集成 [Remix@2](https://remix.run/docs/en/main/file-conventions/routes) & [remix-flat-routes](https://github.com/kiliman/remix-flat-routes) 路由生成规则的 Vite 插件，支持 [react-router 数据路由/传统路由](https://reactrouter.com/en/main/routers/create-browser-router)
+> 集成 [Remix](https://remix.run/docs/en/main/file-conventions/routes) & [remix-flat-routes](https://github.com/kiliman/remix-flat-routes) 路由生成规则的 Vite 插件，支持 [react-router 数据路由/传统路由](https://reactrouter.com/en/main/routers/create-browser-router)
 
 ## 前提
 
@@ -10,7 +10,7 @@
 ## 安装
 
 ```bash
-npm i vite-plugin-remix-flat-routes -D
+npm i vite-plugin-remix-flat-routes remix-flat-routes @remix-run/dev
 ```
 
 ## 使用

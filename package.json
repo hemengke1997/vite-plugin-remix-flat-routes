@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-remix-flat-routes",
   "version": "2.3.0",
-  "description": "生成remix2规则路由的vite插件，完美适配react-router-dom@6",
+  "description": "生成remix规则路由的vite插件，完美适配react-router-dom@6",
   "type": "module",
   "keywords": [
     "vite",
@@ -58,13 +58,22 @@
     "bump": "bumpp package.json -c --no-push -t --all -x \"npm run changelog\""
   },
   "peerDependencies": {
-    "react": ">=18.0",
-    "react-dom": ">=18.0",
-    "react-router-dom": ">=6.0.0",
+    "@remix-run/dev": ">=2",
+    "react": ">=17",
+    "react-dom": ">=17",
+    "react-router-dom": ">=6",
+    "remix-flat-routes": ">=0.6",
     "vite": ">=5"
   },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
   "dependencies": {
-    "@remix-run/dev": "^2.11.1",
     "change-case": "^5.4.4",
     "clone-deep": "^4.0.1",
     "context-state": "^3.1.0",
@@ -73,7 +82,6 @@
     "local-pkg": "^0.5.0",
     "lodash.pick": "^4.4.0",
     "p-is-promise": "^4.0.0",
-    "remix-flat-routes": "^0.6.5",
     "semver": "^7.6.3",
     "type-fest": "^4.23.0"
   },
@@ -83,6 +91,7 @@
     "@minko-fe/eslint-config": "^3.3.3",
     "@minko-fe/prettier-config": "^2.2.2",
     "@minko-fe/tsconfig": "^2.1.0",
+    "@remix-run/dev": "^2.11.1",
     "@types/clone-deep": "^4.0.4",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.pick": "^4.4.9",
@@ -96,6 +105,7 @@
     "npm-run-all": "^4.1.5",
     "react": "18.2.0",
     "react-router-dom": "6.3.0",
+    "remix-flat-routes": "^0.6.5",
     "simple-git-hooks": "^2.11.1",
     "taze": "^0.16.3",
     "tsup": "^8.2.4",
