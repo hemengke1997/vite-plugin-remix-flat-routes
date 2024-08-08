@@ -10,7 +10,7 @@
 ## 安装
 
 ```bash
-npm i vite-plugin-remix-flat-routes remix-flat-routes @remix-run/dev
+npm i vite-plugin-remix-flat-routes
 ```
 
 ## 使用
