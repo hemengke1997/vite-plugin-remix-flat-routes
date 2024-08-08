@@ -1,3 +1,7 @@
+# [2.4.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.3.0...v2.4.0) (2024-08-08)
+
+
+
 # [2.3.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.2.0...v2.3.0) (2024-08-08)
 
 
