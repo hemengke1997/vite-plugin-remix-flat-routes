@@ -1,3 +1,12 @@
+# [2.3.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.2.0...v2.3.0) (2024-08-08)
+
+
+### Features
+
+* useMetas initialization with values ([3e9bec3](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/3e9bec39c19a34511d046a8cb3cd093c9a4a8c1c))
+
+
+
 # [2.2.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.1.1...v2.2.0) (2024-08-07)
 
 
