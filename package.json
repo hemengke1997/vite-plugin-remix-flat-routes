@@ -58,11 +58,9 @@
     "bump": "bumpp package.json -c --no-push -t --all -x \"npm run changelog\""
   },
   "peerDependencies": {
-    "@remix-run/dev": ">=2",
     "react": ">=17",
     "react-dom": ">=17",
     "react-router-dom": ">=6",
-    "remix-flat-routes": ">=0.6",
     "vite": ">=5"
   },
   "peerDependenciesMeta": {
@@ -74,6 +72,7 @@
     }
   },
   "dependencies": {
+    "@remix-run/dev": "^2.11.1",
     "change-case": "^5.4.4",
     "clone-deep": "^4.0.1",
     "context-state": "^3.1.0",
@@ -82,6 +81,7 @@
     "local-pkg": "^0.5.0",
     "lodash.pick": "^4.4.0",
     "p-is-promise": "^4.0.0",
+    "remix-flat-routes": "^0.6.5",
     "semver": "^7.6.3",
     "type-fest": "^4.23.0"
   },
@@ -105,7 +105,6 @@
     "npm-run-all": "^4.1.5",
     "react": "18.2.0",
     "react-router-dom": "6.3.0",
-    "remix-flat-routes": "^0.6.5",
     "simple-git-hooks": "^2.11.1",
     "taze": "^0.16.3",
     "tsup": "^8.2.4",
