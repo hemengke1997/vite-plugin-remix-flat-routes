@@ -1,3 +1,16 @@
+# [2.6.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.5.0...v2.6.0) (2024-08-09)
+
+
+### Features
+
+* tree-shaking ([bb7224a](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/bb7224af23c42fab95b36812b3ce7065c880d78e))
+
+
+
+# [2.5.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.4.0...v2.5.0) (2024-08-08)
+
+
+
 # [2.4.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v2.3.0...v2.4.0) (2024-08-08)
 
 
