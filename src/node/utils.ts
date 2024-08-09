@@ -166,7 +166,6 @@ export async function processRouteManifest(viteChildCompiler: Vite.ViteDevServer
         // 注意：legacy模式下，懒加载组件是默认导出，非懒加载组件是 Component
         // 与数据路由模式正好相反
         // 因为 React.lazy 的入参必须是默认导出
-
         // Non-lazy Component
         hasElement: sourceExports.includes('default'),
         // Lazy Component

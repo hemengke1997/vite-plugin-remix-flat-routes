@@ -1,4 +1,5 @@
 import { defineConfig, type Options } from 'tsup'
+import { bundleless } from 'tsup-plugin-bundleless'
 
 const commonConfig = (option: Options): Options => {
   return {
@@ -6,9 +7,8 @@ const commonConfig = (option: Options): Options => {
     sourcemap: !!option.watch,
     dts: true,
     minify: false,
-    external: [/^virtual:.*/, 'react', 'react-router-dom'],
+    external: [/^virtual:.*/, 'react', 'react-dom', 'react-router-dom'],
     shims: true,
-    splitting: true,
     treeshake: true,
   }
 }
@@ -21,6 +21,7 @@ export const tsup = defineConfig((option) => [
     format: ['esm'],
     target: 'node16',
     platform: 'node',
+    splitting: true,
     ...commonConfig(option),
   },
   {
@@ -33,11 +34,13 @@ export const tsup = defineConfig((option) => [
     ...commonConfig(option),
   },
   {
-    entry: {
-      'client/index': './src/client/index.ts',
-    },
-    format: ['esm', 'cjs'],
+    entry: ['./src/client/**/*.{ts,tsx}'],
+    outDir: 'dist/client',
+    format: ['esm'],
     platform: 'neutral',
+    splitting: false,
     ...commonConfig(option),
+    outExtension: () => ({ js: '.js' }),
+    plugins: [bundleless({ ext: '.js' })],
   },
 ])

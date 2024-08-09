@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom'
+import { type NavigateOptions, useNavigate } from 'react-router-dom'
 import { useIsomorphicLayoutEffect } from './react-hooks'
 
-function Navigator(props: { to: string; replace: boolean }) {
-  const { to, replace } = props
+function Navigator(props: { to: string } & NavigateOptions) {
+  const { to, ...rest } = props
   const nav = useNavigate()
   useIsomorphicLayoutEffect(() => {
-    nav(to, { replace })
+    nav(to, rest)
   }, [])
 
   return <></>

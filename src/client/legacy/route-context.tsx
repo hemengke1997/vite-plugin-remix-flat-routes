@@ -1,8 +1,7 @@
 import { createContainer, useMemoFn } from 'context-state'
 import pick from 'lodash.pick'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { matchRoutes, type RouteMatch, useLocation } from 'react-router-dom'
-import { useUpdateEffect } from './react-hooks'
 import { type Meta, type Route, type RouterProps } from './types'
 
 function getMetasFromMatch(routes: RouteMatch[] | null): Meta[] {
@@ -27,12 +26,16 @@ function useRouteContext({ clientRoutes, basename }: { clientRoutes: Route[] } &
 
   const [metas, setMetas] = useState(resolveMetas)
 
-  useUpdateEffect(() => {
+  const previousPath = useRef<string>()
+  const updateMetas = useMemoFn((path: string) => {
+    if (previousPath.current === path) return
+    previousPath.current = path
     setMetas(resolveMetas())
-  }, [location])
+  })
 
   return {
     metas,
+    updateMetas,
   }
 }
 

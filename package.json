@@ -19,7 +19,7 @@
   "author": "hemengke <https://github.com/hemengke1997>",
   "files": [
     "*.d.ts",
-    "dist"
+    "dist/"
   ],
   "main": "./dist/node/index.cjs",
   "module": "./dist/node/index.js",
@@ -32,8 +32,8 @@
     },
     "./client": {
       "types": "./dist/client/index.d.ts",
-      "require": "./dist/client/index.cjs",
-      "import": "./dist/client/index.js"
+      "import": "./dist/client/index.js",
+      "default": "./dist/client/index.js"
     },
     "./virtual": {
       "types": "./virtual.d.ts"
@@ -49,11 +49,11 @@
   "sideEffects": false,
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup",
-    "commitlint": "commitlint --edit",
+    "build": "rm -rf dist && tsup",
+    "commitlint": "commitlint -e",
     "prepare": "simple-git-hooks",
-    "lint": "eslint .",
-    "up": "taze -I -w -r",
+    "lint": "eslint . --fix",
+    "up": "taze -I -w",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "bump": "bumpp package.json -c --no-push -t --all -x \"npm run changelog\""
   },
@@ -75,7 +75,7 @@
     "@remix-run/dev": "^2.11.1",
     "change-case": "^5.4.4",
     "clone-deep": "^4.0.1",
-    "context-state": "^3.1.0",
+    "context-state": "^3.1.1",
     "es-module-lexer": "^1.5.4",
     "fs-extra": "^11.2.0",
     "local-pkg": "^0.5.0",
@@ -83,7 +83,7 @@
     "p-is-promise": "^4.0.0",
     "remix-flat-routes": "^0.6.5",
     "semver": "^7.6.3",
-    "type-fest": "^4.23.0"
+    "type-fest": "^4.24.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.4.0",
@@ -104,10 +104,11 @@
     "eslint": "^9.8.0",
     "npm-run-all": "^4.1.5",
     "react": "18.2.0",
-    "react-router-dom": "6.3.0",
+    "react-router-dom": "^6.26.0",
     "simple-git-hooks": "^2.11.1",
     "taze": "^0.16.3",
     "tsup": "^8.2.4",
+    "tsup-plugin-bundleless": "^0.4.0",
     "typescript": "^5.5.4",
     "vite": "^5.4.0"
   },
