@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-remix-flat-routes",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "生成remix规则路由的vite插件，完美适配react-router-dom@6",
   "type": "module",
   "keywords": [
