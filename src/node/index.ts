@@ -7,6 +7,7 @@ import { importViteEsmSync, preloadViteEsm } from './import-vite-esm-sync'
 import { createClientRoutes, resolveRoutes } from './remix'
 import { type PluginContext, type RemixOptions } from './types'
 import { processRouteManifest, stringifyRoutes, validateRouteDir } from './utils'
+import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } from './virtual'
 
 export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
   /**
@@ -15,9 +16,6 @@ export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
    */
   legacy?: boolean
 }
-
-const virtualModuleId = 'virtual:remix-flat-routes'
-const resolvedVirtualModuleId = `\0${virtualModuleId}`
 
 function remixFlatRoutes(options: Options = {}): Vite.Plugin {
   const { appDirectory = 'app', flatRoutesOptions, legacy } = options
@@ -38,6 +36,7 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
   let viteChildCompiler: Vite.ViteDevServer | null = null
   let viteConfig: Vite.ResolvedConfig | undefined
   let viteConfigEnv: Vite.ConfigEnv
+  let viteServer: Vite.ViteDevServer
 
   const ctx: PluginContext = {
     rootDirectory: process.cwd(),
@@ -47,6 +46,7 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
   }
 
   return {
+    enforce: 'pre',
     name: 'vite-plugin-remix-flat-routes',
     /**
      * @see `config` in @remix-run/dev/vite/plugin.ts
@@ -131,6 +131,9 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
       }
       return null
     },
+    configureServer(server) {
+      viteServer = server
+    },
     /**
      * @see `buildEnd` in @remix-run/dev/vite/plugin.ts
      */
@@ -138,16 +141,14 @@ function remixFlatRoutes(options: Options = {}): Vite.Plugin {
       viteChildCompiler?.httpServer?.close()
       await viteChildCompiler?.close()
     },
-    handleHotUpdate({ server }) {
-      const { moduleGraph, ws } = server
-      const module = moduleGraph.getModuleById(resolvedVirtualModuleId)
-      if (module) {
-        moduleGraph.invalidateModule(module)
-        ws.send({
-          type: 'full-reload',
-          path: '*',
-        })
+    handleHotUpdate(ctx) {
+      invalidateVirtualModule(ctx.server)
+    },
+    watchChange(_, change) {
+      if (change.event === 'update') {
+        return
       }
+      invalidateVirtualModule(viteServer, true)
     },
   }
 }

@@ -153,9 +153,10 @@ export default defineConfig({
   plugins: [
     react(),
     remixFlatRoutes({
-      // 开启传统路由模式
       // 默认插件会自动探测 react-router-dom 版本，如果大于等于 6.4.0 则默认开启数据路由模式
       // 否则开启传统路由模式
+
+      // 手动开启传统路由模式
       legacy: true,
     }),
   ],
