@@ -1,7 +1,7 @@
-import { createContainer, useMemoFn } from 'context-state'
-import pick from 'lodash.pick'
 import { useRef, useState } from 'react'
 import { matchRoutes, type RouteMatch, useLocation } from 'react-router-dom'
+import { createContainer, useMemoFn } from 'context-state'
+import pick from 'lodash.pick'
 import { type Meta, type Route, type RouterProps } from './types'
 
 function getMetasFromMatch(routes: RouteMatch[] | null): Meta[] {

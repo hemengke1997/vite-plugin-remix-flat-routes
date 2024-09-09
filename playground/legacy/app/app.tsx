@@ -1,6 +1,6 @@
-import { AnimatePresence, motion } from 'framer-motion'
 import { type PropsWithChildren } from 'react'
 import { BrowserRouter, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { routes } from 'virtual:remix-flat-routes'
 import { LegacyRouterProvider } from 'vite-plugin-remix-flat-routes/client'
 import { GlobalContext } from './contexts/global-context'

@@ -1,6 +1,6 @@
-import { AnimatePresence, motion } from 'framer-motion'
 import { type PropsWithChildren } from 'react'
 import { Link, ScrollRestoration, useLocation, useOutlet, useRouteError } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export const RouteAnimation = ({ children }: PropsWithChildren) => {
   const location = useLocation()

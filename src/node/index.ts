@@ -17,7 +17,7 @@ export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
   legacy?: boolean
 }
 
-function remixFlatRoutes(options: Options = {}): Vite.Plugin {
+function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
   const { appDirectory = 'app', flatRoutesOptions, legacy } = options
 
   const routeDir = flatRoutesOptions?.routeDir || 'routes'

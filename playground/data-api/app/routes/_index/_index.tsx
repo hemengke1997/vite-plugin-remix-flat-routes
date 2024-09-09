@@ -17,7 +17,6 @@ export function Component() {
     <div>
       /index/index.jsx {value}
       <Link to='/signin'>跳转signin</Link>
-      <Link to='/b'>跳转b</Link>
     </div>
   )
 }

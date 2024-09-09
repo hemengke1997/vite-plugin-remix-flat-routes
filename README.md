@@ -88,8 +88,8 @@ app
 ### 配置 react-router-dom
 
 ```tsx
-import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createRoot } from 'react-dom/client'
 import { routes } from 'virtual:remix-flat-routes'
 
 // https://reactrouter.com/en/main/routers/create-browser-router
@@ -166,8 +166,8 @@ export default defineConfig({
 ### 配置 react-router-dom
 
 ```tsx
-import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
+import { createRoot } from 'react-dom/client'
 import { routes } from 'virtual:remix-flat-routes'
 import { LegacyRouterProvider } from 'vite-plugin-remix-flat-routes/client'
 
@@ -257,6 +257,8 @@ export const more_info = {
 #### 1. 从 `props` 中获取 meta 元信息
 
 ```tsx
+import { type PropsWithMeta } from 'vite-plugin-remix-flat-routes/client'
+
 export default function (props: PropsWithMeta) {
   const { meta } = props
 }

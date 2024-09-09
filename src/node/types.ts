@@ -1,6 +1,6 @@
+import { type RouteObject } from 'react-router-dom'
 import { type AppConfig } from '@remix-run/dev/dist/config'
 import { type ConfigRoute } from '@remix-run/dev/dist/config/routes'
-import { type RouteObject } from 'react-router-dom'
 import { type FlatRoutesOptions } from 'remix-flat-routes'
 import { type SetRequired, type ValueOf } from 'type-fest'
 import { type LegacyRouteManifest } from './types-legacy'

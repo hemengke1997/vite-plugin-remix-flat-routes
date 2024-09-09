@@ -1,6 +1,6 @@
-import isPromise from 'p-is-promise'
 import { type ReactNode, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import isPromise from 'p-is-promise'
 import { Navigator } from './navigator'
 import { useIsomorphicLayoutEffect } from './react-hooks'
 import { RouteContext } from './route-context'
