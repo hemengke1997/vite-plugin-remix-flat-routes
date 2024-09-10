@@ -1,3 +1,12 @@
+## [3.0.3](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.0.2...v3.0.3) (2024-09-10)
+
+
+### Bug Fixes
+
+* peer deps issue ([36b87ed](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/36b87edf7d943d60985bd80fc448dea74bd7cb02))
+
+
+
 ## [3.0.2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.0.1...v3.0.2) (2024-09-10)
 
 
