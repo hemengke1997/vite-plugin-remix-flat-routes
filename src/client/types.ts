@@ -30,7 +30,9 @@ export type Route = RouteObject & {
   /**
    * 路由元信息
    */
-  meta?: Meta
+  meta?: {
+    [key: string]: any
+  }
   /**
    * 子路由
    */

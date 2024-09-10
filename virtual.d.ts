@@ -13,11 +13,6 @@ declare module 'virtual:remix-flat-routes' {
      * 路由元信息 (legacy mode)
      */
     meta?: {
-      route: {
-        id?: string
-        index?: boolean
-        pathname?: string
-      }
       [key: string]: any
     }
     /**
