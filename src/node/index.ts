@@ -11,8 +11,8 @@ import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } fro
 
 export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
   /**
-   * @description 使用 react-router-dom<6.4.0 传统路由模式
-   * 插件默认会探测 react-router-dom 版本，如果版本小于 6.4.0，则使用legacy模式
+   * @description 使用 react-router-dom<=6.3.0 传统路由模式
+   * 插件默认会探测 react-router-dom 版本，如果版本小于等于 6.3.0，则使用legacy模式
    */
   legacy?: boolean
 }
