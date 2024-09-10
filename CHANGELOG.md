@@ -1,3 +1,12 @@
+# [3.1.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.0.3...v3.1.0) (2024-09-10)
+
+
+### Features
+
+* generic type enchancement ([c61584d](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/c61584d0a3099835bbefad4481a095a390ec5ee9))
+
+
+
 ## [3.0.3](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.0.2...v3.0.3) (2024-09-10)
 
 
