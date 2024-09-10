@@ -17,8 +17,9 @@ export interface LegacyRouteObject {
   Component?: React.ComponentType | null
   /**
    * 懒加载路由组件
+   * 避免与 react-router6.4.0 的 lazy 冲突，命名为 lazyComponent
    */
-  lazy?: () => Promise<{ default: any }>
+  lazyComponent?: () => Promise<{ default: any }>
   id: string
   file: string
 }

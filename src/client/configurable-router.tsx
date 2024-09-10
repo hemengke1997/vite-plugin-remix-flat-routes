@@ -4,7 +4,7 @@ import { RouteContext } from './route-context'
 import { Router } from './router'
 import { type RouterProps } from './types'
 
-function RouterProvider(props: RouterProps) {
+function ConfigurableRouter(props: RouterProps) {
   const { routes, onRouteWillMount, onRouteMount, onRouteUnmount, render, suspense } = props
 
   const router = new Router({
@@ -31,4 +31,4 @@ function RouterProvider(props: RouterProps) {
   )
 }
 
-export default memo(RouterProvider)
+export default memo(ConfigurableRouter)

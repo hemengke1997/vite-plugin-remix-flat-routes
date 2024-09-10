@@ -1,18 +1,17 @@
 import { useRef, useState } from 'react'
 import { matchRoutes, type RouteMatch, useLocation } from 'react-router-dom'
 import { createContainer, useMemoFn } from 'context-state'
-import pick from 'lodash.pick'
 import { type Meta, type Route, type RouterProps } from './types'
+import { collectMeta } from './utils'
 
 function getMetasFromMatch(routes: RouteMatch[] | null): Meta[] {
   if (!routes) return []
 
   return routes?.map((item) => {
     const route = item.route as Route
-    return {
-      route: pick(route, ['id', 'index', 'meta', 'path']),
-      ...pick(route, 'meta')?.meta,
-    }
+
+    const meta = collectMeta(route)
+    return meta
   })
 }
 

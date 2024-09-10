@@ -155,8 +155,7 @@ export default defineConfig({
     remixFlatRoutes({
       // 默认插件会自动探测 react-router-dom 版本，如果大于等于 6.4.0 则默认开启数据路由模式
       // 否则开启传统路由模式
-
-      // 手动开启传统路由模式
+      // 也可以手动开启传统路由模式
       legacy: true,
     }),
   ],
@@ -169,7 +168,7 @@ export default defineConfig({
 import { BrowserRouter } from 'react-router-dom'
 import { createRoot } from 'react-dom/client'
 import { routes } from 'virtual:remix-flat-routes'
-import { LegacyRouterProvider } from 'vite-plugin-remix-flat-routes/client'
+import { LegacyRouterProvider } from 'vite-plugin-remix-flat-routes/client' // 导入 LegacyRouterProvider
 
 const root = createRoot(document.getElementById('root'))
 
@@ -184,10 +183,9 @@ root.render(
 #### LegacyRouterProvider 配置项
 
 ```ts
-type RouterProps = {
+interface RouterProps {
   /**
    * 路由配置
-   * 从 'virtual:remix-flat-routes' 中获取
    */
   routes: Route[]
   /**
@@ -211,6 +209,10 @@ type RouterProps = {
    * 路由懒加载时的loading组件
    */
   suspense?: ReactNode
+  /**
+   * basename
+   */
+  basename?: string
 }
 ```
 

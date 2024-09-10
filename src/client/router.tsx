@@ -1,6 +1,7 @@
 import React, { Fragment, type ReactNode } from 'react'
 import cloneDeep from 'clone-deep'
 import { Guard } from './guard'
+import { Navigator } from './navigator'
 import {
   type Meta,
   type OnRouteMount,
@@ -9,6 +10,7 @@ import {
   type Route,
   type RouterProps,
 } from './types'
+import { collectMeta } from './utils'
 
 export class Router {
   routes: Route[]
@@ -32,20 +34,12 @@ export class Router {
         return
       }
 
-      const meta: Meta = {
-        route: {
-          id: route.id!,
-          index: route.index!,
-          path: route.path,
-        },
-      }
+      const meta = collectMeta(route)
 
-      if (route.meta) {
-        Object.assign(meta, route.meta)
-      }
-
-      if (route.lazy) {
-        const Component = React.lazy(route.lazy)
+      if (route.redirect) {
+        route.element = <Navigator to={route.redirect} replace={true}></Navigator>
+      } else if (route.lazyComponent) {
+        const Component = React.lazy(route.lazyComponent)
         const element = (
           <React.Suspense fallback={this.suspense}>
             <Component meta={meta} />

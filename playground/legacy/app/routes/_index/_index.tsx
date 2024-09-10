@@ -8,7 +8,7 @@ export default function (props: PropsWithMeta) {
   const { value } = GlobalContext.usePicker(['value'])
   const { metas } = useMetas()
   useEffect(() => {
-    console.log(props, 'props')
+    console.log(props.meta, 'props')
     console.log(metas, 'useMetas result')
   }, [metas])
   return (

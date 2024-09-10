@@ -19,9 +19,21 @@ export type OnRouteUnmount = (payload: Payload) => void
  * 路由对象
  */
 export type Route = RouteObject & {
-  id: string
-  lazy?: () => Promise<any>
+  /**
+   * 路由组件
+   */
+  lazyComponent?: () => Promise<any>
+  /**
+   * 重定向
+   */
+  redirect?: string
+  /**
+   * 路由元信息
+   */
   meta?: Meta
+  /**
+   * 子路由
+   */
   children?: Route[]
 }
 
@@ -29,13 +41,10 @@ export type Route = RouteObject & {
  * 路由元信息
  */
 export interface Meta {
-  /**
-   * 内置路由元信息
-   */
   route: {
-    id: string
-    path?: string
+    id?: string
     index?: boolean
+    pathname?: string
   }
   /**
    * 用户自定义元信息

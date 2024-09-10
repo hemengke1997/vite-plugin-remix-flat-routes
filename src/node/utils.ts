@@ -1,7 +1,7 @@
 import type * as Vite from 'vite'
 import { type RouteObject } from 'react-router-dom'
 import { pascalSnakeCase } from 'change-case'
-import fs from 'fs-extra'
+import fs from 'node:fs'
 import path from 'node:path'
 import { findEntry, getRouteManifestModuleExports } from './remix'
 import { type PluginContext, type Route, type RouteExports, type RouteManifest } from './types'
@@ -122,7 +122,7 @@ function legacyRouteToString(route: LegacyRoute, staticImport: string[], ctx: Pl
   }
 
   if (isLazyComponent) {
-    setProps('lazy', `() => import('${componentPath}')`)
+    setProps('lazyComponent', `() => import('${componentPath}')`)
   } else {
     staticImport.push(`import * as ${componentName} from '${componentPath}';`)
     setProps('element', reactElementInExports('Component'))

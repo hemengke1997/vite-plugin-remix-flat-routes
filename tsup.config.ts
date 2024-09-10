@@ -15,6 +15,7 @@ const commonConfig = (option: Options): Options => {
 
 export const tsup = defineConfig((option) => [
   {
+    ...commonConfig(option),
     entry: {
       'node/index': './src/node/index.ts',
     },
@@ -22,25 +23,34 @@ export const tsup = defineConfig((option) => [
     target: 'node16',
     platform: 'node',
     splitting: true,
-    ...commonConfig(option),
   },
   {
+    ...commonConfig(option),
     entry: {
       'node/index': './src/node/index.ts',
     },
     format: ['cjs'],
     target: 'node16',
     platform: 'node',
-    ...commonConfig(option),
   },
   {
+    ...commonConfig(option),
     entry: ['./src/client/**/*.{ts,tsx}'],
     outDir: 'dist/client',
     format: ['esm'],
     platform: 'neutral',
     splitting: false,
-    ...commonConfig(option),
     outExtension: () => ({ js: '.js' }),
     plugins: [bundleless({ ext: '.js' })],
+  },
+  {
+    ...commonConfig(option),
+    entry: ['./src/client/**/*.{ts,tsx}'],
+    outDir: 'dist/client',
+    format: ['cjs'],
+    platform: 'neutral',
+    splitting: false,
+    outExtension: () => ({ js: '.cjs' }),
+    plugins: [bundleless({ ext: '.cjs' })],
   },
 ])

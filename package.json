@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-remix-flat-routes",
   "version": "2.6.1",
-  "description": "生成remix规则路由的vite插件，完美适配react-router-dom@6",
+  "description": "生成remix规则路由，适配react-router-dom@6数据路由和非数据路由",
   "type": "module",
   "keywords": [
     "vite",
@@ -32,8 +32,8 @@
     },
     "./client": {
       "types": "./dist/client/index.d.ts",
-      "import": "./dist/client/index.js",
-      "default": "./dist/client/index.js"
+      "require": "./dist/client/index.cjs",
+      "import": "./dist/client/index.js"
     },
     "./virtual": {
       "types": "./virtual.d.ts"
@@ -54,7 +54,7 @@
     "prepare": "simple-git-hooks",
     "lint": "tsc --noEmit && eslint .",
     "up": "taze -I -w",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "bump": "bumpp package.json -c --no-push -t --all -x \"npm run changelog\""
   },
   "peerDependencies": {
@@ -72,15 +72,9 @@
     }
   },
   "dependencies": {
-    "@remix-run/dev": "^2.11.2",
     "change-case": "^5.4.4",
-    "clone-deep": "^4.0.1",
-    "context-state": "^3.1.1",
     "es-module-lexer": "^1.5.4",
-    "fs-extra": "^11.2.0",
     "local-pkg": "^0.5.0",
-    "lodash.pick": "^4.4.0",
-    "p-is-promise": "^4.0.0",
     "remix-flat-routes": "^0.6.5",
     "semver": "^7.6.3",
     "type-fest": "^4.26.1"
@@ -92,16 +86,17 @@
     "@minko-fe/prettier-config": "^2.2.3",
     "@minko-fe/tsconfig": "^2.1.1",
     "@types/clone-deep": "^4.0.4",
-    "@types/fs-extra": "^11.0.4",
-    "@types/lodash.pick": "^4.4.9",
     "@types/node": "^22.5.4",
     "@types/react": "^18.3.5",
     "@types/semver": "^7.5.8",
     "bumpp": "^9.5.2",
+    "clone-deep": "^4.0.1",
+    "context-state": "^3.1.1",
     "conventional-changelog-cli": "^5.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.10.0",
     "npm-run-all": "^4.1.5",
+    "p-is-promise": "^4.0.0",
     "react": "^18.3.1",
     "simple-git-hooks": "^2.11.1",
     "taze": "^0.16.7",

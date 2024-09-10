@@ -1,8 +1,7 @@
 import { type RouteObject } from 'react-router-dom'
-import { type AppConfig } from '@remix-run/dev/dist/config'
-import { type ConfigRoute } from '@remix-run/dev/dist/config/routes'
 import { type FlatRoutesOptions } from 'remix-flat-routes'
-import { type SetRequired, type ValueOf } from 'type-fest'
+import { type ValueOf } from 'type-fest'
+import { type ConfigRoute } from './remix'
 import { type LegacyRouteManifest } from './types-legacy'
 
 export type RouteExports<T> = AddHasPrefix<T>
@@ -26,7 +25,8 @@ export type PluginContext = {
   isLegacyMode: boolean
 }
 
-export type RemixOptions = SetRequired<Pick<AppConfig, 'appDirectory'>, 'appDirectory'> & {
+export type RemixOptions = {
+  appDirectory: string
   flatRoutesOptions?: Pick<
     FlatRoutesOptions,
     'paramPrefixChar' | 'routeDir' | 'routeRegex' | 'visitFiles' | 'basePath' | 'ignoredRouteFiles'
