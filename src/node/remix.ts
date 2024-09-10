@@ -2,9 +2,9 @@ import type * as Vite from 'vite'
 import { parse as esModuleLexer } from 'es-module-lexer'
 import fs from 'node:fs'
 import path from 'node:path'
-import { flatRoutes as flatRoutesPro } from 'remix-flat-routes'
 import { type ValueOf } from 'type-fest'
 import { importViteEsmSync } from './import-vite-esm-sync'
+import { flatRoutes } from './remix-flat-routes'
 import { type PluginContext, type RemixOptions, type Route, type RouteManifest } from './types'
 
 /**
@@ -37,7 +37,7 @@ export async function resolveRoutes(options: RemixOptions) {
     root: { path: '', id: 'root', file: rootRouteFile },
   }
 
-  const manualRoutes = flatRoutesPro(flatRoutesOptions!.routeDir!, defineRoutes, flatRoutesOptions)
+  const manualRoutes = flatRoutes(flatRoutesOptions!.routeDir!, defineRoutes, flatRoutesOptions)
   for (const route of Object.values(manualRoutes)) {
     routeManifest[route.id] = { ...route, parentId: route.parentId || 'root' }
   }

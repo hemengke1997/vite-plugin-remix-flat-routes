@@ -1,7 +1,7 @@
 import { type RouteObject } from 'react-router-dom'
-import { type FlatRoutesOptions } from 'remix-flat-routes'
 import { type ValueOf } from 'type-fest'
 import { type ConfigRoute } from './remix'
+import { type FlatRoutesOptions } from './remix-flat-routes'
 import { type LegacyRouteManifest } from './types-legacy'
 
 export type RouteExports<T> = AddHasPrefix<T>

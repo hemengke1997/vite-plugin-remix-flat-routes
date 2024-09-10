@@ -13,3 +13,4 @@ temp/*
 .eslintcache
 coverage
 temp-*
+NOTE.md
