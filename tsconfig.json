@@ -1,7 +1,7 @@
 {
   "extends": "@minko-fe/tsconfig/tsconfig.lib",
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "types": ["vitest/globals"]
   },
   "exclude": ["**/node_modules/**", "**/dist/**"]
 }

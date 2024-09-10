@@ -50,6 +50,7 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "rm -rf dist && tsup",
+    "test": "vitest --run",
     "commitlint": "commitlint -e",
     "prepare": "simple-git-hooks",
     "lint": "tsc --noEmit && eslint .",
@@ -106,7 +107,8 @@
     "tsup": "^8.2.4",
     "tsup-plugin-bundleless": "^0.4.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.3"
+    "vite": "^5.4.3",
+    "vitest": "^2.0.5"
   },
   "simple-git-hooks": {
     "commit-msg": "npm run commitlint",

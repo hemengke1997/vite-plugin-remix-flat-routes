@@ -1,0 +1,674 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`define folders for flat-files > should define routes for flat-files with folders 1`] = `
+{
+  "routes/_auth+/forgot-password": {
+    "caseSensitive": undefined,
+    "file": "routes/_auth+/forgot-password.tsx",
+    "id": "routes/_auth+/forgot-password",
+    "index": undefined,
+    "parentId": "root",
+    "path": "forgot-password",
+  },
+  "routes/_auth+/login": {
+    "caseSensitive": undefined,
+    "file": "routes/_auth+/login.tsx",
+    "id": "routes/_auth+/login",
+    "index": undefined,
+    "parentId": "root",
+    "path": "login",
+  },
+  "routes/_public+/_layout": {
+    "caseSensitive": undefined,
+    "file": "routes/_public+/_layout.tsx",
+    "id": "routes/_public+/_layout",
+    "index": undefined,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/_public+/about": {
+    "caseSensitive": undefined,
+    "file": "routes/_public+/about.tsx",
+    "id": "routes/_public+/about",
+    "index": undefined,
+    "parentId": "routes/_public+/_layout",
+    "path": "about",
+  },
+  "routes/_public+/contact[.jpg]": {
+    "caseSensitive": undefined,
+    "file": "routes/_public+/contact[.jpg].tsx",
+    "id": "routes/_public+/contact[.jpg]",
+    "index": undefined,
+    "parentId": "routes/_public+/_layout",
+    "path": "contact.jpg",
+  },
+  "routes/_public+/index": {
+    "caseSensitive": undefined,
+    "file": "routes/_public+/index.tsx",
+    "id": "routes/_public+/index",
+    "index": true,
+    "parentId": "routes/_public+/_layout",
+    "path": undefined,
+  },
+  "routes/users+/$userId": {
+    "caseSensitive": undefined,
+    "file": "routes/users+/$userId.tsx",
+    "id": "routes/users+/$userId",
+    "index": undefined,
+    "parentId": "routes/users+/route",
+    "path": ":userId",
+  },
+  "routes/users+/$userId_.edit": {
+    "caseSensitive": undefined,
+    "file": "routes/users+/$userId_.edit.tsx",
+    "id": "routes/users+/$userId_.edit",
+    "index": undefined,
+    "parentId": "routes/users+/route",
+    "path": ":userId/edit",
+  },
+  "routes/users+/_layout": {
+    "caseSensitive": undefined,
+    "file": "routes/users+/_layout.tsx",
+    "id": "routes/users+/_layout",
+    "index": undefined,
+    "parentId": "root",
+    "path": "users",
+  },
+  "routes/users+/route": {
+    "caseSensitive": undefined,
+    "file": "routes/users+/route.tsx",
+    "id": "routes/users+/route",
+    "index": undefined,
+    "parentId": "root",
+    "path": "users",
+  },
+}
+`;
+
+exports[`define hybrid routes > should define routes for hybrid routes 1`] = `
+{
+  "routes/_index/route": {
+    "caseSensitive": undefined,
+    "file": "routes/_index/route.tsx",
+    "id": "routes/_index/route",
+    "index": true,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/_public/_layout": {
+    "caseSensitive": undefined,
+    "file": "routes/_public/_layout.tsx",
+    "id": "routes/_public/_layout",
+    "index": undefined,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/_public/about/route": {
+    "caseSensitive": undefined,
+    "file": "routes/_public/about/route.tsx",
+    "id": "routes/_public/about/route",
+    "index": undefined,
+    "parentId": "routes/_public/_layout",
+    "path": "about",
+  },
+  "routes/_public/contact[.jpg]/route": {
+    "caseSensitive": undefined,
+    "file": "routes/_public/contact[.jpg]/route.tsx",
+    "id": "routes/_public/contact[.jpg]/route",
+    "index": undefined,
+    "parentId": "routes/_public/_layout",
+    "path": "contact.jpg",
+  },
+  "routes/test.$/route": {
+    "caseSensitive": undefined,
+    "file": "routes/test.$/route.tsx",
+    "id": "routes/test.$/route",
+    "index": undefined,
+    "parentId": "root",
+    "path": "test/*",
+  },
+  "routes/users/$userId/route": {
+    "caseSensitive": undefined,
+    "file": "routes/users/$userId/route.tsx",
+    "id": "routes/users/$userId/route",
+    "index": undefined,
+    "parentId": "routes/users/route/route",
+    "path": ":userId",
+  },
+  "routes/users/$userId_.edit/route": {
+    "caseSensitive": undefined,
+    "file": "routes/users/$userId_.edit/route.tsx",
+    "id": "routes/users/$userId_.edit/route",
+    "index": undefined,
+    "parentId": "routes/users/route/route",
+    "path": ":userId/edit",
+  },
+  "routes/users/_layout": {
+    "caseSensitive": undefined,
+    "file": "routes/users/_layout.tsx",
+    "id": "routes/users/_layout",
+    "index": undefined,
+    "parentId": "root",
+    "path": "users",
+  },
+  "routes/users/route/route": {
+    "caseSensitive": undefined,
+    "file": "routes/users/route/route.tsx",
+    "id": "routes/users/route/route",
+    "index": undefined,
+    "parentId": "root",
+    "path": "users",
+  },
+}
+`;
+
+exports[`define ignored routes > should ignore routes for flat-files 1`] = `
+{
+  "routes/$lang.$ref": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref.tsx",
+    "id": "routes/$lang.$ref",
+    "index": undefined,
+    "parentId": "root",
+    "path": ":lang/:ref",
+  },
+  "routes/$lang.$ref.$": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref.$.tsx",
+    "id": "routes/$lang.$ref.$",
+    "index": undefined,
+    "parentId": "routes/$lang.$ref",
+    "path": "*",
+  },
+  "routes/$lang.$ref._index": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref._index.tsx",
+    "id": "routes/$lang.$ref._index",
+    "index": true,
+    "parentId": "routes/$lang.$ref",
+    "path": undefined,
+  },
+  "routes/_index": {
+    "caseSensitive": undefined,
+    "file": "routes/_index.tsx",
+    "id": "routes/_index",
+    "index": true,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/healthcheck": {
+    "caseSensitive": undefined,
+    "file": "routes/healthcheck.tsx",
+    "id": "routes/healthcheck",
+    "index": undefined,
+    "parentId": "root",
+    "path": "healthcheck",
+  },
+}
+`;
+
+exports[`define routes > should allow routes to specify different parent routes 1`] = `
+{
+  "routes/parent": {
+    "caseSensitive": undefined,
+    "file": "routes/parent.tsx",
+    "id": "routes/parent",
+    "index": undefined,
+    "parentId": "root",
+    "path": "parent",
+  },
+  "routes/parent.some.nested": {
+    "caseSensitive": undefined,
+    "file": "routes/parent.some.nested.tsx",
+    "id": "routes/parent.some.nested",
+    "index": undefined,
+    "parentId": "routes/parent",
+    "path": "some/nested",
+  },
+  "routes/parent.some_.nested.page": {
+    "caseSensitive": undefined,
+    "file": "routes/parent.some_.nested.page.tsx",
+    "id": "routes/parent.some_.nested.page",
+    "index": undefined,
+    "parentId": "routes/parent",
+    "path": "some/nested/page",
+  },
+}
+`;
+
+exports[`define routes > should correctly nest routes 1`] = `
+{
+  "routes/app.$organizationSlug": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug.tsx",
+    "id": "routes/app.$organizationSlug",
+    "index": undefined,
+    "parentId": "root",
+    "path": "app/:organizationSlug",
+  },
+  "routes/app.$organizationSlug.edit": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug.edit.tsx",
+    "id": "routes/app.$organizationSlug.edit",
+    "index": undefined,
+    "parentId": "routes/app.$organizationSlug",
+    "path": "edit",
+  },
+  "routes/app.$organizationSlug.projects": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug.projects.tsx",
+    "id": "routes/app.$organizationSlug.projects",
+    "index": undefined,
+    "parentId": "routes/app.$organizationSlug",
+    "path": "projects",
+  },
+  "routes/app.$organizationSlug.projects.$projectId": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug.projects.$projectId.tsx",
+    "id": "routes/app.$organizationSlug.projects.$projectId",
+    "index": undefined,
+    "parentId": "routes/app.$organizationSlug.projects",
+    "path": ":projectId",
+  },
+  "routes/app.$organizationSlug.projects.$projectId.edit": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug.projects.$projectId.edit.tsx",
+    "id": "routes/app.$organizationSlug.projects.$projectId.edit",
+    "index": undefined,
+    "parentId": "routes/app.$organizationSlug.projects.$projectId",
+    "path": "edit",
+  },
+  "routes/app.$organizationSlug.projects.new": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug.projects.new.tsx",
+    "id": "routes/app.$organizationSlug.projects.new",
+    "index": undefined,
+    "parentId": "routes/app.$organizationSlug.projects",
+    "path": "new",
+  },
+}
+`;
+
+exports[`define routes > should define routes for complex structure 1`] = `
+{
+  "routes/_auth": {
+    "caseSensitive": undefined,
+    "file": "routes/_auth.tsx",
+    "id": "routes/_auth",
+    "index": undefined,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/_auth.forgot-password": {
+    "caseSensitive": undefined,
+    "file": "routes/_auth.forgot-password.tsx",
+    "id": "routes/_auth.forgot-password",
+    "index": undefined,
+    "parentId": "routes/_auth",
+    "path": "forgot-password",
+  },
+  "routes/_auth.login": {
+    "caseSensitive": undefined,
+    "file": "routes/_auth.login.tsx",
+    "id": "routes/_auth.login",
+    "index": undefined,
+    "parentId": "routes/_auth",
+    "path": "login",
+  },
+  "routes/_auth.reset-password": {
+    "caseSensitive": undefined,
+    "file": "routes/_auth.reset-password.tsx",
+    "id": "routes/_auth.reset-password",
+    "index": undefined,
+    "parentId": "routes/_auth",
+    "path": "reset-password",
+  },
+  "routes/_auth.signup": {
+    "caseSensitive": undefined,
+    "file": "routes/_auth.signup.tsx",
+    "id": "routes/_auth.signup",
+    "index": undefined,
+    "parentId": "routes/_auth",
+    "path": "signup",
+  },
+  "routes/_landing": {
+    "caseSensitive": undefined,
+    "file": "routes/_landing.tsx",
+    "id": "routes/_landing",
+    "index": undefined,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/_landing.about": {
+    "caseSensitive": undefined,
+    "file": "routes/_landing.about.tsx",
+    "id": "routes/_landing.about",
+    "index": undefined,
+    "parentId": "routes/_landing",
+    "path": "about",
+  },
+  "routes/_landing.index": {
+    "caseSensitive": undefined,
+    "file": "routes/_landing.index.tsx",
+    "id": "routes/_landing.index",
+    "index": true,
+    "parentId": "routes/_landing",
+    "path": undefined,
+  },
+  "routes/app": {
+    "caseSensitive": undefined,
+    "file": "routes/app.tsx",
+    "id": "routes/app",
+    "index": undefined,
+    "parentId": "root",
+    "path": "app",
+  },
+  "routes/app.calendar": {
+    "caseSensitive": undefined,
+    "file": "routes/app.calendar.tsx",
+    "id": "routes/app.calendar",
+    "index": undefined,
+    "parentId": "routes/app",
+    "path": "calendar",
+  },
+  "routes/app.calendar.$day": {
+    "caseSensitive": undefined,
+    "file": "routes/app.calendar.$day.tsx",
+    "id": "routes/app.calendar.$day",
+    "index": undefined,
+    "parentId": "routes/app.calendar",
+    "path": ":day",
+  },
+  "routes/app.calendar.index": {
+    "caseSensitive": undefined,
+    "file": "routes/app.calendar.index.tsx",
+    "id": "routes/app.calendar.index",
+    "index": true,
+    "parentId": "routes/app.calendar",
+    "path": undefined,
+  },
+  "routes/app.projects": {
+    "caseSensitive": undefined,
+    "file": "routes/app.projects.tsx",
+    "id": "routes/app.projects",
+    "index": undefined,
+    "parentId": "routes/app",
+    "path": "projects",
+  },
+  "routes/app.projects.$id": {
+    "caseSensitive": undefined,
+    "file": "routes/app.projects.$id.tsx",
+    "id": "routes/app.projects.$id",
+    "index": undefined,
+    "parentId": "routes/app.projects",
+    "path": ":id",
+  },
+  "routes/app_.projects.$id.roadmap": {
+    "caseSensitive": undefined,
+    "file": "routes/app_.projects.$id.roadmap.tsx",
+    "id": "routes/app_.projects.$id.roadmap",
+    "index": undefined,
+    "parentId": "root",
+    "path": "app/projects/:id/roadmap",
+  },
+  "routes/app_.projects.$id.roadmap[.pdf]": {
+    "caseSensitive": undefined,
+    "file": "routes/app_.projects.$id.roadmap[.pdf].tsx",
+    "id": "routes/app_.projects.$id.roadmap[.pdf]",
+    "index": undefined,
+    "parentId": "root",
+    "path": "app/projects/:id/roadmap.pdf",
+  },
+}
+`;
+
+exports[`define routes > should define routes for flat-files 1`] = `
+{
+  "routes/$lang.$ref": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref.tsx",
+    "id": "routes/$lang.$ref",
+    "index": undefined,
+    "parentId": "root",
+    "path": ":lang/:ref",
+  },
+  "routes/$lang.$ref.$": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref.$.tsx",
+    "id": "routes/$lang.$ref.$",
+    "index": undefined,
+    "parentId": "routes/$lang.$ref",
+    "path": "*",
+  },
+  "routes/$lang.$ref._index": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref._index.tsx",
+    "id": "routes/$lang.$ref._index",
+    "index": true,
+    "parentId": "routes/$lang.$ref",
+    "path": undefined,
+  },
+  "routes/_index": {
+    "caseSensitive": undefined,
+    "file": "routes/_index.tsx",
+    "id": "routes/_index",
+    "index": true,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/healthcheck": {
+    "caseSensitive": undefined,
+    "file": "routes/healthcheck.tsx",
+    "id": "routes/healthcheck",
+    "index": undefined,
+    "parentId": "root",
+    "path": "healthcheck",
+  },
+}
+`;
+
+exports[`define routes > should define routes for flat-folders 1`] = `
+{
+  "routes/$lang.$ref.$/route": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref.$/route.tsx",
+    "id": "routes/$lang.$ref.$/route",
+    "index": undefined,
+    "parentId": "routes/$lang.$ref/route",
+    "path": "*",
+  },
+  "routes/$lang.$ref._index/route": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref._index/route.tsx",
+    "id": "routes/$lang.$ref._index/route",
+    "index": true,
+    "parentId": "routes/$lang.$ref/route",
+    "path": undefined,
+  },
+  "routes/$lang.$ref/route": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref/route.tsx",
+    "id": "routes/$lang.$ref/route",
+    "index": undefined,
+    "parentId": "root",
+    "path": ":lang/:ref",
+  },
+  "routes/_index/route": {
+    "caseSensitive": undefined,
+    "file": "routes/_index/route.tsx",
+    "id": "routes/_index/route",
+    "index": true,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/healthcheck/route": {
+    "caseSensitive": undefined,
+    "file": "routes/healthcheck/route.tsx",
+    "id": "routes/healthcheck/route",
+    "index": undefined,
+    "parentId": "root",
+    "path": "healthcheck",
+  },
+}
+`;
+
+exports[`define routes > should define routes for flat-folders on Windows 1`] = `
+{
+  "routes/$lang.$ref.$/route": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref.$/route.tsx",
+    "id": "routes/$lang.$ref.$/route",
+    "index": undefined,
+    "parentId": "routes/$lang.$ref/route",
+    "path": "*",
+  },
+  "routes/$lang.$ref._index/route": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref._index/route.tsx",
+    "id": "routes/$lang.$ref._index/route",
+    "index": true,
+    "parentId": "routes/$lang.$ref/route",
+    "path": undefined,
+  },
+  "routes/$lang.$ref/route": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref/route.tsx",
+    "id": "routes/$lang.$ref/route",
+    "index": undefined,
+    "parentId": "root",
+    "path": ":lang/:ref",
+  },
+  "routes/_index/route": {
+    "caseSensitive": undefined,
+    "file": "routes/_index/route.tsx",
+    "id": "routes/_index/route",
+    "index": true,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/healthcheck/route": {
+    "caseSensitive": undefined,
+    "file": "routes/healthcheck/route.tsx",
+    "id": "routes/healthcheck/route",
+    "index": undefined,
+    "parentId": "root",
+    "path": "healthcheck",
+  },
+}
+`;
+
+exports[`define routes > should handle params with trailing underscore 1`] = `
+{
+  "routes/app.$organizationSlug_._projects": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug_._projects.tsx",
+    "id": "routes/app.$organizationSlug_._projects",
+    "index": undefined,
+    "parentId": "root",
+    "path": "app/:organizationSlug",
+  },
+  "routes/app.$organizationSlug_._projects.projects.$projectId": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug_._projects.projects.$projectId.tsx",
+    "id": "routes/app.$organizationSlug_._projects.projects.$projectId",
+    "index": undefined,
+    "parentId": "routes/app.$organizationSlug_._projects",
+    "path": "projects/:projectId",
+  },
+  "routes/app.$organizationSlug_._projects.projects.$projectId.edit": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug_._projects.projects.$projectId.edit.tsx",
+    "id": "routes/app.$organizationSlug_._projects.projects.$projectId.edit",
+    "index": undefined,
+    "parentId": "routes/app.$organizationSlug_._projects.projects.$projectId",
+    "path": "edit",
+  },
+  "routes/app.$organizationSlug_._projects.projects.new": {
+    "caseSensitive": undefined,
+    "file": "routes/app.$organizationSlug_._projects.projects.new.tsx",
+    "id": "routes/app.$organizationSlug_._projects.projects.new",
+    "index": undefined,
+    "parentId": "routes/app.$organizationSlug_._projects",
+    "path": "projects/new",
+  },
+}
+`;
+
+exports[`define routes > should ignore non-route files in flat-folders 1`] = `
+{
+  "routes/$lang.$ref._index/route": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref._index/route.tsx",
+    "id": "routes/$lang.$ref._index/route",
+    "index": true,
+    "parentId": "routes/$lang.$ref/_layout",
+    "path": undefined,
+  },
+  "routes/$lang.$ref/_layout": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref/_layout.tsx",
+    "id": "routes/$lang.$ref/_layout",
+    "index": undefined,
+    "parentId": "root",
+    "path": ":lang/:ref",
+  },
+  "routes/_index/route": {
+    "caseSensitive": undefined,
+    "file": "routes/_index/route.tsx",
+    "id": "routes/_index/route",
+    "index": true,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/healthcheck/route": {
+    "caseSensitive": undefined,
+    "file": "routes/healthcheck/route.tsx",
+    "id": "routes/healthcheck/route",
+    "index": undefined,
+    "parentId": "root",
+    "path": "healthcheck",
+  },
+}
+`;
+
+exports[`define routes > should support markdown routes as flat-files 1`] = `
+{
+  "routes/docs": {
+    "caseSensitive": undefined,
+    "file": "routes/docs.tsx",
+    "id": "routes/docs",
+    "index": undefined,
+    "parentId": "root",
+    "path": "docs",
+  },
+  "routes/docs.readme": {
+    "caseSensitive": undefined,
+    "file": "routes/docs.readme.md",
+    "id": "routes/docs.readme",
+    "index": undefined,
+    "parentId": "routes/docs",
+    "path": "readme",
+  },
+}
+`;
+
+exports[`define routes > should support markdown routes as flat-folders 1`] = `
+{
+  "routes/docs/_layout": {
+    "caseSensitive": undefined,
+    "file": "routes/docs/_layout.tsx",
+    "id": "routes/docs/_layout",
+    "index": undefined,
+    "parentId": "root",
+    "path": "docs",
+  },
+  "routes/docs/readme.route": {
+    "caseSensitive": undefined,
+    "file": "routes/docs/readme.route.mdx",
+    "id": "routes/docs/readme.route",
+    "index": undefined,
+    "parentId": "routes/docs/_layout",
+    "path": "readme",
+  },
+}
+`;
