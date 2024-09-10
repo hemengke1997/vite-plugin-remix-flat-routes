@@ -5,7 +5,7 @@
 ## 前提
 
 - 如果你使用react-router数据路由，请安装 react-router-dom 版本 >= 6.4.0
-- 如果你使用react-router传统路由，请安装 react-router-dom 版本 >= 6.0.0 & < 6.4.0
+- 如果你使用react-router传统路由，请安装 react-router-dom 版本 >= 6.0.0 & <= 6.3.0
 
 ## 安装
 
@@ -139,7 +139,7 @@ export const loader: LoaderFunction = (args) => {
 // 更多导出请参考 [react-router 文档](https://reactrouter.com/en/main/route/route)
 ```
 
-## [传统路由模式（react-router-dom<6.4.0）](https://reactrouter.com/en/v6.3.0/getting-started/overview)
+## [传统路由模式（react-router-dom<=6.3.0）](https://reactrouter.com/en/v6.3.0/getting-started/overview)
 
 ### 配置 vite 插件
 
