@@ -1,6 +1,6 @@
-import { type Meta, type Route } from './types'
+import { type AnyObject, type Meta, type Route } from './types'
 
-export function collectMeta(route: Route) {
+export function collectMeta<M extends AnyObject = AnyObject>(route: Route): Meta<M> {
   const meta: Meta = {
     route: {},
   }
@@ -25,5 +25,5 @@ export function collectMeta(route: Route) {
     })
   }
 
-  return meta
+  return meta as Meta<M>
 }

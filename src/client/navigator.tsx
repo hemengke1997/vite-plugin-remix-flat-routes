@@ -1,14 +1,23 @@
+import { memo, useEffect, useRef } from 'react'
 import { type NavigateOptions, useNavigate } from 'react-router-dom'
-import { useIsomorphicLayoutEffect } from './react-hooks'
+import { useMemoFn } from 'context-state'
 
 function Navigator(props: { to: string } & NavigateOptions) {
   const { to, ...rest } = props
+  const naved = useRef(false)
   const nav = useNavigate()
-  useIsomorphicLayoutEffect(() => {
-    nav(to, rest)
-  }, [])
 
-  return <></>
+  const navOnce = useMemoFn(() => {
+    if (naved.current) return
+    naved.current = true
+    nav(to, rest)
+  })
+
+  useEffect(() => {
+    navOnce()
+  })
+
+  return null
 }
 
-export { Navigator }
+export default memo(Navigator)

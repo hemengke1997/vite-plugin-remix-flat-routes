@@ -1,8 +1,9 @@
 import React, { Fragment, type ReactNode } from 'react'
 import cloneDeep from 'clone-deep'
-import { Guard } from './guard'
-import { Navigator } from './navigator'
+import Guard from './guard'
+import Navigator from './navigator'
 import {
+  type AnyObject,
   type Meta,
   type OnRouteMount,
   type OnRouteUnmount,
@@ -12,14 +13,14 @@ import {
 } from './types'
 import { collectMeta } from './utils'
 
-export class Router {
+export class Router<M extends AnyObject = AnyObject> {
   routes: Route[]
-  onRouteWillMount?: OnRouteWillMount
-  onRouteMount?: OnRouteMount
-  onRouteUnmount?: OnRouteUnmount
+  onRouteWillMount?: OnRouteWillMount<M>
+  onRouteMount?: OnRouteMount<M>
+  onRouteUnmount?: OnRouteUnmount<M>
   suspense: ReactNode
 
-  constructor(option: RouterProps) {
+  constructor(option: RouterProps<M>) {
     this.routes = option.routes || []
     this.onRouteWillMount = option.onRouteWillMount
     this.onRouteMount = option.onRouteMount
@@ -34,7 +35,7 @@ export class Router {
         return
       }
 
-      const meta = collectMeta(route)
+      const meta = collectMeta<M>(route)
 
       if (route.redirect) {
         route.element = <Navigator to={route.redirect} replace={true}></Navigator>
@@ -66,9 +67,9 @@ export class Router {
     return clientRoutes
   }
 
-  private createGuard(element: ReactNode, meta: Meta) {
+  private createGuard(element: ReactNode, meta: Meta<M>) {
     return (
-      <Guard
+      <Guard<M>
         element={element}
         meta={meta}
         onRouteWillMount={this.onRouteWillMount}

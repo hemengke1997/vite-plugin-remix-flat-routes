@@ -1,26 +1,28 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { matchRoutes, type RouteMatch, useLocation } from 'react-router-dom'
 import { createContainer, useMemoFn } from 'context-state'
-import { type Meta, type Route, type RouterProps } from './types'
+import { type AnyObject, type Meta, type Route, type RouterProps } from './types'
 import { collectMeta } from './utils'
 
-function getMetasFromMatch(routes: RouteMatch[] | null): Meta[] {
+function getMetasFromMatch<M extends AnyObject = AnyObject>(routes: RouteMatch[] | null): Meta<M>[] {
   if (!routes) return []
 
   return routes?.map((item) => {
     const route = item.route as Route
 
-    const meta = collectMeta(route)
+    const meta = collectMeta<M>(route)
     return meta
   })
 }
 
-function useRouteContext({ clientRoutes, basename }: { clientRoutes: Route[] } & RouterProps) {
+export type RouteContextValue<M extends AnyObject = AnyObject> = { clientRoutes: Route[] } & RouterProps<M>
+
+function useRouteContext<M extends AnyObject = AnyObject>({ clientRoutes, basename }: RouteContextValue<M>) {
   const location = useLocation()
 
   const resolveMetas = useMemoFn(() => {
     const matchedRoutes = matchRoutes(clientRoutes, location, basename)
-    return getMetasFromMatch(matchedRoutes)
+    return getMetasFromMatch<M>(matchedRoutes)
   })
 
   const [metas, setMetas] = useState(resolveMetas)
@@ -38,10 +40,12 @@ function useRouteContext({ clientRoutes, basename }: { clientRoutes: Route[] } &
   }
 }
 
-export const RouteContext = createContainer(useRouteContext)
+export function createRouteContext<M extends AnyObject = AnyObject>() {
+  return createContainer(useRouteContext<M>)
+}
 
-export function useMetas() {
+export function useMetas<M extends AnyObject = AnyObject>() {
+  const RouteContext = useMemo(() => createRouteContext<M>(), [])
   const { metas } = RouteContext.usePicker(['metas'])
-
   return { metas }
 }

@@ -1,9 +1,7 @@
 import { type ReactNode } from 'react'
 import { type Location, type Params, type RouteObject } from 'react-router-dom'
 
-type AnyObject = {
-  [key: string]: any
-}
+export type AnyObject = Record<string, any>
 
 export type Payload<M extends AnyObject = AnyObject> = {
   location: Location
@@ -57,9 +55,9 @@ export type Meta<M extends AnyObject = AnyObject> = {
   [key: string]: any
 } & M
 
-export type PropsWithMeta<T = unknown, M extends AnyObject = AnyObject> = {
+export type PropsWithMeta<P = unknown, M extends AnyObject = AnyObject> = {
   meta: Meta<M>
-} & T
+} & P
 
 export interface RouterProps<M extends AnyObject = AnyObject> {
   /**

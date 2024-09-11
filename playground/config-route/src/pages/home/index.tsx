@@ -6,9 +6,9 @@ export default function (props: PropsWithMeta) {
   return (
     <div>
       <div>home</div>
-      <Link to={'page-a'}>to page a</Link>
-      <Link to={'page-b'}>to page b</Link>
-      <Link to={'page-c'}>to page c</Link>
+      <Link to={'/page-a'}>to page a</Link>
+      <Link to={'/page-b'}>to page b</Link>
+      <Link to={'/page-c'}>to page c</Link>
     </div>
   )
 }

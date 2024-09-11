@@ -5,6 +5,10 @@ export const routes: Route<{
 }>[] = [
   {
     path: '/',
+    redirect: '/home',
+  },
+  {
+    path: '/home',
     lazyComponent: () => import('./pages/home'),
     meta: {
       data: 'this is home',

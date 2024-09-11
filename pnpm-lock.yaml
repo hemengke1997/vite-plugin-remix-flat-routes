@@ -11,6 +11,9 @@ importers:
       change-case:
         specifier: ^5.4.4
         version: 5.4.4
+      context-state:
+        specifier: ^3.1.2
+        version: 3.1.2(react@18.3.1)
       es-module-lexer:
         specifier: ^1.5.4
         version: 1.5.4
@@ -18,8 +21,8 @@ importers:
         specifier: ^0.5.0
         version: 0.5.0
       minimatch:
-        specifier: ^5.1.0
-        version: 5.1.6
+        specifier: 5.1.0
+        version: 5.1.0
       react-dom:
         specifier: '>=17'
         version: 18.3.1(react@18.3.1)
@@ -72,9 +75,6 @@ importers:
       clone-deep:
         specifier: ^4.0.1
         version: 4.0.1
-      context-state:
-        specifier: ^3.1.1
-        version: 3.1.1(react@18.3.1)
       conventional-changelog-cli:
         specifier: ^5.0.0
         version: 5.0.0(conventional-commits-filter@5.0.0)
@@ -2160,6 +2160,11 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
 
+  context-state@3.1.2:
+    resolution: {integrity: sha512-wRxIDtXw3SoS/o2Dqu+eqFRExISgTxCsJ6yFyKaR1oc3WPPCYPGL1OZW7PQdjqxt0p0pDCWjxCPLr70cYocfdA==}
+    peerDependencies:
+      react: '>=16.8.0'
+
   conventional-changelog-angular@7.0.0:
     resolution: {integrity: sha512-ROjNchA9LgfNMTTFSIWPzebCwOGFdgkEq45EnvvrmSLvCtAw0HSmrCs7/ty+wAeYUZyNay0YMUNYFTRL72PkBQ==}
     engines: {node: '>=16'}
@@ -3888,8 +3893,8 @@ packages:
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
 
-  minimatch@5.1.6:
-    resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
+  minimatch@5.1.0:
+    resolution: {integrity: sha512-9TPBGGak4nHfGZsPBohm9AWg6NoT7QTCehS3BIJABslyZbzxfV78QM2Y6+i741OPZIafFAaiiEMh5OyIrJPgtg==}
     engines: {node: '>=10'}
 
   minimatch@7.4.6:
@@ -7794,6 +7799,10 @@ snapshots:
     dependencies:
       react: 18.3.1
 
+  context-state@3.1.2(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
   conventional-changelog-angular@7.0.0:
     dependencies:
       compare-func: 2.0.0
@@ -9335,7 +9344,7 @@ snapshots:
       ahooks: 3.8.1(react@18.3.1)
       class-variance-authority: 0.7.0
       consola: 3.2.3
-      context-state: 3.1.1(react@18.3.1)
+      context-state: 3.1.2(react@18.3.1)
       eventemitter3: 5.0.1
       tw-clsx: 0.1.0
     optionalDependencies:
@@ -9931,7 +9940,7 @@ snapshots:
     dependencies:
       brace-expansion: 1.1.11
 
-  minimatch@5.1.6:
+  minimatch@5.1.0:
     dependencies:
       brace-expansion: 2.0.1
 
@@ -10743,7 +10752,7 @@ snapshots:
       '@remix-run/dev': 2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@types/node@22.5.4)(typescript@5.6.2)(vite@5.4.3(@types/node@22.5.4))
       '@remix-run/v1-route-convention': 0.1.4(@remix-run/dev@2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@types/node@22.5.4)(typescript@5.6.2)(vite@5.4.3(@types/node@22.5.4)))
       fs-extra: 11.2.0
-      minimatch: 5.1.6
+      minimatch: 5.1.0
 
   require-directory@2.1.1: {}
 

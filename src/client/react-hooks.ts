@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-export function useIsomorphicLayoutEffect(cb: React.EffectCallback, deps?: React.DependencyList | undefined): void {
-  const isomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
+export function useIsomorphicLayoutEffectOnce(cb: React.EffectCallback, deps?: React.DependencyList | undefined): void {
+  const isomorphicLayoutEffect = typeof window === 'undefined' ? useEffectOnce : useLayoutEffectOnce
   isomorphicLayoutEffect(cb, deps)
 }
 
@@ -34,3 +34,27 @@ const createUpdateEffect: (hook: EffectHookType) => EffectHookType = (hook) => (
 }
 
 export const useUpdateEffect = createUpdateEffect(useEffect)
+
+export function useEffectOnce(cb: React.EffectCallback, deps?: React.DependencyList | undefined): void {
+  const mountRef = useRef(false)
+  useEffect(() => {
+    let returnValue
+    if (mountRef.current === false) {
+      returnValue = cb()
+      mountRef.current = true
+    }
+    return returnValue
+  }, [deps])
+}
+
+export function useLayoutEffectOnce(cb: React.EffectCallback, deps?: React.DependencyList | undefined): void {
+  const mountRef = useRef(false)
+  useLayoutEffect(() => {
+    let returnValue
+    if (mountRef.current === false) {
+      returnValue = cb()
+      mountRef.current = true
+    }
+    return returnValue
+  }, [deps])
+}

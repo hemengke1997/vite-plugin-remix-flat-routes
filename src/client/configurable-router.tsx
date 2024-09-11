@@ -1,13 +1,13 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { useRoutes } from 'react-router-dom'
-import { RouteContext } from './route-context'
+import { createRouteContext } from './route-context'
 import { Router } from './router'
-import { type RouterProps } from './types'
+import { type AnyObject, type RouterProps } from './types'
 
-function ConfigurableRouter(props: RouterProps) {
+function ConfigurableRouter<M extends AnyObject = AnyObject>(props: RouterProps<M>) {
   const { routes, onRouteWillMount, onRouteMount, onRouteUnmount, render, suspense } = props
 
-  const router = new Router({
+  const router = new Router<M>({
     routes,
     onRouteWillMount,
     onRouteMount,
@@ -18,6 +18,7 @@ function ConfigurableRouter(props: RouterProps) {
   const clientRoutes = router.createClientRoutes(routes)
 
   const elements = useRoutes(clientRoutes)
+  const RouteContext = useMemo(() => createRouteContext<M>(), [])
 
   return (
     <RouteContext.Provider
@@ -31,4 +32,4 @@ function ConfigurableRouter(props: RouterProps) {
   )
 }
 
-export default memo(ConfigurableRouter)
+export default memo(ConfigurableRouter) as typeof ConfigurableRouter
