@@ -1,3 +1,12 @@
+# [3.2.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.1.0...v3.2.0) (2024-09-11)
+
+
+### Features
+
+* meta generic type ([59abeea](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/59abeeaa7c66d29383814a3d04010f4cc4a05696))
+
+
+
 # [3.1.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.0.3...v3.1.0) (2024-09-10)
 
 
