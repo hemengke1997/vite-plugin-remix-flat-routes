@@ -1,3 +1,12 @@
+# [3.3.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.2.0...v3.3.0) (2024-09-12)
+
+
+### Features
+
+* add data-api meta support ([c760ccc](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/c760ccc692880e13b43773b36de20947743a805e))
+
+
+
 # [3.2.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.1.0...v3.2.0) (2024-09-11)
 
 
