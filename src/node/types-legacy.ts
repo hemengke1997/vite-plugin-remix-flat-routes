@@ -10,9 +10,7 @@ export interface LegacyRouteObject {
   path?: string
 
   // 自定义属性
-  /**
-   * @description 存放路由元数据的文件路径
-   */
+
   meta?: string
   Component?: React.ComponentType | null
   /**

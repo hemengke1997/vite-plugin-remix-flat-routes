@@ -162,6 +162,59 @@ exports[`define hybrid routes > should define routes for hybrid routes 1`] = `
 }
 `;
 
+exports[`define ignored routes > should ignore lazy routes for flat-files 1`] = `
+{
+  "routes/$lang.$ref": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref.tsx",
+    "id": "routes/$lang.$ref",
+    "index": undefined,
+    "parentId": "root",
+    "path": ":lang/:ref",
+  },
+  "routes/$lang.$ref.$": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref.$.tsx",
+    "id": "routes/$lang.$ref.$",
+    "index": undefined,
+    "parentId": "routes/$lang.$ref",
+    "path": "*",
+  },
+  "routes/$lang.$ref._index": {
+    "caseSensitive": undefined,
+    "file": "routes/$lang.$ref._index.tsx",
+    "id": "routes/$lang.$ref._index",
+    "index": true,
+    "parentId": "routes/$lang.$ref",
+    "path": undefined,
+  },
+  "routes/_index": {
+    "caseSensitive": undefined,
+    "file": "routes/_index.tsx",
+    "id": "routes/_index",
+    "index": true,
+    "parentId": "root",
+    "path": undefined,
+  },
+  "routes/healthcheck": {
+    "caseSensitive": undefined,
+    "file": "routes/healthcheck.tsx",
+    "id": "routes/healthcheck",
+    "index": undefined,
+    "parentId": "root",
+    "path": "healthcheck",
+  },
+  "routes/lazy": {
+    "caseSensitive": undefined,
+    "file": "routes/lazy.tsx",
+    "id": "routes/lazy",
+    "index": undefined,
+    "parentId": "root",
+    "path": "lazy",
+  },
+}
+`;
+
 exports[`define ignored routes > should ignore routes for flat-files 1`] = `
 {
   "routes/$lang.$ref": {

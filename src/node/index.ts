@@ -1,21 +1,12 @@
 import type * as Vite from 'vite'
 import { init as initEsModuleLexer } from 'es-module-lexer'
 import path from 'node:path'
-import { type SetOptional } from 'type-fest'
 import { resolveLegacyMode } from './detect-legacy'
 import { importViteEsmSync, preloadViteEsm } from './import-vite-esm-sync'
 import { createClientRoutes, resolveRoutes } from './remix'
-import { type PluginContext, type RemixOptions } from './types'
+import { type Options, type PluginContext } from './types'
 import { processRouteManifest, stringifyRoutes, validateRouteDir } from './utils'
 import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } from './virtual'
-
-export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
-  /**
-   * @description 使用 react-router-dom<=6.3.0 传统路由模式
-   * 插件默认会探测 react-router-dom 版本，如果版本小于等于 6.3.0，则使用legacy模式
-   */
-  legacy?: boolean
-}
 
 function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
   const { appDirectory = 'app', flatRoutesOptions, legacy } = options
@@ -42,6 +33,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
     rootDirectory: process.cwd(),
     routeManifest: {},
     remixOptions: { appDirectory, flatRoutesOptions },
+    meta: 'meta',
     isLegacyMode,
   }
 
@@ -111,7 +103,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
     },
     async load(id) {
       if (id === resolvedVirtualModuleId) {
-        const { routeManifest } = await resolveRoutes({ appDirectory, flatRoutesOptions })
+        const { routeManifest } = await resolveRoutes(ctx)
 
         ctx.routeManifest = routeManifest
 
@@ -153,4 +145,4 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
   }
 }
 
-export { remixFlatRoutes }
+export { remixFlatRoutes, Options }

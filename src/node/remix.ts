@@ -5,7 +5,7 @@ import path from 'node:path'
 import { type ValueOf } from 'type-fest'
 import { importViteEsmSync } from './import-vite-esm-sync'
 import { flatRoutes } from './remix-flat-routes'
-import { type PluginContext, type RemixOptions, type Route, type RouteManifest } from './types'
+import { type PluginContext, type Route, type RouteManifest } from './types'
 
 /**
  * @see @remix-run/dev/config.ts
@@ -25,8 +25,11 @@ export function findEntry(dir: string, basename: string): string | undefined {
 /**
  * @see `resolveConfig` in @remix-run/dev/config.ts
  */
-export async function resolveRoutes(options: RemixOptions) {
-  const { appDirectory, flatRoutesOptions } = options
+export async function resolveRoutes(ctx: PluginContext) {
+  const {
+    remixOptions: { appDirectory, flatRoutesOptions },
+    meta,
+  } = ctx
 
   const rootRouteFile = findEntry(appDirectory, 'root')
   if (!rootRouteFile) {
@@ -37,7 +40,11 @@ export async function resolveRoutes(options: RemixOptions) {
     root: { path: '', id: 'root', file: rootRouteFile },
   }
 
-  const manualRoutes = flatRoutes(flatRoutesOptions!.routeDir!, defineRoutes, flatRoutesOptions)
+  const manualRoutes = flatRoutes(flatRoutesOptions!.routeDir!, defineRoutes, {
+    ...flatRoutesOptions,
+    ignoredRouteFiles: [...(flatRoutesOptions?.ignoredRouteFiles || []), '**/*.lazy.*', `**/${meta}.*`],
+  })
+
   for (const route of Object.values(manualRoutes)) {
     routeManifest[route.id] = { ...route, parentId: route.parentId || 'root' }
   }
@@ -77,7 +84,7 @@ export function createClientRoute(route: ValueOf<RouteManifest>): Route {
 /**
  * @see `getRouteModuleExports` in @remix-run/dev/vite/plugin.ts
  */
-const getRouteModuleExports = async (
+export const getRouteModuleExports = async (
   viteChildCompiler: Vite.ViteDevServer | null,
   ctx: PluginContext,
   routeFile: string,

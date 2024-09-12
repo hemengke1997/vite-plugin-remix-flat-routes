@@ -1,6 +1,6 @@
 # vite-plugin-remix-flat-routes
 
-> 集成 [Remix](https://remix.run/docs/en/main/file-conventions/routes) & [remix-flat-routes](https://github.com/kiliman/remix-flat-routes) 路由生成规则的 Vite 插件，支持 [react-router 数据路由/传统路由](https://reactrouter.com/en/main/routers/create-browser-router)
+> 集成 [Remix](https://remix.run/docs/en/main/file-conventions/routes) & [remix-flat-routes](https://github.com/kiliman/remix-flat-routes) 约定式路由，支持 [react-router 数据路由/传统路由](https://reactrouter.com/en/main/routers/create-browser-router)
 
 ## 前提
 
@@ -36,13 +36,12 @@ npm i vite-plugin-remix-flat-routes
 ### 配置 vite 插件
 
 ```ts
-import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { remixFlatRoutes } from 'vite-plugin-remix-flat-routes'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), remixFlatRoutes()],
+  plugins: [remixFlatRoutes()],
 })
 ```
 
@@ -83,6 +82,24 @@ app
             └── _index.ts
 ```
 
+## 约定
+
+> 为了更好的支持 Remix 的路由规范，插件做了一些约定，具体如下
+
+### Meta 约定
+
+如果路由文件同级存在 meta.ts(x) 文件，则会被识别为路由元数据，此时文件约定规范如下：
+
+1. 路由文件默认(`export default`)导出为**懒加载**组件，具名导出(`export const Component`)为**非懒加载**组件
+2. meta 文件中，导出的字段为 [`react-router` Route](https://reactrouter.com/en/main/route/route) 组件支持的 Data-API，如 `handle` / `loader` 等
+
+### React-Router 约定
+
+如果路由文件同级不存在 meta.ts(x) 文件，则完全遵循 [react-router Route](https://reactrouter.com/en/main/route/route) 规范
+
+1. 路由[具名导出](https://reactrouter.com/en/main/route/lazy)(`export const Component`)为**懒加载**组件，默认(`export default`)导出为**非懒加载**组件
+2. 所有 react-router 支持的 Data-API，都可以从路由文件中导出，如 `handle` / `loader` 等
+
 ## [数据路由模式（react-router-dom>=6.4.0）](https://reactrouter.com/en/main/routers/picking-a-router)
 
 ### 配置 react-router-dom
@@ -102,7 +119,35 @@ const root = createRoot(document.getElementById('root'))
 root.render(<RouterProvider router={router} />)
 ```
 
-### 从文件中导出路由组件和配置
+### Meta 约定
+
+#### 从路由文件中导出路由组件
+```tsx
+// 路由文件
+export default function () {
+  return <div>懒加载的组件</div>
+}
+```
+
+#### 从 meta 文件中导出 Data-API
+```tsx
+// meta 文件
+import { type LoaderFunction } from 'react-router-dom'
+
+export const handle = {
+  title: 'title',
+  description: 'description',
+}
+
+export const loader: LoaderFunction = (args) => {
+  console.log('this is loader', args)
+  return null
+}
+```
+
+### React-router 约定
+
+#### 从文件中导出路由组件和配置
 
 ```tsx
 import { useEffect } from 'react'
@@ -129,6 +174,9 @@ export default function () {
   return <div>非懒加载的组件</div>
 }
 
+// 也可以导出 lazy 函数懒加载组件
+export const lazy = () => import('./_index.lazy.tsx')
+
 // loader 函数，一般用于数据预取
 // https://reactrouter.com/en/main/route/route#loader
 export const loader: LoaderFunction = (args) => {
@@ -139,7 +187,10 @@ export const loader: LoaderFunction = (args) => {
 // 更多导出请参考 [react-router 文档](https://reactrouter.com/en/main/route/route)
 ```
 
+
 ## [传统路由模式（react-router-dom<=6.3.0）](https://reactrouter.com/en/v6.3.0/getting-started/overview)
+
+> 传统路由模式仅支持 Meta 约定
 
 ### 配置 vite 插件
 
@@ -180,45 +231,9 @@ root.render(
 )
 ```
 
-#### LegacyRouterProvider 配置项
-
-```ts
-interface RouterProps {
-  /**
-   * 路由配置
-   */
-  routes: Route[]
-  /**
-   * 路由挂载之前执行，可用于拦截路由重定向
-   */
-  onRouteWillMount?: OnRouteWillMount
-  /**
-   * 路由挂载时执行
-   */
-  onRouteMount?: OnRouteMount
-  /**
-   * 路由卸载时执行
-   */
-  onRouteUnmount?: OnRouteUnmount
-  /**
-   * 增强渲染函数，用于自定义渲染逻辑
-   * 可以跟动画库结合，实现路由切换动画
-   */
-  render?: (children: ReactNode | null) => ReactNode
-  /**
-   * 路由懒加载时的loading组件
-   */
-  suspense?: ReactNode
-  /**
-   * basename
-   */
-  basename?: string
-}
-```
-
 ### 从文件中导出路由组件
 
-> 请注意，传统路由模式下，懒加载是默认导出，非懒加载是具名导出 `Component`，与数据路由模式相反
+> 请注意，传统路由仅支持 Meta 约定
 
 #### 默认导出（懒加载）
 
@@ -275,6 +290,7 @@ export function Component() {
   const { metas } = useMetas()
 }
 ```
+
 
 ## 注意事项
 

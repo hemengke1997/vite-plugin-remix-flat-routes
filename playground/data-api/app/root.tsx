@@ -14,7 +14,7 @@ export const RouteAnimation = ({ children }: PropsWithChildren) => {
         }}
         animate={{ translateX: 0, opacity: 1 }}
         exit={{ translateX: -10, opacity: 0 }}
-        transition={{ duration: 1 }}
+        transition={{ duration: 0.15 }}
       >
         {children}
       </motion.div>
@@ -28,6 +28,9 @@ export default function Root() {
     <>
       <RouteAnimation>
         <Link to='/'>go home</Link>
+        <Link to='/other'>go other</Link>
+        <Link to='/signin'>go signin</Link>
+        <Link to='/signup'>go signup</Link>
         {outlet}
       </RouteAnimation>
       <ScrollRestoration />

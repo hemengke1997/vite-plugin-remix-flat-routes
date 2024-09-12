@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
 
-export default function Layout() {
+export default function () {
   return (
     <div>
       Sign Layout <Outlet />

@@ -156,6 +156,30 @@ describe('define ignored routes', () => {
     })
     expect(routes).toMatchSnapshot()
   })
+
+  const ignoredLazyRouteFiles = ['**/*.lazy.*']
+  it('should ignore lazy routes for flat-files', () => {
+    const flatFiles = [
+      '$lang.$ref.tsx',
+      '$lang.$ref._index.tsx',
+      '$lang.$ref.$.tsx',
+      '$lang.$ref._index.lazy.tsx',
+      '_index.tsx',
+      'healthcheck.tsx',
+      'lazy.tsx',
+      'style.css',
+      '_index.lazy.tsx',
+      'index.lazy.ts',
+      'any.lazy.tsx',
+      'styles/style.css',
+      '__tests__/route.lazy.tsx',
+    ]
+    const routes = flatRoutes('routes', defineRoutes, {
+      visitFiles: visitFilesFromArray(flatFiles),
+      ignoredRouteFiles: ignoredLazyRouteFiles,
+    })
+    expect(routes).toMatchSnapshot()
+  })
 })
 
 describe('define index routes', () => {
