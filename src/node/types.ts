@@ -2,7 +2,7 @@ import { type RouteObject } from 'react-router-dom'
 import { type SetOptional, type ValueOf } from 'type-fest'
 import { type ConfigRoute } from './remix'
 import { type FlatRoutesOptions } from './remix-flat-routes'
-import { type LegacyRouteManifest } from './types-legacy'
+import { type LegacyRouteManifest } from './types.legacy'
 
 export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
   /**
@@ -23,6 +23,10 @@ export type RouteManifest = {
     RouteExports<RouteObject> & {
       // 自定义属性
       /**
+       * 路由文件是否默认导出
+       */
+      hasDefaultExport?: boolean
+      /**
        * meta 文件路径
        */
       metaFile?: string
@@ -34,10 +38,6 @@ export type RouteManifest = {
        * meta 是否导出 loader
        */
       hasMetaLoader?: boolean
-      /**
-       * meta 是否导出 hydrateFallback
-       */
-      hasMetaHydrateFallback?: boolean
       /**
        * meta 是否导出 handle
        */

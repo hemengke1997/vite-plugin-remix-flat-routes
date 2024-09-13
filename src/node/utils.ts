@@ -5,7 +5,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { findEntry, getRouteManifestModuleExports, getRouteModuleExports } from './remix'
 import { type PluginContext, type Route, type RouteExports, type RouteManifest } from './types'
-import { type LegacyRoute, type LegacyRouteManifest, type LegacyRouteObject } from './types-legacy'
+import { type LegacyRoute, type LegacyRouteManifest, type LegacyRouteObject } from './types.legacy'
 
 export function stringifyRoutes(routes: Route[], ctx: PluginContext) {
   const staticImport: string[] = []
@@ -21,7 +21,7 @@ function routesToString(routes: Route[] | LegacyRoute[], staticImport: string[],
   if (ctx.isLegacyMode) {
     return `[${(routes as LegacyRoute[]).map((route) => legacyRouteToString(route, staticImport, ctx)).join(',')}]`
   } else {
-    return `[${(routes as Route[]).map((route) => routeToString(route, staticImport, ctx)).join(',')}]`
+    return `[${(routes as Route[]).map((route) => dataApiRouteToString(route, staticImport, ctx)).join(',')}]`
   }
 }
 
@@ -49,7 +49,6 @@ function reactElementInExports(
   {
     importee,
     namedExport,
-    defaultExport,
     field = namedExport,
   }: {
     // 路由字段名称
@@ -58,13 +57,9 @@ function reactElementInExports(
     importee: string
     // named export 名称
     namedExport: string
-    // 默认导出名称
-    defaultExport?: string
   },
 ) {
-  return isInExports(route, field || namedExport)
-    ? `React.createElement(${importee}.${defaultExport || namedExport})`
-    : ''
+  return isInExports(route, field || namedExport) ? `React.createElement(${importee}.${namedExport})` : ''
 }
 
 /**
@@ -108,29 +103,22 @@ function setDataApiToProps<R extends Record<string, any>>(
   }
 
   // React Element Exports
+
   setProps(
     'element',
     reactElementInExports(route, {
       importee,
-      namedExport: 'element',
-      field: meta ? 'metaElement' : '',
-      defaultExport: 'default',
+      namedExport: 'Component',
+      field: meta ? 'metaComponent' : '',
     }),
   )
+
   setProps(
     'errorElement',
     reactElementInExports(route, {
       importee,
       namedExport: 'ErrorBoundary',
       field: meta ? 'metaErrorBoundary' : '',
-    }),
-  )
-  setProps(
-    'hydrateFallbackElement',
-    reactElementInExports(route, {
-      importee,
-      namedExport: 'HydrateFallback',
-      field: meta ? 'metaHydrateFallback' : '',
     }),
   )
 
@@ -183,8 +171,8 @@ function setDataApiToProps<R extends Record<string, any>>(
 /**
  * 数据路由模式下的路由转换
  */
-function routeToString(route: Route, staticImport: string[], ctx: PluginContext): string {
-  const componentName = pascalSnakeCase(route.id)
+function dataApiRouteToString(route: Route, staticImport: string[], ctx: PluginContext): string {
+  const importee = pascalSnakeCase(route.id)
   const props = new Map<keyof RouteObject, string>()
   const componentPath = path.resolve(ctx.remixOptions.appDirectory, route.file)
 
@@ -197,49 +185,43 @@ function routeToString(route: Route, staticImport: string[], ctx: PluginContext)
   setProps('id', `'${route.id}'`)
   setProps('index', `${route.index}`)
 
-  if (metaFile) {
-    // 如果存在 metaFile，认为是 meta 约定组织模式
-    // 此时，route 默认导出路由组件为懒加载组件
-    // 命名导出 Component，为非懒加载组件
-    // metaFile 中导出的所有属性认为是 Data API
-    // @see https://reactrouter.com/en/main/route/route
-
-    const importee = `${componentName}_Meta`
-    staticImport.push(`import * as ${importee} from '${metaFile}';`)
-    setDataApiToProps(props, { route, importee, meta: true })
-
-    if (route.hasElement) {
-      // 默认导出
-      // 为懒加载组件
-      setProps(
-        'lazy',
-        /*js*/ `async () => {
+  // 只要是默认导出，就视为懒加载组件
+  if (route.hasDefaultExport) {
+    setProps(
+      'lazy',
+      /*js*/ `async () => {
           const { default: Component, ...rest } = await import('${componentPath}');
           return {
             Component,
             ...rest
           }
         }`,
-      )
-    } else if (route.hasComponent) {
+    )
+  }
+
+  if (metaFile) {
+    // 如果存在 metaFile，认为是 meta 约定
+    // metaFile 中导出的所有属性认为是 Data API
+    // @see https://reactrouter.com/en/main/route/route
+
+    const metaImportee = `${importee}_Meta`
+    staticImport.push(`import * as ${metaImportee} from '${metaFile}';`)
+    setDataApiToProps(props, { route, importee: metaImportee, meta: true })
+
+    if (route.hasComponent) {
       // 命名导出
-      // 为非懒加载组件
-      staticImport.push(`import * as ${componentName} from '${componentPath}';`)
-      setProps('element', reactElementInExports(route, { importee: componentName, namedExport: 'Component' }))
+      // 非懒加载组件
+      staticImport.push(`import * as ${importee} from '${componentPath}';`)
+      setDataApiToProps(props, { route, importee, meta: false })
     }
   } else {
-    // 不使用 meta 约定
-    // 完全遵循 react-router-dom 的约定
+    // 遵循 react-router-dom 的约定
     // 可自行导出 react-router-dom 支持的属性
     // @see https://reactrouter.com/en/main/route/route
 
-    // 单文件组件
-    const isSFC = route.hasComponent
-
-    if (isSFC) {
-      setProps('lazy', `() => import('${componentPath}')`)
-    } else {
-      const importee = componentName
+    // eslint-disable-next-line no-lonely-if
+    if (!route.hasDefaultExport) {
+      // 非懒加载，把所有导出都认为是 Data API
       staticImport.push(`import * as ${importee} from '${componentPath}';`)
       setDataApiToProps(props, { route, importee, meta: false })
     }
@@ -261,7 +243,7 @@ function legacyRouteToString(route: LegacyRoute, staticImport: string[], ctx: Pl
   const componentName = pascalSnakeCase(route.id)
   const metaPath = route.meta ? path.resolve(ctx.remixOptions.appDirectory, route.meta) : null
 
-  const isLazyComponent = route.hasElement
+  const isLazyComponent = route.hasDefaultExport
 
   const props = new Map<keyof LegacyRouteObject, string>()
 
@@ -276,7 +258,7 @@ function legacyRouteToString(route: LegacyRoute, staticImport: string[], ctx: Pl
 
   if (isLazyComponent) {
     setProps('lazyComponent', `() => import('${componentPath}')`)
-  } else {
+  } else if (route.hasComponent) {
     staticImport.push(`import * as ${componentName} from '${componentPath}';`)
     setProps(
       'element',
@@ -325,11 +307,8 @@ export async function processRouteManifest(viteChildCompiler: Vite.ViteDevServer
         index: route.index,
         caseSensitive: route.caseSensitive,
 
-        // 注意：legacy模式下，懒加载组件是**默认导出**，非懒加载组件是 Component
-        // 因为 React.lazy 的入参必须是默认导出
-
         // lazy Component
-        hasElement: sourceExports.includes('default'),
+        hasDefaultExport: sourceExports.includes('default'),
         // Non-Lazy Component
         hasComponent: sourceExports.includes('Component'),
 
@@ -363,7 +342,6 @@ export async function processRouteManifest(viteChildCompiler: Vite.ViteDevServer
          */
         hasAction: sourceExports.includes('action'),
         hasLoader: sourceExports.includes('loader'),
-        hasHydrateFallback: sourceExports.includes('HydrateFallback'),
         hasHandle: sourceExports.includes('handle'),
         hasShouldRevalidate: sourceExports.includes('shouldRevalidate'),
         hasErrorBoundary: sourceExports.includes('ErrorBoundary'),
@@ -373,13 +351,13 @@ export async function processRouteManifest(viteChildCompiler: Vite.ViteDevServer
          */
         hasLazy: sourceExports.includes('lazy'),
         hasComponent: sourceExports.includes('Component'),
-        hasElement: sourceExports.includes('default'),
+
+        hasDefaultExport: sourceExports.includes('default'),
 
         // meta相关
         metaFile,
         hasMetaAction: metaSourceExports.includes('action'),
         hasMetaLoader: metaSourceExports.includes('loader'),
-        hasMetaHydrateFallback: metaSourceExports.includes('HydrateFallback'),
         hasMetaHandle: metaSourceExports.includes('handle'),
         hasMetaShouldRevalidate: metaSourceExports.includes('shouldRevalidate'),
         hasMetaErrorBoundary: metaSourceExports.includes('ErrorBoundary'),

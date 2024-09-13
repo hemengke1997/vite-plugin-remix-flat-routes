@@ -2,7 +2,7 @@ import { type PropsWithChildren } from 'react'
 import { Link, ScrollRestoration, useLocation, useOutlet, useRouteError } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 
-export const RouteAnimation = ({ children }: PropsWithChildren) => {
+function RouteAnimation({ children }: PropsWithChildren) {
   const location = useLocation()
   return (
     <AnimatePresence mode={'wait'} initial={false}>
@@ -22,7 +22,7 @@ export const RouteAnimation = ({ children }: PropsWithChildren) => {
   )
 }
 
-export default function Root() {
+export default function () {
   const outlet = useOutlet()
   return (
     <>

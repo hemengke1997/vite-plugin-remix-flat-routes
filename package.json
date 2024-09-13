@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-remix-flat-routes",
   "version": "3.3.0",
-  "description": "remix-flat-routes规则路由，适配react-router-dom@6数据路由和非数据路由",
+  "description": "remix-flat-routes约定式路由，适配react-router-dom@6数据路由和非数据路由",
   "type": "module",
   "keywords": [
     "vite",
@@ -82,7 +82,7 @@
     "type-fest": "^4.26.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.4.1",
+    "@commitlint/cli": "^19.5.0",
     "@minko-fe/commitlint-config": "^2.1.2",
     "@minko-fe/eslint-config": "^4.0.2",
     "@minko-fe/prettier-config": "^2.2.3",
@@ -103,12 +103,12 @@
     "react": "^18.3.1",
     "remix-flat-routes": "^0.6.5",
     "simple-git-hooks": "^2.11.1",
-    "taze": "^0.16.7",
+    "taze": "^0.16.8",
     "tsup": "^8.2.4",
     "tsup-plugin-bundleless": "^0.4.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.3",
-    "vitest": "^2.0.5"
+    "vite": "^5.4.4",
+    "vitest": "^2.1.0"
   },
   "simple-git-hooks": {
     "commit-msg": "npm run commitlint",

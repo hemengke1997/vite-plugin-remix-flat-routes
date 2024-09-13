@@ -86,19 +86,20 @@ app
 
 > 为了更好的支持 Remix 的路由规范，插件做了一些约定，具体如下
 
+1. 路由文件默认导出(`export default`)为**懒加载**组件
+2. 路由组件具名导出(`export function Component`)为**非懒加载**组件
+
 ### Meta 约定
 
 如果路由文件同级存在 meta.ts(x) 文件，则会被识别为路由元数据，此时文件约定规范如下：
 
-1. 路由文件默认(`export default`)导出为**懒加载**组件，具名导出(`export const Component`)为**非懒加载**组件
-2. meta 文件中，导出的字段为 [`react-router` Route](https://reactrouter.com/en/main/route/route) 组件支持的 Data-API，如 `handle` / `loader` 等
+1. meta 文件中，导出的字段为 [`react-router` Route](https://reactrouter.com/en/main/route/route) 组件支持的 Data-API，如 `handle` / `loader` 等
 
 ### React-Router 约定
 
-如果路由文件同级不存在 meta.ts(x) 文件，则完全遵循 [react-router Route](https://reactrouter.com/en/main/route/route) 规范
+如果路由文件同级不存在 meta.ts(x) 文件，则遵循 [react-router Route](https://reactrouter.com/en/main/route/route) 规范
 
-1. 路由[具名导出](https://reactrouter.com/en/main/route/lazy)(`export const Component`)为**懒加载**组件，默认(`export default`)导出为**非懒加载**组件
-2. 所有 react-router 支持的 Data-API，都可以从路由文件中导出，如 `handle` / `loader` 等
+1. 所有 react-router 支持的 Data-API，都可以从路由文件中导出，如 `handle` / `loader` 等
 
 ## [数据路由模式（react-router-dom>=6.4.0）](https://reactrouter.com/en/main/routers/picking-a-router)
 
@@ -158,24 +159,18 @@ export const handle = {
   test: '这是handle',
 }
 
-// 如果是具名导出 `Component`，则懒加载组件
-// https://reactrouter.com/en/main/route/route#lazy
-export function Component() {
-  const matches = useMatches()
-  useEffect(() => {
-    console.log(matches, '可获取到handle')
-  }, [])
+export default function () {
   return <div>懒加载的组件</div>
 }
 
-// 如果是默认导出组件，则不会懒加载
-// https://reactrouter.com/en/main/route/route#elementcomponent
-export default function () {
+export function Component() {
   return <div>非懒加载的组件</div>
 }
 
 // 也可以导出 lazy 函数懒加载组件
-export const lazy = () => import('./_index.lazy.tsx')
+export const lazy = async () => ({
+  Component: (await import('./_index.lazy')).default,
+})
 
 // loader 函数，一般用于数据预取
 // https://reactrouter.com/en/main/route/route#loader
@@ -307,3 +302,10 @@ remixFlatRoutes({
 ```
 
 则 `components` 和 `hooks` 目录下的所有文件不会被识别为路由组件
+
+
+## Inspiration
+
+- [vite-plugin-pages](https://github.com/hannoeru/vite-plugin-pages)
+- [vite-plugin-remix-routes](https://github.com/vjee/vite-plugin-remix-routes)
+- [remix-flat-routes](https://github.com/kiliman/remix-flat-routes)

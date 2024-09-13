@@ -5,7 +5,7 @@ import { routes } from 'virtual:remix-flat-routes'
 import { LegacyRouterProvider } from 'vite-plugin-remix-flat-routes/client'
 import { GlobalContext } from './contexts/global-context'
 
-export const RouteAnimation = ({ children }: PropsWithChildren) => {
+const RouteAnimation = ({ children }: PropsWithChildren) => {
   const location = useLocation()
 
   return (
@@ -18,15 +18,13 @@ export const RouteAnimation = ({ children }: PropsWithChildren) => {
         }}
         animate={{ translateX: 0, opacity: 1 }}
         exit={{ translateX: -10, opacity: 0 }}
-        transition={{ duration: 1 }}
+        transition={{ duration: 0.15 }}
       >
         {children}
       </motion.div>
     </AnimatePresence>
   )
 }
-
-console.log(routes, 'routes')
 
 export default function App() {
   return (

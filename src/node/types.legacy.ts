@@ -10,7 +10,6 @@ export interface LegacyRouteObject {
   path?: string
 
   // 自定义属性
-
   meta?: string
   Component?: React.ComponentType | null
   /**
@@ -23,7 +22,13 @@ export interface LegacyRouteObject {
 }
 
 export type LegacyRouteManifest = {
-  [routeId: string]: LegacyRouteObject & RouteExports<LegacyRouteObject>
+  [routeId: string]: LegacyRouteObject &
+    RouteExports<LegacyRouteObject> & {
+      /**
+       * 是否默认导出
+       */
+      hasDefaultExport?: boolean
+    }
 }
 
 export type LegacyRoute = ValueOf<LegacyRouteManifest>
