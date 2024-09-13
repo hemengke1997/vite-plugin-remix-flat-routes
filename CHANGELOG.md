@@ -1,3 +1,12 @@
+# [3.4.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.3.0...v3.4.0) (2024-09-13)
+
+
+### Features
+
+* uniform export(default/named) convention ([94e3d45](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/94e3d45659a182ca12d0e4dc29ccd3c46f9e5fe0))
+
+
+
 # [3.3.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.2.0...v3.3.0) (2024-09-12)
 
 
