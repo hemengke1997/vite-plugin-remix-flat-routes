@@ -59,41 +59,49 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
 
       ctx.rootDirectory = viteConfig.root
 
-      const vite = importViteEsmSync()
+      if (viteConfig.command === 'build') {
+        const vite = importViteEsmSync()
 
-      const childCompilerConfigFile = await vite.loadConfigFromFile(
-        {
-          command: viteConfig.command,
+        const childCompilerConfigFile = await vite.loadConfigFromFile(
+          {
+            command: viteConfig.command,
+            mode: viteConfig.mode,
+            isSsrBuild: viteConfigEnv.isSsrBuild,
+          },
+          viteConfig.configFile,
+        )
+
+        viteChildCompiler = await vite.createServer({
+          ...viteUserConfig,
           mode: viteConfig.mode,
-          isSsrBuild: viteConfigEnv.isSsrBuild,
-        },
-        viteConfig.configFile,
-      )
+          server: {
+            watch: null,
+            preTransformRequests: false,
+            hmr: false,
+          },
+          configFile: false,
+          envFile: false,
+          plugins: [
+            ...(childCompilerConfigFile?.config.plugins ?? [])
+              .flat()
+              .filter(
+                (plugin) =>
+                  typeof plugin === 'object' &&
+                  plugin !== null &&
+                  'name' in plugin &&
+                  plugin.name !== 'vite-plugin-remix-flat-routes',
+              ),
+          ],
+        })
 
-      viteChildCompiler = await vite.createServer({
-        ...viteUserConfig,
-        mode: viteConfig.mode,
-        server: {
-          watch: viteConfig.command === 'build' ? null : undefined,
-          preTransformRequests: false,
-          hmr: false,
-        },
-        configFile: false,
-        envFile: false,
-        plugins: [
-          ...(childCompilerConfigFile?.config.plugins ?? [])
-            .flat()
-            .filter(
-              (plugin) =>
-                typeof plugin === 'object' &&
-                plugin !== null &&
-                'name' in plugin &&
-                plugin.name !== 'vite-plugin-remix-flat-routes',
-            ),
-        ],
-      })
+        await viteChildCompiler.pluginContainer.buildStart({})
+      }
+    },
+    configureServer(server) {
+      viteServer = server
 
-      await viteChildCompiler.pluginContainer.buildStart({})
+      // viteConfig.command === 'serve
+      viteChildCompiler = server
     },
     async resolveId(id) {
       if (id === virtualModuleId) {
@@ -123,9 +131,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
       }
       return null
     },
-    configureServer(server) {
-      viteServer = server
-    },
+
     /**
      * @see `buildEnd` in @remix-run/dev/vite/plugin.ts
      */

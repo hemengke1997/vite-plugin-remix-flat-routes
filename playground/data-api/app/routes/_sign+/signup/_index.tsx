@@ -1,3 +1,3 @@
 export function Component() {
-  return <div>/signup/index.jsx</div>
+  return <div>注册页</div>
 }

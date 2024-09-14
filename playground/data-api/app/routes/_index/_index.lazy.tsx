@@ -8,7 +8,7 @@ export default function () {
   }, [])
   return (
     <div>
-      /index/index.jsx
+      <div>这是首页</div>
       <Link to='/signin'>跳转signin</Link>
     </div>
   )
