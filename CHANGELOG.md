@@ -1,3 +1,12 @@
+## [3.4.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.4.0...v3.4.1) (2024-09-14)
+
+
+### Bug Fixes
+
+* executes vite plugins twice ([1449d83](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/1449d8330e82d25a6d65656d45c1ef956b0bd803))
+
+
+
 # [3.4.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.3.0...v3.4.0) (2024-09-13)
 
 
