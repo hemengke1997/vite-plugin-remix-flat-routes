@@ -1,3 +1,12 @@
+## [3.5.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.5.0...v3.5.1) (2024-09-18)
+
+
+### Bug Fixes
+
+* remix build error ([98e17af](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/98e17af89ab632e77301886439cd0f6045bbf866))
+
+
+
 # [3.5.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.4.1...v3.5.0) (2024-09-18)
 
 
