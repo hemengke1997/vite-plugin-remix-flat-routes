@@ -1,3 +1,12 @@
+# [3.5.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.4.1...v3.5.0) (2024-09-18)
+
+
+### Features
+
+* add `routes` option to custom route convention ([63b90db](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/63b90dbeb72db430ea0209d7e508ea0d1acf8fd9))
+
+
+
 ## [3.4.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.4.0...v3.4.1) (2024-09-14)
 
 
