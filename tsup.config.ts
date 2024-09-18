@@ -45,12 +45,11 @@ export const tsup = defineConfig((option) => [
   },
   {
     ...commonConfig(option),
-    entry: ['./src/client/**/*.{ts,tsx}'],
+    entry: ['./src/client/index.tsx'],
     outDir: 'dist/client',
     format: ['cjs'],
     platform: 'neutral',
     splitting: false,
     outExtension: () => ({ js: '.cjs' }),
-    plugins: [bundleless({ ext: '.cjs' })],
   },
 ])

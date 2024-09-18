@@ -89,7 +89,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
                   typeof plugin === 'object' &&
                   plugin !== null &&
                   'name' in plugin &&
-                  plugin.name !== 'vite-plugin-remix-flat-routes',
+                  !['vite-plugin-remix-flat-routes', 'remix', 'remix-hmr-updates'].includes(plugin.name),
               ),
           ],
         })
