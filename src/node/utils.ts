@@ -4,8 +4,8 @@ import { pascalSnakeCase } from 'change-case'
 import fs from 'node:fs'
 import path from 'node:path'
 import { findEntry, getRouteManifestModuleExports, getRouteModuleExports } from './remix'
-import { type PluginContext, type Route, type RouteExports, type RouteManifest } from './types'
-import { type LegacyRoute, type LegacyRouteManifest, type LegacyRouteObject } from './types.legacy'
+import { type PluginContext, type ProcessedRouteManifest, type Route, type RouteExports } from './types'
+import { type LegacyRoute, type LegacyRouteObject, type ProcessedLegacyRouteManifest } from './types.legacy'
 
 export function stringifyRoutes(routes: Route[], ctx: PluginContext) {
   const staticImport: string[] = []
@@ -181,7 +181,7 @@ function dataApiRouteToString(route: Route, staticImport: string[], ctx: PluginC
   const setProps = (name: keyof RouteObject, value: string | boolean) => {
     _setProps(props, name, value)
   }
-  setProps('path', route.index && !route.path ? `'/'` : `'${route.path}'`)
+  setProps('path', route.index && !route.path ? `''` : `'${route.path}'`)
   setProps('id', `'${route.id}'`)
   setProps('index', `${route.index}`)
 
@@ -269,7 +269,7 @@ function legacyRouteToString(route: LegacyRoute, staticImport: string[], ctx: Pl
     )
   }
 
-  setProps('path', route.index && !route.path ? `'/'` : `'${route.path}'`)
+  setProps('path', route.index && !route.path ? `''` : `'${route.path}'`)
   setProps('id', `'${route.id}'`)
   setProps('index', `${route.index}`)
 
@@ -295,7 +295,7 @@ export async function processRouteManifest(viteChildCompiler: Vite.ViteDevServer
 
   let routeManifest
   if (ctx.isLegacyMode) {
-    routeManifest = ctx.routeManifest as LegacyRouteManifest
+    routeManifest = ctx.routeManifest as ProcessedLegacyRouteManifest
     for (const [key, route] of Object.entries(routeManifest)) {
       const sourceExports = routeManifestExports[key]
 
@@ -316,7 +316,7 @@ export async function processRouteManifest(viteChildCompiler: Vite.ViteDevServer
       }
     }
   } else {
-    routeManifest = ctx.routeManifest as RouteManifest
+    routeManifest = ctx.routeManifest as ProcessedRouteManifest
 
     for (const [key, route] of Object.entries(routeManifest)) {
       const metaFile = resolveMetaFilePath(route.file, ctx)

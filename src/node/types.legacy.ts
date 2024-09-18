@@ -21,7 +21,7 @@ export interface LegacyRouteObject {
   file: string
 }
 
-export type LegacyRouteManifest = {
+export type ProcessedLegacyRouteManifest = {
   [routeId: string]: LegacyRouteObject &
     RouteExports<LegacyRouteObject> & {
       /**
@@ -31,4 +31,4 @@ export type LegacyRouteManifest = {
     }
 }
 
-export type LegacyRoute = ValueOf<LegacyRouteManifest>
+export type LegacyRoute = ValueOf<ProcessedLegacyRouteManifest>

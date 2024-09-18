@@ -304,6 +304,8 @@ remixFlatRoutes({
 则 `components` 和 `hooks` 目录下的所有文件不会被识别为路由组件
 
 
+2. 如果不使用内置的 remix-flat-routes，可以通过传入 `routes` 设置路由约定，参考 [remix routes](https://remix.run/docs/en/main/file-conventions/vite-config#routes)
+
 ## Inspiration
 
 - [vite-plugin-pages](https://github.com/hannoeru/vite-plugin-pages)

@@ -1,13 +1,10 @@
-/* eslint-disable prefer-const */
-
 /**
  * @see remix-flat-routes
  */
 import minimatch from 'minimatch'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { type DefineRouteFunction } from './remix'
-import { type RouteManifest } from './types'
+import { type ConfigRoute, type DefineRouteFunction } from './remix'
 
 type RouteInfo = {
   id: string
@@ -42,9 +39,14 @@ export type FlatRoutesOptions = {
   routeRegex?: RegExp
 }
 
-export type DefineRoutesFunction = (callback: (route: DefineRouteFunction) => void) => any
+export type RouteManifest = {
+  [routeId: string]: ConfigRoute
+}
+export type DefineRoutesFunction = (
+  callback: (route: DefineRouteFunction) => void,
+) => RouteManifest | Promise<RouteManifest>
 
-export type { DefineRouteFunction, DefineRouteOptions, DefineRouteChildren, RouteManifest, RouteInfo }
+export type { DefineRouteFunction, DefineRouteOptions, DefineRouteChildren, RouteInfo }
 export { flatRoutes }
 
 const defaultOptions: FlatRoutesOptions = {
@@ -86,7 +88,7 @@ function _flatRoutes(
   appDir: string,
   ignoredFilePatternsOrOptions?: string[] | FlatRoutesOptions,
   options?: FlatRoutesOptions,
-): RouteManifest {
+) {
   // get options
   let ignoredFilePatterns: string[] = []
   if (ignoredFilePatternsOrOptions && !Array.isArray(ignoredFilePatternsOrOptions)) {
@@ -98,25 +100,25 @@ function _flatRoutes(
     options = defaultOptions
   }
 
-  let routeMap: Map<string, RouteInfo> = new Map()
-  let nameMap: Map<string, RouteInfo> = new Map()
+  const routeMap: Map<string, RouteInfo> = new Map()
+  const nameMap: Map<string, RouteInfo> = new Map()
 
-  let routeDirs = Array.isArray(options.routeDir) ? options.routeDir : [options.routeDir ?? 'routes']
-  let defineRoutes = options.defineRoutes ?? defaultDefineRoutes
+  const routeDirs = Array.isArray(options.routeDir) ? options.routeDir : [options.routeDir ?? 'routes']
+  const defineRoutes = options.defineRoutes ?? defaultDefineRoutes
   if (!defineRoutes) {
     throw new Error('You must provide a defineRoutes function')
   }
-  let visitFiles = options.visitFiles ?? defaultVisitFiles
-  let routeRegex = options.routeRegex ?? defaultOptions.routeRegex!
+  const visitFiles = options.visitFiles ?? defaultVisitFiles
+  const routeRegex = options.routeRegex ?? defaultOptions.routeRegex!
 
-  for (let routeDir of routeDirs) {
+  for (const routeDir of routeDirs) {
     visitFiles(path.join(appDir, routeDir), (file) => {
       if (ignoredFilePatterns && ignoredFilePatterns.some((pattern) => minimatch(file, pattern, { dot: true }))) {
         return
       }
 
       if (isRouteModuleFile(file, routeRegex)) {
-        let routeInfo = getRouteInfo(routeDir, file, options!)
+        const routeInfo = getRouteInfo(routeDir, file, options!)
         routeMap.set(routeInfo.id, routeInfo)
         nameMap.set(routeInfo.name, routeInfo)
         return
@@ -125,25 +127,25 @@ function _flatRoutes(
   }
   // update parentIds for all routes
   Array.from(routeMap.values()).forEach((routeInfo) => {
-    let parentId = findParentRouteId(routeInfo, nameMap)
+    const parentId = findParentRouteId(routeInfo, nameMap)
     routeInfo.parentId = parentId
   })
 
   // Then, recurse through all routes using the public defineRoutes() API
   function defineNestedRoutes(defineRoute: DefineRouteFunction, parentId?: string): void {
-    let childRoutes = Array.from(routeMap.values()).filter((routeInfo) => routeInfo.parentId === parentId)
-    let parentRoute = parentId ? routeMap.get(parentId) : undefined
-    let parentRoutePath = parentRoute?.path ?? '/'
-    for (let childRoute of childRoutes) {
+    const childRoutes = Array.from(routeMap.values()).filter((routeInfo) => routeInfo.parentId === parentId)
+    const parentRoute = parentId ? routeMap.get(parentId) : undefined
+    const parentRoutePath = parentRoute?.path ?? '/'
+    for (const childRoute of childRoutes) {
       let routePath = childRoute?.path?.slice(parentRoutePath.length) ?? ''
       // remove leading slash
       if (routePath.startsWith('/')) {
         routePath = routePath.slice(1)
       }
-      let index = childRoute.index
+      const index = childRoute.index
 
       if (index) {
-        let invalidChildRoutes = Object.values(routeMap).filter((routeInfo) => routeInfo.parentId === childRoute.id)
+        const invalidChildRoutes = Object.values(routeMap).filter((routeInfo) => routeInfo.parentId === childRoute.id)
 
         if (invalidChildRoutes.length > 0) {
           throw new Error(
@@ -161,8 +163,8 @@ function _flatRoutes(
       }
     }
   }
-  let routes = defineRoutes(defineNestedRoutes)
-  return routes
+  const routes = defineRoutes(defineNestedRoutes)
+  return routes as RouteManifest
 }
 
 const routeModuleExts = ['.js', '.jsx', '.ts', '.tsx', '.md', '.mdx']
@@ -171,16 +173,16 @@ const indexRouteRegex = /((^|[.]|[+]\/)(index|_index))(\/[^\/]+)?$|(\/_?index\/)
 
 export function isRouteModuleFile(filename: string, routeRegex: RegExp): boolean {
   // flat files only need correct extension
-  let isFlatFile = !filename.includes(path.sep)
+  const isFlatFile = !filename.includes(path.sep)
   if (isFlatFile) {
     return routeModuleExts.includes(path.extname(filename))
   }
-  let isRoute = routeRegex.test(filename)
+  const isRoute = routeRegex.test(filename)
   if (isRoute) {
     // check to see if it ends in .server.tsx because you may have
     // a _route.tsx and and _route.server.tsx and only the _route.tsx
     // file should be considered a route
-    let isServer = serverRegex.test(filename)
+    const isServer = serverRegex.test(filename)
     return !isServer
   }
   return false
@@ -191,13 +193,13 @@ export function isIndexRoute(routeId: string): boolean {
 }
 
 export function getRouteInfo(routeDir: string, file: string, options: FlatRoutesOptions) {
-  let filePath = normalizeSlashes(path.join(routeDir, file))
-  let routeId = createRouteId(filePath)
-  let routeIdWithoutRoutes = routeId.slice(routeDir.length + 1)
-  let index = isIndexRoute(routeIdWithoutRoutes)
-  let routeSegments = getRouteSegments(routeIdWithoutRoutes, index, options.paramPrefixChar)
-  let routePath = createRoutePath(routeSegments, index, options)
-  let routeInfo = {
+  const filePath = normalizeSlashes(path.join(routeDir, file))
+  const routeId = createRouteId(filePath)
+  const routeIdWithoutRoutes = routeId.slice(routeDir.length + 1)
+  const index = isIndexRoute(routeIdWithoutRoutes)
+  const routeSegments = getRouteSegments(routeIdWithoutRoutes, index, options.paramPrefixChar)
+  const routePath = createRoutePath(routeSegments, index, options)
+  const routeInfo = {
     id: routeId,
     path: routePath!,
     file: filePath,
@@ -216,8 +218,8 @@ export function createRoutePath(
   options: FlatRoutesOptions,
 ): string | undefined {
   let result = ''
-  let basePath = options.basePath ?? '/'
-  let paramPrefixChar = options.paramPrefixChar ?? '$'
+  const basePath = options.basePath ?? '/'
+  const paramPrefixChar = options.paramPrefixChar ?? '$'
 
   if (index) {
     // replace index with blank
@@ -294,7 +296,7 @@ export function getRouteSegments(name: string, index: boolean, paramPrefixChar: 
     name = name.replace(/\+\//g, '.')
     hasPlus = true
   }
-  let hasFolder = /\//.test(name)
+  const hasFolder = /\//.test(name)
   // if name has plus folder, but we still have regular folders
   // then treat ending route as flat-folders
   if (((hasPlus && hasFolder) || !hasPlus) && !name.endsWith('.route')) {
@@ -304,20 +306,20 @@ export function getRouteSegments(name: string, index: boolean, paramPrefixChar: 
     // remove last segment since this should just be the
     // route filename and we only want the directory name
     // docs/_layout.tsx => docs
-    let last = name.lastIndexOf('/')
+    const last = name.lastIndexOf('/')
     if (last >= 0) {
       name = name.substring(0, last)
     }
   }
 
-  let pushRouteSegment = (routeSegment: string) => {
+  const pushRouteSegment = (routeSegment: string) => {
     if (routeSegment) {
       routeSegments.push(routeSegment)
     }
   }
 
   while (i < name.length) {
-    let char = name[i]
+    const char = name[i]
     switch (state) {
       case 'START':
         // process existing segment
@@ -373,9 +375,9 @@ function isPathSeparator(char: string) {
 }
 
 export function defaultVisitFiles(dir: string, visitor: (file: string) => void, baseDir = dir) {
-  for (let filename of fs.readdirSync(dir)) {
-    let file = path.resolve(dir, filename)
-    let stat = fs.statSync(file)
+  for (const filename of fs.readdirSync(dir)) {
+    const file = path.resolve(dir, filename)
+    const stat = fs.statSync(file)
 
     if (stat.isDirectory()) {
       defaultVisitFiles(file, visitor, baseDir)

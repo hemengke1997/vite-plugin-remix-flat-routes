@@ -1,8 +1,8 @@
 import { type RouteObject } from 'react-router-dom'
 import { type SetOptional, type ValueOf } from 'type-fest'
 import { type ConfigRoute } from './remix'
-import { type FlatRoutesOptions } from './remix-flat-routes'
-import { type LegacyRouteManifest } from './types.legacy'
+import { type DefineRoutesFunction, type FlatRoutesOptions } from './remix-flat-routes'
+import { type ProcessedLegacyRouteManifest } from './types.legacy'
 
 export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
   /**
@@ -18,7 +18,7 @@ type AddHasPrefix<T> = {
   [K in keyof T as `has${Capitalize<string & K>}`]?: boolean
 }
 
-export type RouteManifest = {
+export type ProcessedRouteManifest = {
   [routeId: string]: ConfigRoute &
     RouteExports<RouteObject> & {
       // 自定义属性
@@ -53,7 +53,7 @@ export type RouteManifest = {
     }
 }
 
-export type Route = ValueOf<RouteManifest> & {
+export type Route = ValueOf<ProcessedRouteManifest> & {
   /**
    * @description 存放路由元数据的文件路径
    */
@@ -69,7 +69,7 @@ export type PluginContext = {
   /**
    * @description 路由清单
    */
-  routeManifest: RouteManifest | LegacyRouteManifest
+  routeManifest: ProcessedRouteManifest | ProcessedLegacyRouteManifest
   /**
    * @description remix-flat-routes 配置
    */
@@ -88,6 +88,12 @@ export type RemixOptions = {
   appDirectory: string
   flatRoutesOptions?: Pick<
     FlatRoutesOptions,
-    'paramPrefixChar' | 'routeDir' | 'routeRegex' | 'visitFiles' | 'basePath' | 'ignoredRouteFiles'
+    'paramPrefixChar' | 'routeDir' | 'routeRegex' | 'visitFiles' | 'basePath' | 'ignoredRouteFiles' | 'defineRoutes'
   >
+  routes?: (
+    defineRoutes: DefineRoutesFunction,
+    options: {
+      ignoredRouteFiles: string[]
+    },
+  ) => ReturnType<DefineRoutesFunction> | Promise<ReturnType<DefineRoutesFunction>>
 }

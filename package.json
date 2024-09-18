@@ -91,7 +91,7 @@
     "@types/clone-deep": "^4.0.4",
     "@types/minimatch": "^5.1.2",
     "@types/node": "^22.5.5",
-    "@types/react": "^18.3.5",
+    "@types/react": "^18.3.7",
     "@types/semver": "^7.5.8",
     "bumpp": "^9.5.2",
     "clone-deep": "^4.0.1",
@@ -103,11 +103,11 @@
     "react": "^18.3.1",
     "remix-flat-routes": "^0.6.5",
     "simple-git-hooks": "^2.11.1",
-    "taze": "^0.16.8",
-    "tsup": "^8.2.4",
+    "taze": "^0.16.9",
+    "tsup": "^8.3.0",
     "tsup-plugin-bundleless": "^0.4.0",
     "typescript": "^5.6.2",
-    "vite": "^5.4.5",
+    "vite": "^5.4.6",
     "vitest": "^2.1.1"
   },
   "simple-git-hooks": {
