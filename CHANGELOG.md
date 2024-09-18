@@ -1,3 +1,12 @@
+## [3.5.2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.5.1...v3.5.2) (2024-09-18)
+
+
+### Features
+
+* support for custom meta file naming ([bfdc440](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/bfdc440836d871dd244099114fb42bbfd9ad8f36))
+
+
+
 ## [3.5.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.5.0...v3.5.1) (2024-09-18)
 
 

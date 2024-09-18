@@ -12,6 +12,7 @@ export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
   legacy?: boolean
   /**
    * @description 自定义meta文件命名
+   * @default 'meta'
    */
   meta?: string
 }

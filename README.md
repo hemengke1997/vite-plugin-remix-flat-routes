@@ -59,6 +59,8 @@ type Options = {
     routeRegex?: RegExp
     visitFiles?: VisitFilesFunction
   }
+  legacy?: boolean // 是否开启传统路由模式，默认自动探测
+  meta?: string // meta文件命名，默认 'meta'
 }
 ```
 
