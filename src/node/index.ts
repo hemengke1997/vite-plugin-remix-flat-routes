@@ -10,7 +10,7 @@ import { getVitePluginName, validateRouteDir } from './utils'
 import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } from './virtual'
 
 function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
-  const { appDirectory = 'app', flatRoutesOptions, legacy, meta } = options
+  const { appDirectory = 'app', flatRoutesOptions, legacy, meta = 'meta' } = options
 
   const routeDir = flatRoutesOptions?.routeDir || 'routes'
   const routeDirs = Array.isArray(routeDir) ? routeDir : [routeDir]
@@ -31,12 +31,13 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
   let viteServer: Vite.ViteDevServer
 
   const ctx: PluginContext = {
-    rootDirectory: process.cwd(),
-    routeManifest: {},
     remixOptions: { appDirectory, flatRoutesOptions },
-    meta: meta || 'meta',
+    meta,
     isLegacyMode,
+
+    rootDirectory: process.cwd(),
     inRemixContext: false,
+    routeManifest: {},
   }
 
   return {
@@ -86,14 +87,12 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
             preTransformRequests: false,
             hmr: false,
           },
-          configFile: false,
+          configFile: ctx.inRemixContext ? undefined : false,
           envFile: false,
           plugins: [
-            ...(childCompilerConfigFile?.config.plugins ?? []).flat().filter((plugin) => {
-              return [/vite-plugin-remix-flat-routes/, /remix/, /remix-hmr-updates/].some((reg) =>
-                reg.test(getVitePluginName(plugin) ?? ''),
-              )
-            }),
+            ...(childCompilerConfigFile?.config.plugins ?? [])
+              .flat()
+              .filter((plugin) => getVitePluginName(plugin) === 'vite-plugin-remix-flat-routes'),
           ],
         })
 
