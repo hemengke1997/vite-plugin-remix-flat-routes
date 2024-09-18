@@ -10,6 +10,10 @@ export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
    * 插件默认会探测 react-router-dom 版本，如果版本小于等于 6.3.0，则使用legacy模式
    */
   legacy?: boolean
+  /**
+   * @description 自定义meta文件命名
+   */
+  meta?: string
 }
 
 export type RouteExports<T> = AddHasPrefix<T>

@@ -9,7 +9,7 @@ import { processRouteManifest, stringifyRoutes, validateRouteDir } from './utils
 import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } from './virtual'
 
 function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
-  const { appDirectory = 'app', flatRoutesOptions, legacy } = options
+  const { appDirectory = 'app', flatRoutesOptions, legacy, meta } = options
 
   const routeDir = flatRoutesOptions?.routeDir || 'routes'
   const routeDirs = Array.isArray(routeDir) ? routeDir : [routeDir]
@@ -33,7 +33,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
     rootDirectory: process.cwd(),
     routeManifest: {},
     remixOptions: { appDirectory, flatRoutesOptions },
-    meta: 'meta',
+    meta: meta || 'meta',
     isLegacyMode,
   }
 
