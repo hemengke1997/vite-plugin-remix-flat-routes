@@ -87,6 +87,10 @@ export type PluginContext = {
    * @description 是否使用 react-router-dom<=6.3.0 传统路由模式
    */
   isLegacyMode: boolean
+  /**
+   * 是否在remix环境中
+   */
+  inRemixContext: boolean
 }
 
 export type RemixOptions = {

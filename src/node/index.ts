@@ -4,8 +4,9 @@ import path from 'node:path'
 import { resolveLegacyMode } from './detect-legacy'
 import { importViteEsmSync, preloadViteEsm } from './import-vite-esm-sync'
 import { createClientRoutes, resolveRoutes } from './remix'
+import { RotueUtil } from './route-util'
 import { type Options, type PluginContext } from './types'
-import { processRouteManifest, stringifyRoutes, validateRouteDir } from './utils'
+import { getVitePluginName, validateRouteDir } from './utils'
 import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } from './virtual'
 
 function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
@@ -35,6 +36,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
     remixOptions: { appDirectory, flatRoutesOptions },
     meta: meta || 'meta',
     isLegacyMode,
+    inRemixContext: false,
   }
 
   return {
@@ -59,6 +61,11 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
 
       ctx.rootDirectory = viteConfig.root
 
+      if (viteConfig.plugins.some((plugin) => getVitePluginName(plugin) === 'remix')) {
+        // in Remix Context
+        ctx.inRemixContext = true
+      }
+
       if (viteConfig.command === 'build') {
         const vite = importViteEsmSync()
 
@@ -82,15 +89,11 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
           configFile: false,
           envFile: false,
           plugins: [
-            ...(childCompilerConfigFile?.config.plugins ?? [])
-              .flat()
-              .filter(
-                (plugin) =>
-                  typeof plugin === 'object' &&
-                  plugin !== null &&
-                  'name' in plugin &&
-                  !['vite-plugin-remix-flat-routes', 'remix', 'remix-hmr-updates'].includes(plugin.name),
-              ),
+            ...(childCompilerConfigFile?.config.plugins ?? []).flat().filter((plugin) => {
+              return [/vite-plugin-remix-flat-routes/, /remix/, /remix-hmr-updates/].some((reg) =>
+                reg.test(getVitePluginName(plugin) ?? ''),
+              )
+            }),
           ],
         })
 
@@ -100,7 +103,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
     configureServer(server) {
       viteServer = server
 
-      // viteConfig.command === 'serve
+      // viteConfig.command === 'serve'
       viteChildCompiler = server
     },
     async resolveId(id) {
@@ -114,12 +117,12 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
         const { routeManifest } = await resolveRoutes(ctx)
 
         ctx.routeManifest = routeManifest
+        const routeUtil = new RotueUtil(ctx)
 
-        await processRouteManifest(viteChildCompiler!, ctx)
-
+        await routeUtil.processRouteManifest(viteChildCompiler!)
         const routes = createClientRoutes(ctx.routeManifest)
 
-        const { routesString, componentsString } = stringifyRoutes(routes, ctx)
+        const { routesString, componentsString } = routeUtil.stringifyRoutes(routes)
 
         return {
           code: `import React from 'react';
