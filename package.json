@@ -105,7 +105,7 @@
     "simple-git-hooks": "^2.11.1",
     "taze": "^0.16.9",
     "tsup": "^8.3.0",
-    "tsup-plugin-bundleless": "^1.0.0",
+    "tsup-plugin-bundleless": "^1.0.1",
     "typescript": "^5.6.2",
     "vite": "^5.4.6",
     "vitest": "^2.1.1"

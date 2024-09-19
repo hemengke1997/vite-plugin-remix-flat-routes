@@ -106,8 +106,8 @@ importers:
         specifier: ^8.3.0
         version: 8.3.0(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.6.2)(yaml@2.5.0)
       tsup-plugin-bundleless:
-        specifier: ^1.0.0
-        version: 1.0.0(tsup@8.3.0(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.6.2)(yaml@2.5.0))
+        specifier: ^1.0.1
+        version: 1.0.1(tsup@8.3.0(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.6.2)(yaml@2.5.0))
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
@@ -5070,8 +5070,8 @@ packages:
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
-  tsup-plugin-bundleless@1.0.0:
-    resolution: {integrity: sha512-C04V5pD5y9jxvykR+sc/gUaPOu/Tq9QqozWDYRXF+gCL1nJsMqa53AaMq3WFQSG03eGPccvYqIGulmwf5Wme3Q==}
+  tsup-plugin-bundleless@1.0.1:
+    resolution: {integrity: sha512-cglklhLG/Aeh6nOJT0aHl53PK1F/jwA7NMb/FM9go5KgsDnaa76qVt+60JwK/MIpA0rQwiYqsPoo9ifeasgnOQ==}
     peerDependencies:
       tsup: '>=6.0.0'
 
@@ -10918,7 +10918,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  tsup-plugin-bundleless@1.0.0(tsup@8.3.0(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.6.2)(yaml@2.5.0)):
+  tsup-plugin-bundleless@1.0.1(tsup@8.3.0(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.6.2)(yaml@2.5.0)):
     dependencies:
       is-builtin-module: 4.0.0
       joycon: 3.1.1
