@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-remix-flat-routes",
-  "version": "3.5.4",
+  "version": "3.5.5",
   "description": "remix-flat-routes约定式路由，适配react-router-dom@6数据路由和非数据路由",
   "type": "module",
   "keywords": [
