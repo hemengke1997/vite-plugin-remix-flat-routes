@@ -2,11 +2,6 @@
 
 > 集成 [Remix](https://remix.run/docs/en/main/file-conventions/routes) & [remix-flat-routes](https://github.com/kiliman/remix-flat-routes) 约定式路由，支持 [react-router 数据路由/传统路由](https://reactrouter.com/en/main/routers/create-browser-router)
 
-## 前提
-
-- 如果你使用react-router数据路由，请安装 react-router-dom 版本 >= 6.4.0
-- 如果你使用react-router传统路由，请安装 react-router-dom 版本 >= 6.0.0 & <= 6.3.0
-
 ## 安装
 
 ```bash
@@ -84,12 +79,19 @@ app
             └── _index.ts
 ```
 
+## 示例
+
+- [约定式数据路由](./playground/data-api/)
+- [约定式传统路由](./playground/legacy/)
+- [配置式路由](./playground/config-route/)
+
 ## 约定
 
 > 为了更好的支持 Remix 的路由规范，插件做了一些约定，具体如下
 
 1. 路由文件默认导出(`export default`)为**懒加载**组件
 2. 路由组件具名导出(`export function Component`)为**非懒加载**组件
+3. 路由文件同级的 meta 文件，导出的字段为 路由元数据 或 Data-API
 
 ### Meta 约定
 
@@ -132,7 +134,7 @@ export default function () {
 }
 ```
 
-#### 从 meta 文件中导出 Data-API
+#### 从 meta 文件中导出静态 Data-API
 ```tsx
 // meta 文件
 import { type LoaderFunction } from 'react-router-dom'
@@ -165,23 +167,22 @@ export default function () {
   return <div>懒加载的组件</div>
 }
 
-export function Component() {
-  return <div>非懒加载的组件</div>
-}
-
 // 也可以导出 lazy 函数懒加载组件
 export const lazy = async () => ({
   Component: (await import('./_index.lazy')).default,
 })
 
-// loader 函数，一般用于数据预取
+export function Component() {
+  return <div>非懒加载的组件</div>
+}
+
 // https://reactrouter.com/en/main/route/route#loader
 export const loader: LoaderFunction = (args) => {
   console.log('this is loader', args)
   return null
 }
 
-// 更多导出请参考 [react-router 文档](https://reactrouter.com/en/main/route/route)
+// 更多Data-API导出请参考 [react-router 文档](https://reactrouter.com/en/main/route/route)
 ```
 
 
