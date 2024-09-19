@@ -13,6 +13,8 @@ const commonConfig = (option: Options): Options => {
   }
 }
 
+const { plugins, esbuildPlugins } = bundleless()
+
 export const tsup = defineConfig((option) => [
   {
     ...commonConfig(option),
@@ -39,9 +41,10 @@ export const tsup = defineConfig((option) => [
     outDir: 'dist/client',
     format: ['esm'],
     platform: 'neutral',
-    splitting: false,
+    splitting: true,
     outExtension: () => ({ js: '.js' }),
-    plugins: [bundleless({ ext: '.js' })],
+    plugins,
+    esbuildPlugins,
   },
   {
     ...commonConfig(option),
@@ -49,7 +52,7 @@ export const tsup = defineConfig((option) => [
     outDir: 'dist/client',
     format: ['cjs'],
     platform: 'neutral',
-    splitting: false,
+    splitting: true,
     outExtension: () => ({ js: '.cjs' }),
   },
 ])
