@@ -89,8 +89,8 @@ app
 
 > 为了更好的支持 Remix 的路由规范，插件做了一些约定，具体如下
 
-1. 路由文件默认导出(`export default`)为**懒加载**组件
-2. 路由组件具名导出(`export function Component`)为**非懒加载**组件
+1. 路由文件默认导出(`export default`)为**懒加载**路由
+2. 路由组件具名导出(`export function Component`)为**非懒加载**路由
 3. 路由文件同级的 meta 文件，导出的字段为 路由元数据 或 Data-API
 
 ### Meta 约定
@@ -130,7 +130,7 @@ root.render(<RouterProvider router={router} />)
 ```tsx
 // 路由文件
 export default function () {
-  return <div>懒加载的组件</div>
+  return <div>懒加载的路由</div>
 }
 ```
 
@@ -164,7 +164,7 @@ export const handle = {
 }
 
 export default function () {
-  return <div>懒加载的组件</div>
+  return <div>懒加载的路由</div>
 }
 
 // 也可以导出 lazy 函数懒加载组件
@@ -173,7 +173,7 @@ export const lazy = async () => ({
 })
 
 export function Component() {
-  return <div>非懒加载的组件</div>
+  return <div>非懒加载的路由</div>
 }
 
 // https://reactrouter.com/en/main/route/route#loader
@@ -237,7 +237,7 @@ root.render(
 
 ```tsx
 export default function () {
-  return <div>懒加载的组件</div>
+  return <div>懒加载的路由</div>
 }
 ```
 
@@ -245,7 +245,7 @@ export default function () {
 
 ```tsx
 export function Component() {
-  return <div>非懒加载的组件</div>
+  return <div>非懒加载的路由</div>
 }
 ```
 
