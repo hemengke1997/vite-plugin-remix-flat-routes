@@ -2,6 +2,7 @@ import type * as Vite from 'vite'
 import { type RouteObject } from 'react-router-dom'
 import { pascalSnakeCase } from 'change-case'
 import path from 'node:path'
+import { normalizePath } from 'vite'
 import { findEntry, getRouteManifestModuleExports, getRouteModuleExports } from './remix'
 import { type PluginContext, type ProcessedRouteManifest, type Route, type RouteExports } from './types'
 import { type LegacyRoute, type LegacyRouteObject, type ProcessedLegacyRouteManifest } from './types.legacy'
@@ -83,9 +84,9 @@ export class RotueUtil {
    * 传统路由模式下的路由转换
    */
   legacyRouteToString(route: LegacyRoute, staticImport: string[]): string {
-    const componentPath = path.resolve(this.ctx.remixOptions.appDirectory, route.file)
+    const componentPath = normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.file))
     const componentName = pascalSnakeCase(route.id)
-    const metaPath = route.meta ? path.resolve(this.ctx.remixOptions.appDirectory, route.meta) : null
+    const metaPath = route.meta ? normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.meta)) : null
 
     const isLazyComponent = route.hasDefaultExport
 
@@ -126,9 +127,11 @@ export class RotueUtil {
    */
   dataApiRouteToString(route: Route, staticImport: string[]): string {
     const importee = pascalSnakeCase(route.id)
-    const componentPath = path.resolve(this.ctx.remixOptions.appDirectory, route.file)
+    const componentPath = normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.file))
 
-    const metaFile = route.metaFile ? path.resolve(this.ctx.remixOptions.appDirectory, route.metaFile) : null
+    const metaFile = route.metaFile
+      ? normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.metaFile))
+      : null
 
     const { setProps, props } = this.createPropsSetter<RouteObject>()
 
@@ -374,6 +377,6 @@ export class RotueUtil {
     if (metaFile) {
       metaFile = path.join(routeFileDir, metaFile)
     }
-    return metaFile
+    return metaFile ? normalizePath(metaFile) : undefined
   }
 }
