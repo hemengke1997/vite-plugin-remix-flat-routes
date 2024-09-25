@@ -1,3 +1,13 @@
+## [3.5.6](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.5.5...v3.5.6) (2024-09-25)
+
+
+### Bug Fixes
+
+* tree-shaking ([deed5ff](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/deed5ffa31bf3d81e0ec37ddd02a890190358707))
+* windows path uniform ([a357ba7](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/a357ba7eb226af7c68dcf9affef200d2a52c336a))
+
+
+
 ## [3.5.5](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.5.4...v3.5.5) (2024-09-19)
 
 
