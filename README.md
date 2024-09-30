@@ -1,18 +1,20 @@
 # vite-plugin-remix-flat-routes
 
-> 集成 [Remix](https://remix.run/docs/en/main/file-conventions/routes) & [remix-flat-routes](https://github.com/kiliman/remix-flat-routes) 约定式路由，支持 [react-router 数据路由/传统路由](https://reactrouter.com/en/main/routers/create-browser-router)
+> Integrate [Remix](https://remix.run/docs/en/main/file-conventions/routes) & [remix-flat-routes](https://github.com/kiliman/remix-flat-routes) convention-based routing, supporting [react-router data routing/traditional routing](https://reactrouter.com/en/main/routers/create-browser-router)
 
-## 安装
+[中文文档](./README.zh.md)
+
+## Installation
 
 ```bash
 npm i vite-plugin-remix-flat-routes
 ```
 
-## 使用
+## Usage
 
-### 配置typescript类型提示
+### Configure TypeScript type hints
 
-在 tsconfig.json 中引入
+Import in tsconfig.json
 
 ```json
 {
@@ -22,13 +24,13 @@ npm i vite-plugin-remix-flat-routes
 }
 ```
 
-或者在文件中引入
+Or import in file
 
 ```ts
 /// <reference types="vite-plugin-remix-flat-routes/virtual" />
 ```
 
-### 配置 vite 插件
+### Configure vite plugin
 
 ```ts
 import { defineConfig } from 'vite'
@@ -40,36 +42,35 @@ export default defineConfig({
 })
 ```
 
-#### 插件配置项
+#### Plugin configuration
 
 ```ts
 type Options = {
-  appDirectory?: string // 默认为 'app'
-  // remix-flat-routes 配置
+  appDirectory?: string // Default is 'app'
+  // remix-flat-routes configuration
   flatRoutesOptions?: {
-    routeDir?: string | string[] // 默认为 'routes'
-    ignoreRouteFiles?: string[] // 默认为 []
-    basePath?: string // 默认为 '/'
-    paramPrefixChar?: string // 默认为 '$'
+    routeDir?: string | string[] // Default is 'routes'
+    ignoreRouteFiles?: string[] // Default is []
+    basePath?: string // Default is '/'
+    paramPrefixChar?: string // Default is '$'
     routeRegex?: RegExp
     visitFiles?: VisitFilesFunction
   }
-  legacy?: boolean // 是否开启传统路由模式，默认自动探测
-  meta?: string // meta文件命名，默认 'meta'
+  legacy?: boolean // Whether to enable traditional routing mode, automatically detected by default
+  meta?: string // Meta file naming, default is 'meta'
 }
 ```
 
-### 按照[remix-flat-routes文档](https://github.com/kiliman/remix-flat-routes)组织路由
+### Organize routes according to [remix-flat-routes documentation](https://github.com/kiliman/remix-flat-routes)
 
-例如
-
+For example
 ```
 app
-├── main.tsx            // 入口文件，放在index.html中
-├── root.tsx            // 根路由 (https://remix.run/docs/en/main/file-conventions/root)
-└── routes              // 路由目录
-    ├── $.tsx           // 404 页面
-    ├── _index          // 首页
+├── main.tsx            // Entry file, included in index.html
+├── root.tsx            // Root route (https://remix.run/docs/en/main/file-conventions/root)
+└── routes              // Routes directory
+    ├── $.tsx           // 404 page
+    ├── _index          // Home page
     │   └── _index.tsx
     └── _sign+
         ├── _layout.tsx
@@ -79,35 +80,35 @@ app
             └── _index.ts
 ```
 
-## 示例
+## Examples
 
-- [约定式数据路由](./playground/data-api/)
-- [约定式传统路由](./playground/legacy/)
-- [配置式路由](./playground/config-route/)
+- [Convention-based data routing](./playground/data-api/)
+- [Convention-based traditional routing](./playground/legacy/)
+- [Configuration-based routing](./playground/config-route/)
 
-## 约定
+## Conventions
 
-> 为了更好的支持 Remix 的路由规范，插件做了一些约定，具体如下
+> To better support Remix's routing conventions, the plugin makes some assumptions as follows
 
-1. 路由文件默认导出(`export default`)为**懒加载**路由
-2. 路由组件具名导出(`export function Component`)为**非懒加载**路由
-3. 路由文件同级的 meta 文件，导出的字段为 路由元数据 或 Data-API
+1. The default export `(export default)` of the route file is a **lazy-loaded** route
+2. Named exports `(export function Component)` of the route component are **non-lazy-loaded** routes
+3. The meta file at the same level as the route file exports fields as route metadata or Data-API
 
-### Meta 约定
+### Meta conventions
 
-如果路由文件同级存在 meta.ts(x) 文件，则会被识别为路由元数据，此时文件约定规范如下：
+If there is a meta.ts(x) file at the same level as the route file, it will be recognized as route metadata. The file conventions are as follows:
 
-1. meta 文件中，导出的字段为 [`react-router` Route](https://reactrouter.com/en/main/route/route) 组件支持的 Data-API，如 `handle` / `loader` 等
+1. In the meta file, the exported fields are Data-API supported by [react-router Route](https://reactrouter.com/en/main/route/route) components, such as `handle` / `loader`, etc.
 
-### React-Router 约定
+### React-Router conventions
 
-如果路由文件同级不存在 meta.ts(x) 文件，则遵循 [react-router Route](https://reactrouter.com/en/main/route/route) 规范
+If there is no meta.ts(x) file at the same level as the route file, it follows the [react-router Route](https://reactrouter.com/en/main/route/route) conventions
 
-1. 所有 react-router 支持的 Data-API，都可以从路由文件中导出，如 `handle` / `loader` 等
+1. All Data-API supported by react-router can be exported from the route file, such as `handle` / `loader`, etc.
 
-## [数据路由模式（react-router-dom>=6.4.0）](https://reactrouter.com/en/main/routers/picking-a-router)
+## [Data routing mode (react-router-dom>=6.4.0)](https://reactrouter.com/en/main/routers/picking-a-router)
 
-### 配置 react-router-dom
+### Configure react-router-dom
 
 ```tsx
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
@@ -119,24 +120,25 @@ const router = createBrowserRouter(routes)
 
 const root = createRoot(document.getElementById('root'))
 
-// **使用数据路由**
+// **Use data routing**
 // https://reactrouter.com/en/main/router-components/browser-router
 root.render(<RouterProvider router={router} />)
 ```
 
-### Meta 约定
+### Meta conventions
 
-#### 从路由文件中导出路由组件
+#### Export route component from the route file
 ```tsx
-// 路由文件
+// Route file
 export default function () {
-  return <div>懒加载的路由</div>
+  return <div>Lazy-loaded route</div>
 }
 ```
 
-#### 从 meta 文件中导出静态 Data-API
+#### Export static Data-API from the meta file
+
 ```tsx
-// meta 文件
+// Meta file
 import { type LoaderFunction } from 'react-router-dom'
 
 export const handle = {
@@ -150,9 +152,9 @@ export const loader: LoaderFunction = (args) => {
 }
 ```
 
-### React-router 约定
+### React-router conventions
 
-#### 从文件中导出路由组件和配置
+#### Export route component and configuration from the file
 
 ```tsx
 import { useEffect } from 'react'
@@ -160,20 +162,20 @@ import { type LoaderFunction, useMatches } from 'react-router-dom'
 
 // https://reactrouter.com/en/main/route/route#handle
 export const handle = {
-  test: '这是handle',
+  test: 'this is handle',
 }
 
 export default function () {
-  return <div>懒加载的路由</div>
+  return <div>Lazy-loaded route</div>
 }
 
-// 也可以导出 lazy 函数懒加载组件
+// You can also export a lazy function to lazy load the component
 export const lazy = async () => ({
   Component: (await import('./_index.lazy')).default,
 })
 
 export function Component() {
-  return <div>非懒加载的路由</div>
+  return <div>Non-lazy-loaded route</div>
 }
 
 // https://reactrouter.com/en/main/route/route#loader
@@ -182,17 +184,16 @@ export const loader: LoaderFunction = (args) => {
   return null
 }
 
-// 更多Data-API导出请参考 [react-router 文档](https://reactrouter.com/en/main/route/route)
+// For more Data-API exports, refer to [react-router documentation](https://reactrouter.com/en/main/route/route)
 ```
 
+## [Traditional routing mode (react-router-dom<=6.3.0)](https://reactrouter.com/en/main/routers/create-browser-router)
 
-## [传统路由模式（react-router-dom<=6.3.0）](https://reactrouter.com/en/v6.3.0/getting-started/overview)
+> Traditional routing mode only supports Meta conventions
 
-> 传统路由模式仅支持 Meta 约定
+### Configure the Vite plugin
 
-### 配置 vite 插件
-
-```ts
+```tsx
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { remixFlatRoutes } from 'vite-plugin-remix-flat-routes'
@@ -202,26 +203,26 @@ export default defineConfig({
   plugins: [
     react(),
     remixFlatRoutes({
-      // 默认插件会自动探测 react-router-dom 版本，如果大于等于 6.4.0 则默认开启数据路由模式
-      // 否则开启传统路由模式
-      // 也可以手动开启传统路由模式
+      // By default, the plugin will auto-detect the version of react-router-dom. If it is >= 6.4.0, data routing mode is enabled
+      // Otherwise, traditional routing mode is enabled
+      // You can also manually enable traditional routing mode
       legacy: true,
     }),
   ],
 })
 ```
 
-### 配置 react-router-dom
+### Configure react-router-dom
 
 ```tsx
 import { BrowserRouter } from 'react-router-dom'
 import { createRoot } from 'react-dom/client'
 import { routes } from 'virtual:remix-flat-routes'
-import { LegacyRouterProvider } from 'vite-plugin-remix-flat-routes/client' // 导入 LegacyRouterProvider
+import { LegacyRouterProvider } from 'vite-plugin-remix-flat-routes/client' // Import LegacyRouterProvider
 
 const root = createRoot(document.getElementById('root'))
 
-// **使用传统路由**
+// **Use traditional routing**
 root.render(
   <BrowserRouter>
     <LegacyRouterProvider routes={routes} />
@@ -229,31 +230,29 @@ root.render(
 )
 ```
 
-### 从文件中导出路由组件
+### Export route component from the file
 
-> 请注意，传统路由仅支持 Meta 约定
+> Note that traditional routing only supports Meta conventions
 
-#### 默认导出（懒加载）
-
+#### Default export (lazy-loaded)
 ```tsx
 export default function () {
-  return <div>懒加载的路由</div>
+  return <div>Lazy-loaded route</div>
 }
 ```
 
-#### 具名导出Component（非懒加载）
-
+#### Named export Component (non-lazy-loaded)
 ```tsx
 export function Component() {
-  return <div>非懒加载的路由</div>
+  return <div>Non-lazy-loaded route</div>
 }
 ```
 
-### meta 元数据
+### Meta data
 
-在与路由组件同级目录下创建 `meta.ts(x)` 文件，导出任意值，即可在路由组件获取到 `meta` 数据
+Create a `meta.ts(x)` file in the same directory as the route component and export any value to get the `meta` data in the route component
 
-> 注意：meta 中内置了 `route` 字段，请勿使用 `route` 命名
+> Note: `meta` has a built-in `route` field, do not use the `route` name
 
 ```tsx
 // meta.ts
@@ -265,11 +264,11 @@ export const more_info = {
 }
 ```
 
-### 获取 meta 数据
+### Get meta data
 
-有以下方式获取 meta 数据
+There are the following ways to get meta data
 
-#### 1. 从 `props` 中获取 meta 元信息
+#### 1. Get meta information from `props`
 
 ```tsx
 import { type PropsWithMeta } from 'vite-plugin-remix-flat-routes/client'
@@ -279,7 +278,7 @@ export default function (props: PropsWithMeta) {
 }
 ```
 
-#### 2. 使用 `useMetas` 获取 meta 元信息
+#### 2. Use `useMetas` to get meta information
 
 ```tsx
 import { useMetas } from 'vite-plugin-remix-flat-routes/client'
@@ -289,12 +288,11 @@ export function Component() {
 }
 ```
 
+## Note
 
-## 注意事项
+1. Files in the routes directory that match `flatRoutesOptions.routeRegex` are recognized as route components. If you do not want certain files to be considered as route components, you can configure it through `flatRoutesOptions.ignoreRouteFiles`
 
-1. routes目录下被 `flatRoutesOptions.routeRegex` 匹配的文件都被识别为路由组件，如果你不希望某些文件被视为路由组件，可以通过 `flatRoutesOptions.ignoreRouteFiles` 进行配置
-
-例如
+For example
 
 ```ts
 remixFlatRoutes({
@@ -304,10 +302,9 @@ remixFlatRoutes({
 })
 ```
 
-则 `components` 和 `hooks` 目录下的所有文件不会被识别为路由组件
+Then all files in the `components` and `hooks` directories will not be recognized as route components
 
-
-2. 如果不使用内置的 remix-flat-routes，可以通过传入 `routes` 设置路由约定，参考 [remix routes](https://remix.run/docs/en/main/file-conventions/vite-config#routes)
+2. If you do not use the built-in remix-flat-routes, you can set the routing convention by passing in `routes`, refer to [remix routes](https://remix.run/docs/en/main/file-conventions/vite-config#routes)
 
 ## Inspiration
 
