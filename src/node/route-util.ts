@@ -158,7 +158,7 @@ export class RotueUtil {
       // metaFile 中导出的所有属性认为是 Data API
       // @see https://reactrouter.com/en/main/route/route
 
-      const metaImportee = `${importee}_Meta`
+      const metaImportee = pascalSnakeCase(`${route.id}/meta`)
       staticImport.push(`import * as ${metaImportee} from '${metaFile}';`)
       this.setDataApiToProps(props, { route, importee: metaImportee, meta: true })
 

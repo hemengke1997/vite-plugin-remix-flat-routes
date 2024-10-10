@@ -10,6 +10,7 @@ const commonConfig = (option: Options): Options => {
     external: [/^virtual:.*/, 'react', 'react-dom', 'react-router-dom'],
     shims: true,
     treeshake: true,
+    splitting: true,
   }
 }
 
@@ -22,7 +23,6 @@ export const tsup = defineConfig((option) => [
     format: ['esm'],
     target: 'node16',
     platform: 'node',
-    splitting: true,
   },
   {
     ...commonConfig(option),
@@ -39,8 +39,6 @@ export const tsup = defineConfig((option) => [
     outDir: 'dist/client',
     format: ['esm'],
     platform: 'neutral',
-    splitting: true,
-    outExtension: () => ({ js: '.js' }),
     ...bundleless(),
   },
   {
@@ -49,7 +47,5 @@ export const tsup = defineConfig((option) => [
     outDir: 'dist/client',
     format: ['cjs'],
     platform: 'neutral',
-    splitting: true,
-    outExtension: () => ({ js: '.cjs' }),
   },
 ])

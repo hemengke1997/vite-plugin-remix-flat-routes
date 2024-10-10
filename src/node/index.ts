@@ -28,13 +28,11 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
   let viteChildCompiler: Vite.ViteDevServer | null = null
   let viteConfig: Vite.ResolvedConfig | undefined
   let viteConfigEnv: Vite.ConfigEnv
-  let viteServer: Vite.ViteDevServer
 
   const ctx: PluginContext = {
     remixOptions: { appDirectory, flatRoutesOptions },
     meta,
     isLegacyMode,
-
     rootDirectory: process.cwd(),
     inRemixContext: false,
     routeManifest: {},
@@ -67,9 +65,19 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
         ctx.inRemixContext = true
       }
 
+      // Only create the child compiler for `vite build` command
+      // Because we can reuse vite server as the child compiler for `vite serve`
       if (viteConfig.command === 'build') {
         const vite = importViteEsmSync()
 
+        // We load the same Vite config file again for the child compiler so
+        // that both parent and child compiler's plugins have independent state.
+        // If we re-used the `viteUserConfig.plugins` array for the child
+        // compiler, it could lead to mutating shared state between plugin
+        // instances in unexpected ways, e.g. during `vite build` the
+        // `configResolved` plugin hook would be called with `command = "build"`
+        // by parent and then `command = "serve"` by child, which some plugins
+        // may respond to by updating state referenced by the parent.
         const childCompilerConfigFile = await vite.loadConfigFromFile(
           {
             command: viteConfig.command,
@@ -92,6 +100,13 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
           plugins: [
             ...(childCompilerConfigFile?.config.plugins ?? [])
               .flat()
+              // Exclude this plugin from the child compiler to prevent an
+              // infinite loop (plugin creates a child compiler with the same
+              // plugin that creates another child compiler, repeat ad
+              // infinitum), and to prevent the manifest from being written to
+              // disk from the child compiler. This is important in the
+              // production build because the child compiler is a Vite dev
+              // server and will generate incorrect manifests.
               .filter((plugin) => getVitePluginName(plugin) === 'vite-plugin-remix-flat-routes'),
           ],
         })
@@ -100,8 +115,6 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
       }
     },
     configureServer(server) {
-      viteServer = server
-
       // viteConfig.command === 'serve'
       viteChildCompiler = server
     },
@@ -148,7 +161,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
       if (change.event === 'update') {
         return
       }
-      invalidateVirtualModule(viteServer, true)
+      invalidateVirtualModule(viteChildCompiler!, true)
     },
   }
 }

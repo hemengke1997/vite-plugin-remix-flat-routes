@@ -103,6 +103,11 @@ export const getRouteModuleExports = async (
     throw new Error('Vite child compiler not found')
   }
 
+  // We transform the route module code with the Vite child compiler so that we
+  // can parse the exports from non-JS files like MDX. This ensures that we can
+  // understand the exports from anything that Vite can compile to JS, not just
+  // the route file formats that the Remix compiler historically supported.
+
   const ssr = false
   const { pluginContainer, moduleGraph } = viteChildCompiler
 
