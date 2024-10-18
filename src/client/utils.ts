@@ -1,29 +1,25 @@
-import { type AnyObject, type Meta, type Route } from './types'
+import { type AnyObject, type MatchRoute, type Route } from './types'
 
-export function collectMeta<M extends AnyObject = AnyObject>(route: Route): Meta<M> {
-  const meta: Meta = {
-    route: {},
-  }
+export function collectRouteInfo<M extends AnyObject = AnyObject>(route: Route<M>) {
+  const matchRoute: MatchRoute<M> = {}
 
-  if (route.meta) {
-    Object.assign(meta, route.meta)
+  if (route.handle) {
+    Object.assign(matchRoute, {
+      handle: route.handle,
+    })
   }
 
   if (route.id) {
-    Object.assign(meta.route, {
+    Object.assign(matchRoute, {
       id: route.id,
     })
   }
-  if (route.index) {
-    Object.assign(meta.route, {
-      index: route.index,
-    })
-  }
+
   if (route.path) {
-    Object.assign(meta.route, {
+    Object.assign(matchRoute, {
       pathname: route.path,
     })
   }
 
-  return meta as Meta<M>
+  return matchRoute
 }

@@ -6,7 +6,7 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { type ConfigRoute, type DefineRouteFunction } from './remix'
 
-type RouteInfo = {
+type MatchRoute = {
   id: string
   path: string
   file: string
@@ -46,7 +46,7 @@ export type DefineRoutesFunction = (
   callback: (route: DefineRouteFunction) => void,
 ) => RouteManifest | Promise<RouteManifest>
 
-export type { DefineRouteFunction, DefineRouteOptions, DefineRouteChildren, RouteInfo }
+export type { DefineRouteFunction, DefineRouteOptions, DefineRouteChildren, MatchRoute }
 export { flatRoutes }
 
 const defaultOptions: FlatRoutesOptions = {
@@ -100,8 +100,8 @@ function _flatRoutes(
     options = defaultOptions
   }
 
-  const routeMap: Map<string, RouteInfo> = new Map()
-  const nameMap: Map<string, RouteInfo> = new Map()
+  const routeMap: Map<string, MatchRoute> = new Map()
+  const nameMap: Map<string, MatchRoute> = new Map()
 
   const routeDirs = Array.isArray(options.routeDir) ? options.routeDir : [options.routeDir ?? 'routes']
   const defineRoutes = options.defineRoutes ?? defaultDefineRoutes
@@ -118,22 +118,22 @@ function _flatRoutes(
       }
 
       if (isRouteModuleFile(file, routeRegex)) {
-        const routeInfo = getRouteInfo(routeDir, file, options!)
-        routeMap.set(routeInfo.id, routeInfo)
-        nameMap.set(routeInfo.name, routeInfo)
+        const matchRoute = getRouteInfo(routeDir, file, options!)
+        routeMap.set(matchRoute.id, matchRoute)
+        nameMap.set(matchRoute.name, matchRoute)
         return
       }
     })
   }
   // update parentIds for all routes
-  Array.from(routeMap.values()).forEach((routeInfo) => {
-    const parentId = findParentRouteId(routeInfo, nameMap)
-    routeInfo.parentId = parentId
+  Array.from(routeMap.values()).forEach((matchRoute) => {
+    const parentId = findParentRouteId(matchRoute, nameMap)
+    matchRoute.parentId = parentId
   })
 
   // Then, recurse through all routes using the public defineRoutes() API
   function defineNestedRoutes(defineRoute: DefineRouteFunction, parentId?: string): void {
-    const childRoutes = Array.from(routeMap.values()).filter((routeInfo) => routeInfo.parentId === parentId)
+    const childRoutes = Array.from(routeMap.values()).filter((matchRoute) => matchRoute.parentId === parentId)
     const parentRoute = parentId ? routeMap.get(parentId) : undefined
     const parentRoutePath = parentRoute?.path ?? '/'
     for (const childRoute of childRoutes) {
@@ -145,7 +145,7 @@ function _flatRoutes(
       const index = childRoute.index
 
       if (index) {
-        const invalidChildRoutes = Object.values(routeMap).filter((routeInfo) => routeInfo.parentId === childRoute.id)
+        const invalidChildRoutes = Object.values(routeMap).filter((matchRoute) => matchRoute.parentId === childRoute.id)
 
         if (invalidChildRoutes.length > 0) {
           throw new Error(
@@ -199,7 +199,7 @@ export function getRouteInfo(routeDir: string, file: string, options: FlatRoutes
   const index = isIndexRoute(routeIdWithoutRoutes)
   const routeSegments = getRouteSegments(routeIdWithoutRoutes, index, options.paramPrefixChar)
   const routePath = createRoutePath(routeSegments, index, options)
-  const routeInfo = {
+  const matchRoute = {
     id: routeId,
     path: routePath!,
     file: filePath,
@@ -208,7 +208,7 @@ export function getRouteInfo(routeDir: string, file: string, options: FlatRoutes
     index,
   }
 
-  return routeInfo
+  return matchRoute
 }
 
 // create full path starting with /
@@ -259,8 +259,8 @@ export function createRoutePath(
   return result || undefined
 }
 
-function findParentRouteId(routeInfo: RouteInfo, nameMap: Map<string, RouteInfo>): string | undefined {
-  let parentName = routeInfo.segments.slice(0, -1).join('/')
+function findParentRouteId(matchRoute: MatchRoute, nameMap: Map<string, MatchRoute>): string | undefined {
+  let parentName = matchRoute.segments.slice(0, -1).join('/')
   while (parentName) {
     if (nameMap.has(parentName)) {
       return nameMap.get(parentName)!.id

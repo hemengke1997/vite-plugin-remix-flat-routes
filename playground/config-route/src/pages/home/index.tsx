@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import { type PropsWithMeta } from 'vite-plugin-remix-flat-routes/client'
+import { type PropsWithMatchRoute } from 'vite-plugin-remix-flat-routes/client'
 
-export default function (props: PropsWithMeta) {
+export default function (props: PropsWithMatchRoute) {
   console.log(props, 'props')
   return (
     <div>

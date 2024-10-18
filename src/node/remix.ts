@@ -1,4 +1,3 @@
-import type * as Vite from 'vite'
 import { parse as esModuleLexer } from 'es-module-lexer'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -28,7 +27,6 @@ export function findEntry(dir: string, basename: string): string | undefined {
 export async function resolveRoutes(ctx: PluginContext) {
   const {
     remixOptions: { appDirectory, flatRoutesOptions, routes },
-    meta,
   } = ctx
 
   const rootRouteFile = findEntry(appDirectory, 'root')
@@ -42,7 +40,7 @@ export async function resolveRoutes(ctx: PluginContext) {
 
   const flatedRotues = flatRoutes(flatRoutesOptions!.routeDir!, flatRoutesOptions?.defineRoutes || defineRoutes, {
     ...flatRoutesOptions,
-    ignoredRouteFiles: [...(flatRoutesOptions?.ignoredRouteFiles || []), '**/*.lazy.*', `**/${meta}.*`],
+    ignoredRouteFiles: [...(flatRoutesOptions?.ignoredRouteFiles || []), '**/*.lazy.*'],
   })
 
   for (const route of Object.values(flatedRotues)) {
@@ -51,7 +49,7 @@ export async function resolveRoutes(ctx: PluginContext) {
 
   if (routes) {
     const manualRoutes = await routes(defineRoutes, {
-      ignoredRouteFiles: ['**/*.lazy.*', `**/${meta}.*`],
+      ignoredRouteFiles: ['**/*.lazy.*'],
     })
     for (const route of Object.values(manualRoutes)) {
       routeManifest[route.id] = { ...route, parentId: route.parentId || 'root' }
@@ -94,11 +92,11 @@ export function createClientRoute(route: ValueOf<RouteManifest>): Route {
  * @see `getRouteModuleExports` in @remix-run/dev/vite/plugin.ts
  */
 export const getRouteModuleExports = async (
-  viteChildCompiler: Vite.ViteDevServer | null,
   ctx: PluginContext,
   routeFile: string,
   readRouteFile?: () => string | Promise<string>,
 ): Promise<string[]> => {
+  const { viteChildCompiler } = ctx
   if (!viteChildCompiler) {
     throw new Error('Vite child compiler not found')
   }
@@ -156,13 +154,10 @@ const resolveFileUrl = ({ rootDirectory }: { rootDirectory: string }, filePath: 
 /**
  * @see `getRouteManifestModuleExports` in @remix-run/dev/vite/plugin.ts
  */
-export const getRouteManifestModuleExports = async (
-  viteChildCompiler: Vite.ViteDevServer | null,
-  ctx: PluginContext,
-): Promise<Record<string, string[]>> => {
+export const getRouteManifestModuleExports = async (ctx: PluginContext): Promise<Record<string, string[]>> => {
   const entries = await Promise.all(
     Object.entries(ctx.routeManifest).map(async ([key, route]) => {
-      const sourceExports = await getRouteModuleExports(viteChildCompiler, ctx, route.file)
+      const sourceExports = await getRouteModuleExports(ctx, route.file)
       return [key, sourceExports] as const
     }),
   )

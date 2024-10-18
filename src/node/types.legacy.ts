@@ -10,7 +10,7 @@ export interface LegacyRouteObject {
   path?: string
 
   // 自定义属性
-  meta?: string
+  handle?: Record<string, any>
   Component?: React.ComponentType | null
   /**
    * 懒加载路由组件

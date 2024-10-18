@@ -57,7 +57,7 @@ type Options = {
     visitFiles?: VisitFilesFunction
   }
   legacy?: boolean // 是否开启传统路由模式，默认自动探测
-  meta?: string // meta文件命名，默认 'meta'
+  handleAsync?: boolean // 是否将 handle 转为异步函数，默认为 false
 }
 ```
 
@@ -93,19 +93,7 @@ app
 
 1. 路由文件默认导出(`export default`)为**懒加载**路由
 2. 路由组件具名导出(`export function Component`)为**非懒加载**路由
-3. 路由文件同级的 meta 文件，导出的字段为 路由元数据 或 Data-API
 
-### Meta 约定
-
-如果路由文件同级存在 meta.ts(x) 文件，则会被识别为路由元数据，此时文件约定规范如下：
-
-1. meta 文件中，导出的字段为 [`react-router` Route](https://reactrouter.com/en/main/route/route) 组件支持的 Data-API，如 `handle` / `loader` 等
-
-### React-Router 约定
-
-如果路由文件同级不存在 meta.ts(x) 文件，则遵循 [react-router Route](https://reactrouter.com/en/main/route/route) 规范
-
-1. 所有 react-router 支持的 Data-API，都可以从路由文件中导出，如 `handle` / `loader` 等
 
 ## [数据路由模式（react-router-dom>=6.4.0）](https://reactrouter.com/en/main/routers/picking-a-router)
 
@@ -126,35 +114,7 @@ const root = createRoot(document.getElementById('root'))
 root.render(<RouterProvider router={router} />)
 ```
 
-### Meta 约定
-
-#### 从路由文件中导出路由组件
-```tsx
-// 路由文件
-export default function () {
-  return <div>懒加载的路由</div>
-}
-```
-
-#### 从 meta 文件中导出静态 Data-API
-```tsx
-// meta 文件
-import { type LoaderFunction } from 'react-router-dom'
-
-export const handle = {
-  title: 'title',
-  description: 'description',
-}
-
-export const loader: LoaderFunction = (args) => {
-  console.log('this is loader', args)
-  return null
-}
-```
-
-### React-router 约定
-
-#### 从文件中导出路由组件和配置
+### 从文件中导出路由组件和配置
 
 ```tsx
 import { useEffect } from 'react'
@@ -190,7 +150,7 @@ export const loader: LoaderFunction = (args) => {
 
 ## [传统路由模式（react-router-dom<=6.3.0）](https://reactrouter.com/en/v6.3.0/getting-started/overview)
 
-> 传统路由模式仅支持 Meta 约定
+> 传统路由模式仅支持 Handle 约定
 
 ### 配置 vite 插件
 
@@ -233,13 +193,15 @@ root.render(
 
 ### 从文件中导出路由组件
 
-> 请注意，传统路由仅支持 Meta 约定
-
 #### 默认导出（懒加载）
 
 ```tsx
 export default function () {
   return <div>懒加载的路由</div>
+}
+
+export const handle = {
+  test: 'this is handle',
 }
 ```
 
@@ -251,43 +213,27 @@ export function Component() {
 }
 ```
 
-### meta 元数据
+### 获取 handle
 
-在与路由组件同级目录下创建 `meta.ts(x)` 文件，导出任意值，即可在路由组件获取到 `meta` 数据
+有以下方式获取 handle
 
-> 注意：meta 中内置了 `route` 字段，请勿使用 `route` 命名
+#### 1. 从 `props` 中获取 handle
 
 ```tsx
-// meta.ts
+import { type PropsWithMatchRoute } from 'vite-plugin-remix-flat-routes/client'
 
-export const up_to_you = 'whatever you want'
-export const more_info = {
-  title: 'title',
-  description: 'description',
+export default function (props: PropsWithMatchRoute) {
+  const { handle } = props
 }
 ```
 
-### 获取 meta 数据
-
-有以下方式获取 meta 数据
-
-#### 1. 从 `props` 中获取 meta 元信息
+#### 2. 使用 `useMatchRoutes` 获取 handle 信息
 
 ```tsx
-import { type PropsWithMeta } from 'vite-plugin-remix-flat-routes/client'
-
-export default function (props: PropsWithMeta) {
-  const { meta } = props
-}
-```
-
-#### 2. 使用 `useMetas` 获取 meta 元信息
-
-```tsx
-import { useMetas } from 'vite-plugin-remix-flat-routes/client'
+import { useMatchRoutes } from 'vite-plugin-remix-flat-routes/client'
 
 export function Component() {
-  const { metas } = useMetas()
+  const matchRoutes = useMatchRoutes()
 }
 ```
 
@@ -310,6 +256,8 @@ remixFlatRoutes({
 
 
 2. 如果不使用内置的 remix-flat-routes，可以通过传入 `routes` 设置路由约定，参考 [remix routes](https://remix.run/docs/en/main/file-conventions/vite-config#routes)
+
+3. 如果导出的 `handle` 有副作用，请在插件配置项中传入 `handleAsync:true`。插件会将 `handle` 转为异步函数，解决副作用导致的序列化问题
 
 ## 灵感来源
 

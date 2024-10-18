@@ -1,17 +1,15 @@
 import { useMemo, useRef, useState } from 'react'
-import { matchRoutes, type RouteMatch, useLocation } from 'react-router-dom'
+import { type RouteMatch, matchRoutes as routerMathRoutes, useLocation } from 'react-router-dom'
 import { createContainer, useMemoFn } from 'context-state'
-import { type AnyObject, type Meta, type Route, type RouterProps } from './types'
-import { collectMeta } from './utils'
+import { type AnyObject, type MatchRoute, type Route, type RouterProps } from './types'
+import { collectRouteInfo } from './utils'
 
-function getMetasFromMatch<M extends AnyObject = AnyObject>(routes: RouteMatch[] | null): Meta<M>[] {
+function getHandlesFromMatch<M extends AnyObject = AnyObject>(routes: RouteMatch[] | null): MatchRoute<M>[] {
   if (!routes) return []
-
   return routes?.map((item) => {
-    const route = item.route as Route
-
-    const meta = collectMeta<M>(route)
-    return meta
+    const route = item.route as Route<M>
+    const matchRoute = collectRouteInfo<M>(route)
+    return matchRoute
   })
 }
 
@@ -20,23 +18,23 @@ export type RouteContextValue<M extends AnyObject = AnyObject> = { clientRoutes:
 function useRouteContext<M extends AnyObject = AnyObject>({ clientRoutes, basename }: RouteContextValue<M>) {
   const location = useLocation()
 
-  const resolveMetas = useMemoFn(() => {
-    const matchedRoutes = matchRoutes(clientRoutes, location, basename)
-    return getMetasFromMatch<M>(matchedRoutes)
+  const resolveMatches = useMemoFn(() => {
+    const matchedRoutes = routerMathRoutes(clientRoutes, location, basename)
+    return getHandlesFromMatch<M>(matchedRoutes)
   })
 
-  const [metas, setMetas] = useState(resolveMetas)
+  const [matchRoutes, setMatchRoutes] = useState(resolveMatches)
 
   const previousPath = useRef<string>()
-  const updateMetas = useMemoFn((path: string) => {
+  const updateMatchRoutes = useMemoFn((path: string) => {
     if (previousPath.current === path) return
     previousPath.current = path
-    setMetas(resolveMetas())
+    setMatchRoutes(resolveMatches())
   })
 
   return {
-    metas,
-    updateMetas,
+    matchRoutes,
+    updateMatchRoutes,
   }
 }
 
@@ -44,8 +42,8 @@ export function createRouteContext<M extends AnyObject = AnyObject>() {
   return createContainer(useRouteContext<M>)
 }
 
-export function useMetas<M extends AnyObject = AnyObject>() {
+export function useMatchRoutes<M extends AnyObject = AnyObject>() {
   const RouteContext = useMemo(() => createRouteContext<M>(), [])
-  const { metas } = RouteContext.usePicker(['metas'])
-  return { metas }
+  const { matchRoutes } = RouteContext.usePicker(['matchRoutes'])
+  return matchRoutes
 }

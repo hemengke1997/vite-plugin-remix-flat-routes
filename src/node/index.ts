@@ -4,13 +4,13 @@ import path from 'node:path'
 import { resolveLegacyMode } from './detect-legacy'
 import { importViteEsmSync, preloadViteEsm } from './import-vite-esm-sync'
 import { createClientRoutes, resolveRoutes } from './remix'
-import { RotueUtil } from './route-util'
+import { RouteUtil } from './route-util'
 import { type Options, type PluginContext } from './types'
 import { getVitePluginName, validateRouteDir } from './utils'
 import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } from './virtual'
 
 function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
-  const { appDirectory = 'app', flatRoutesOptions, legacy, meta = 'meta' } = options
+  const { appDirectory = 'app', flatRoutesOptions, legacy, handleAsync = false } = options
 
   const routeDir = flatRoutesOptions?.routeDir || 'routes'
   const routeDirs = Array.isArray(routeDir) ? routeDir : [routeDir]
@@ -25,17 +25,17 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
   }
 
   let viteUserConfig: Vite.UserConfig
-  let viteChildCompiler: Vite.ViteDevServer | null = null
   let viteConfig: Vite.ResolvedConfig | undefined
   let viteConfigEnv: Vite.ConfigEnv
 
   const ctx: PluginContext = {
     remixOptions: { appDirectory, flatRoutesOptions },
-    meta,
     isLegacyMode,
+    handleAsync,
     rootDirectory: process.cwd(),
     inRemixContext: false,
     routeManifest: {},
+    viteChildCompiler: null,
   }
 
   return {
@@ -45,6 +45,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
      * @see `config` in @remix-run/dev/vite/plugin.ts
      */
     async config(_viteUserConfig, _viteConfigEnv) {
+      // Preload Vite's ESM build up-front as soon as we're in an async context
       await preloadViteEsm()
 
       viteUserConfig = _viteUserConfig
@@ -87,7 +88,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
           viteConfig.configFile,
         )
 
-        viteChildCompiler = await vite.createServer({
+        ctx.viteChildCompiler = await vite.createServer({
           ...viteUserConfig,
           mode: viteConfig.mode,
           server: {
@@ -111,12 +112,12 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
           ],
         })
 
-        await viteChildCompiler.pluginContainer.buildStart({})
+        await ctx.viteChildCompiler.pluginContainer.buildStart({})
       }
     },
     configureServer(server) {
       // viteConfig.command === 'serve'
-      viteChildCompiler = server
+      ctx.viteChildCompiler = server
     },
     async resolveId(id) {
       if (id === virtualModuleId) {
@@ -129,12 +130,12 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
         const { routeManifest } = await resolveRoutes(ctx)
 
         ctx.routeManifest = routeManifest
-        const routeUtil = new RotueUtil(ctx)
+        const routeUtil = new RouteUtil(ctx)
 
-        await routeUtil.processRouteManifest(viteChildCompiler!)
+        await routeUtil.processRouteManifest()
         const routes = createClientRoutes(ctx.routeManifest)
 
-        const { routesString, componentsString } = routeUtil.stringifyRoutes(routes)
+        const { routesString, componentsString } = await routeUtil.stringifyRoutes(routes)
 
         return {
           code: `import React from 'react';
@@ -146,13 +147,12 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
       }
       return null
     },
-
     /**
      * @see `buildEnd` in @remix-run/dev/vite/plugin.ts
      */
     async buildEnd() {
-      viteChildCompiler?.httpServer?.close()
-      await viteChildCompiler?.close()
+      ctx.viteChildCompiler?.httpServer?.close()
+      await ctx.viteChildCompiler?.close()
     },
     handleHotUpdate(ctx) {
       invalidateVirtualModule(ctx.server)
@@ -161,7 +161,10 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
       if (change.event === 'update') {
         return
       }
-      invalidateVirtualModule(viteChildCompiler!, true)
+
+      if (ctx.viteChildCompiler) {
+        invalidateVirtualModule(ctx.viteChildCompiler, true)
+      }
     },
   }
 }

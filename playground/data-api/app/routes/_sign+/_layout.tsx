@@ -8,3 +8,7 @@ export default function () {
     </div>
   )
 }
+
+export const handle = {
+  layout: 'layout handle',
+}

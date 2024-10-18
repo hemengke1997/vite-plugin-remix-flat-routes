@@ -27,10 +27,12 @@ export default function () {
   return (
     <>
       <RouteAnimation>
-        <Link to='/'>go home</Link>
-        <Link to='/other'>go other</Link>
-        <Link to='/signin'>go signin</Link>
-        <Link to='/signup'>go signup</Link>
+        <div className={'flex gap-2 mb-4'}>
+          <Link to='/'>go home</Link>
+          <Link to='/other'>go other</Link>
+          <Link to='/signin'>go signin</Link>
+          <Link to='/signup'>go signup</Link>
+        </div>
         {outlet}
       </RouteAnimation>
       <ScrollRestoration />

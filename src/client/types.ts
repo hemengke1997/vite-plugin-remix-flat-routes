@@ -6,8 +6,7 @@ export type AnyObject = Record<string, any>
 export type Payload<M extends AnyObject = AnyObject> = {
   location: Location
   params: Params
-  meta: Meta<M>
-}
+} & MatchRoute<M>
 
 type OnRouteWillMountRes = string | void
 
@@ -22,7 +21,7 @@ export type OnRouteUnmount<M extends AnyObject = AnyObject> = (payload: Payload<
 /**
  * 路由对象
  */
-export type Route<M extends AnyObject = AnyObject> = RouteObject & {
+export type Route<M extends AnyObject = AnyObject> = Omit<RouteObject, 'handle' | 'index'> & {
   /**
    * 路由组件
    */
@@ -32,32 +31,22 @@ export type Route<M extends AnyObject = AnyObject> = RouteObject & {
    */
   redirect?: string
   /**
-   * 路由元信息
+   * handle
    */
-  meta?: {
-    [key: string]: any
-  } & M
+  handle?: M
   /**
    * 子路由
    */
   children?: Route<M>[]
 }
 
-/**
- * 路由元信息
- */
-export type Meta<M extends AnyObject = AnyObject> = {
-  route: {
-    id?: string
-    index?: boolean
-    pathname?: string
-  }
-  [key: string]: any
-} & M
+export type MatchRoute<M extends AnyObject = AnyObject> = {
+  id?: string
+  pathname?: string
+  handle?: M
+}
 
-export type PropsWithMeta<P = unknown, M extends AnyObject = AnyObject> = {
-  meta: Meta<M>
-} & P
+export type PropsWithMatchRoute<P = unknown, M extends AnyObject = AnyObject> = MatchRoute<M> & P
 
 export interface RouterProps<M extends AnyObject = AnyObject> {
   /**

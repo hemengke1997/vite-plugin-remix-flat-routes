@@ -57,7 +57,7 @@ type Options = {
     visitFiles?: VisitFilesFunction
   }
   legacy?: boolean // Whether to enable traditional routing mode, automatically detected by default
-  meta?: string // Meta file naming, default is 'meta'
+  handleAsync?: boolean // Whether to convert handle to an asynchronous function, default is false
 }
 ```
 
@@ -92,19 +92,6 @@ app
 
 1. The default export `(export default)` of the route file is a **lazy-loaded** route
 2. Named exports `(export function Component)` of the route component are **non-lazy-loaded** routes
-3. The meta file at the same level as the route file exports fields as route metadata or Data-API
-
-### Meta conventions
-
-If there is a meta.ts(x) file at the same level as the route file, it will be recognized as route metadata. The file conventions are as follows:
-
-1. In the meta file, the exported fields are Data-API supported by [react-router Route](https://reactrouter.com/en/main/route/route) components, such as `handle` / `loader`, etc.
-
-### React-Router conventions
-
-If there is no meta.ts(x) file at the same level as the route file, it follows the [react-router Route](https://reactrouter.com/en/main/route/route) conventions
-
-1. All Data-API supported by react-router can be exported from the route file, such as `handle` / `loader`, etc.
 
 ## [Data routing mode (react-router-dom>=6.4.0)](https://reactrouter.com/en/main/routers/picking-a-router)
 
@@ -125,36 +112,7 @@ const root = createRoot(document.getElementById('root'))
 root.render(<RouterProvider router={router} />)
 ```
 
-### Meta conventions
-
-#### Export route component from the route file
-```tsx
-// Route file
-export default function () {
-  return <div>Lazy-loaded route</div>
-}
-```
-
-#### Export static Data-API from the meta file
-
-```tsx
-// Meta file
-import { type LoaderFunction } from 'react-router-dom'
-
-export const handle = {
-  title: 'title',
-  description: 'description',
-}
-
-export const loader: LoaderFunction = (args) => {
-  console.log('this is loader', args)
-  return null
-}
-```
-
-### React-router conventions
-
-#### Export route component and configuration from the file
+### Export route component and configuration from the file
 
 ```tsx
 import { useEffect } from 'react'
@@ -189,7 +147,7 @@ export const loader: LoaderFunction = (args) => {
 
 ## [Traditional routing mode (react-router-dom<=6.3.0)](https://reactrouter.com/en/main/routers/create-browser-router)
 
-> Traditional routing mode only supports Meta conventions
+> Traditional routing mode only supports Handle conventions
 
 ### Configure the Vite plugin
 
@@ -232,12 +190,16 @@ root.render(
 
 ### Export route component from the file
 
-> Note that traditional routing only supports Meta conventions
+> Note that traditional routing only supports Handle conventions
 
 #### Default export (lazy-loaded)
 ```tsx
 export default function () {
   return <div>Lazy-loaded route</div>
+}
+
+export const handle = {
+  test: 'this is handle',
 }
 ```
 
@@ -248,43 +210,27 @@ export function Component() {
 }
 ```
 
-### Meta data
+### Get handle
 
-Create a `meta.ts(x)` file in the same directory as the route component and export any value to get the `meta` data in the route component
+There are the following ways to get handle
 
-> Note: `meta` has a built-in `route` field, do not use the `route` name
+#### 1. Get handle from `props`
 
 ```tsx
-// meta.ts
+import { type PropsWithMatchRoute } from 'vite-plugin-remix-flat-routes/client'
 
-export const up_to_you = 'whatever you want'
-export const more_info = {
-  title: 'title',
-  description: 'description',
+export default function (props: PropsWithMatchRoute) {
+  const { handle } = props
 }
 ```
 
-### Get meta data
-
-There are the following ways to get meta data
-
-#### 1. Get meta information from `props`
+#### 2. Use `useMatchRoutes` to get handle
 
 ```tsx
-import { type PropsWithMeta } from 'vite-plugin-remix-flat-routes/client'
-
-export default function (props: PropsWithMeta) {
-  const { meta } = props
-}
-```
-
-#### 2. Use `useMetas` to get meta information
-
-```tsx
-import { useMetas } from 'vite-plugin-remix-flat-routes/client'
+import { useMatchRoutes } from 'vite-plugin-remix-flat-routes/client'
 
 export function Component() {
-  const { metas } = useMetas()
+  const matchRoutes = useMatchRoutes()
 }
 ```
 
@@ -305,6 +251,8 @@ remixFlatRoutes({
 Then all files in the `components` and `hooks` directories will not be recognized as route components
 
 2. If you do not use the built-in remix-flat-routes, you can set the routing convention by passing in `routes`, refer to [remix routes](https://remix.run/docs/en/main/file-conventions/vite-config#routes)
+
+3. If the exported `handle` has side effects, please pass `handleAsync: true` in the plugin configuration. The plugin will convert `handle` to an asynchronous function to resolve serialization issues caused by side effects.
 
 ## Inspiration
 

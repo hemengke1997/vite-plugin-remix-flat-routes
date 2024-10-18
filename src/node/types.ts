@@ -1,3 +1,4 @@
+import type * as Vite from 'vite'
 import { type RouteObject } from 'react-router-dom'
 import { type SetOptional, type ValueOf } from 'type-fest'
 import { type ConfigRoute } from './remix'
@@ -11,10 +12,15 @@ export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
    */
   legacy?: boolean
   /**
-   * @description 自定义meta文件命名
-   * @default 'meta'
+   * @description handle 转化为异步函数获取数据
+   *
+   * 当路由懒加载，但希望在路由加载前获取handle数据 (如 i18n namespace)，
+   * 可以将此选项设置为 true，插件会将 handle 转化为异步函数，
+   * 执行异步函数即可获取到懒加载路由的handle数据
+   *
+   * @default false
    */
-  meta?: string
+  handleAsync?: boolean
 }
 
 export type RouteExports<T> = AddHasPrefix<T>
@@ -26,35 +32,10 @@ type AddHasPrefix<T> = {
 export type ProcessedRouteManifest = {
   [routeId: string]: ConfigRoute &
     RouteExports<RouteObject> & {
-      // 自定义属性
       /**
        * 路由文件是否默认导出
        */
       hasDefaultExport?: boolean
-      /**
-       * meta 文件路径
-       */
-      metaFile?: string
-      /**
-       * meta 是否导出 action
-       */
-      hasMetaAction?: boolean
-      /**
-       * meta 是否导出 loader
-       */
-      hasMetaLoader?: boolean
-      /**
-       * meta 是否导出 handle
-       */
-      hasMetaHandle?: boolean
-      /**
-       * meta 是否导出 shouldRevalidate
-       */
-      hasMetaShouldRevalidate?: boolean
-      /**
-       * meta 是否导出 errorBoundary
-       */
-      hasMetaErrorBoundary?: boolean
     }
 }
 
@@ -62,7 +43,6 @@ export type Route = ValueOf<ProcessedRouteManifest> & {
   /**
    * @description 存放路由元数据的文件路径
    */
-  metaFile?: string
   children: Route[]
 }
 
@@ -80,10 +60,6 @@ export type PluginContext = {
    */
   remixOptions: RemixOptions
   /**
-   * @description meta 文件名
-   */
-  meta: string
-  /**
    * @description 是否使用 react-router-dom<=6.3.0 传统路由模式
    */
   isLegacyMode: boolean
@@ -91,6 +67,14 @@ export type PluginContext = {
    * 是否在remix环境中
    */
   inRemixContext: boolean
+  /**
+   * vite编译器
+   */
+  viteChildCompiler: Vite.ViteDevServer | null
+  /**
+   * handle 转化为异步函数获取数据
+   */
+  handleAsync: boolean
 }
 
 export type RemixOptions = {

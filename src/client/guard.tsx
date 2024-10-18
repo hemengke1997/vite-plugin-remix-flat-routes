@@ -1,12 +1,12 @@
 import { memo, type ReactNode, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import isPromise from 'p-is-promise'
+import { useIsomorphicLayoutEffectOnce } from './hooks/use-isomorphic-layout-effectOnce'
 import Navigator from './navigator'
-import { useIsomorphicLayoutEffectOnce } from './react-hooks'
 import { createRouteContext } from './route-context'
 import {
   type AnyObject,
-  type Meta,
+  type MatchRoute,
   type OnRouteMount,
   type OnRouteUnmount,
   type OnRouteWillMount,
@@ -17,19 +17,19 @@ let cache: ReactNode | null = null
 
 function Guard<M extends AnyObject>({
   element,
-  meta,
+  matchRoute,
   onRouteWillMount,
   onRouteMount,
   onRouteUnmount,
 }: {
   element: ReactNode
-  meta: Meta<M>
+  matchRoute: MatchRoute<M>
   onRouteWillMount?: OnRouteWillMount<M>
   onRouteMount?: OnRouteMount<M>
   onRouteUnmount?: OnRouteUnmount<M>
 }) {
   const RouteContext = useMemo(() => createRouteContext<M>(), [])
-  const { updateMetas } = RouteContext.usePicker(['updateMetas'])
+  const { updateMatchRoutes } = RouteContext.usePicker(['updateMatchRoutes'])
   const location = useLocation()
   const params = useParams()
   const navigate = useNavigate()
@@ -38,16 +38,16 @@ function Guard<M extends AnyObject>({
     () => ({
       location,
       params,
-      meta,
+      ...matchRoute,
     }),
-    [location, params, meta],
+    [location, params, matchRoute],
   )
 
   const fullPath = useMemo(() => location.pathname + location.search + location.hash, [location])
 
   useIsomorphicLayoutEffectOnce(() => {
     onRouteMount?.(payload)
-    updateMetas(fullPath)
+    updateMatchRoutes(fullPath)
     return () => {
       onRouteUnmount?.(payload)
     }

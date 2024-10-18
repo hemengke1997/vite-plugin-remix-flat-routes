@@ -1,19 +1,36 @@
-import type * as Vite from 'vite'
 import { type RouteObject } from 'react-router-dom'
 import { pascalSnakeCase } from 'change-case'
 import path from 'node:path'
+import serialize from 'serialize-javascript'
 import { normalizePath } from 'vite'
-import { findEntry, getRouteManifestModuleExports, getRouteModuleExports } from './remix'
+import { ViteNodeRunner } from 'vite-node/client'
+import { ViteNodeServer } from 'vite-node/server'
+import { getRouteManifestModuleExports } from './remix'
 import { type PluginContext, type ProcessedRouteManifest, type Route, type RouteExports } from './types'
 import { type LegacyRoute, type LegacyRouteObject, type ProcessedLegacyRouteManifest } from './types.legacy'
 import { capitalize } from './utils'
 
-export class RotueUtil {
-  constructor(public ctx: PluginContext) {}
+export class RouteUtil {
+  runner: ViteNodeRunner
 
-  stringifyRoutes(routes: Route[] | LegacyRoute[]) {
+  constructor(public ctx: PluginContext) {
+    const server = new ViteNodeServer(ctx.viteChildCompiler!)
+
+    this.runner = new ViteNodeRunner({
+      root: ctx.viteChildCompiler!.config.root,
+      base: ctx.viteChildCompiler!.config.base,
+      fetchModule(id) {
+        return server.fetchModule(id)
+      },
+      resolveId(id, importer) {
+        return server.resolveId(id, importer)
+      },
+    })
+  }
+
+  async stringifyRoutes(routes: Route[] | LegacyRoute[]) {
     const staticImport: string[] = []
-    const routesString = this.routesToString(routes, staticImport)
+    const routesString = await this.routesToString(routes, staticImport)
 
     return {
       componentsString: staticImport.join('\n'),
@@ -21,12 +38,14 @@ export class RotueUtil {
     }
   }
 
-  routesToString(routes: Route[] | LegacyRoute[], staticImport: string[]) {
+  async routesToString(routes: Route[] | LegacyRoute[], staticImport: string[]) {
+    let strs: string[]
     if (this.ctx.isLegacyMode) {
-      return `[${(routes as LegacyRoute[]).map((route) => this.legacyRouteToString(route, staticImport)).join(',')}]`
+      strs = await Promise.all((routes as LegacyRoute[]).map((route) => this.legacyRouteToString(route, staticImport)))
     } else {
-      return `[${(routes as Route[]).map((route) => this.dataApiRouteToString(route, staticImport)).join(',')}]`
+      strs = await Promise.all((routes as Route[]).map((route) => this.dataApiRouteToString(route, staticImport)))
     }
+    return `[${strs.join(',')}]`
   }
 
   /**
@@ -83,21 +102,30 @@ export class RotueUtil {
   /**
    * 传统路由模式下的路由转换
    */
-  legacyRouteToString(route: LegacyRoute, staticImport: string[]): string {
+  async legacyRouteToString(route: LegacyRoute, staticImport: string[]) {
     const componentPath = normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.file))
     const componentName = pascalSnakeCase(route.id)
-    const metaPath = route.meta ? normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.meta)) : null
 
     const isLazyComponent = route.hasDefaultExport
 
     const { setProps, props } = this.createPropsSetter<LegacyRouteObject>()
 
-    if (metaPath) {
-      staticImport.push(`import * as ${componentName}_Meta from '${metaPath}';`)
-      setProps('meta', `${componentName}_Meta`)
-    }
-
     if (isLazyComponent) {
+      if (this.ctx.handleAsync) {
+        setProps(
+          'handle',
+          /*ts*/ `async () => {
+            const { handle } = await import('${componentPath}')
+            if (!handle) return
+            return handle
+          }`,
+        )
+      } else {
+        const { handle } = await this.runner.executeFile(componentPath)
+        if (handle && typeof handle === 'object') {
+          setProps('handle', serialize(handle))
+        }
+      }
       setProps('lazyComponent', `() => import('${componentPath}')`)
     } else if (route.hasComponent) {
       staticImport.push(`import * as ${componentName} from '${componentPath}';`)
@@ -115,7 +143,7 @@ export class RotueUtil {
     setProps('index', `${route.index}`)
 
     if (route.children?.length) {
-      const children = this.routesToString(route.children, staticImport)
+      const children = await this.routesToString(route.children, staticImport)
       setProps('children', children)
     }
 
@@ -125,13 +153,9 @@ export class RotueUtil {
   /**
    * 数据路由模式下的路由转换
    */
-  dataApiRouteToString(route: Route, staticImport: string[]): string {
+  async dataApiRouteToString(route: Route, staticImport: string[]): Promise<string> {
     const importee = pascalSnakeCase(route.id)
     const componentPath = normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.file))
-
-    const metaFile = route.metaFile
-      ? normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.metaFile))
-      : null
 
     const { setProps, props } = this.createPropsSetter<RouteObject>()
 
@@ -141,48 +165,43 @@ export class RotueUtil {
 
     // 只要是默认导出，就视为懒加载组件
     if (route.hasDefaultExport) {
-      setProps(
-        'lazy',
-        /*js*/ `async () => {
-            const { default: Component, ...rest } = await import('${componentPath}');
+      const escapeHandle = /*ts*/ `async () => {
+            const { default: Component, handle, ...rest } = await import('${componentPath}');
             return {
               Component,
-              ...rest
-            }
+              ...rest,
+            };
+          }`
+
+      if (this.ctx.handleAsync) {
+        setProps('lazy', escapeHandle)
+        setProps(
+          'handle',
+          /*ts*/ `async () => {
+            const { handle } = await import('${componentPath}')
+            if (!handle) return
+            return handle
           }`,
-      )
+        )
+      } else {
+        setProps('lazy', escapeHandle.replace('handle,', ''))
+      }
     }
 
-    if (metaFile) {
-      // 如果存在 metaFile，认为是 meta 约定
-      // metaFile 中导出的所有属性认为是 Data API
-      // @see https://reactrouter.com/en/main/route/route
-
-      const metaImportee = pascalSnakeCase(`${route.id}/meta`)
-      staticImport.push(`import * as ${metaImportee} from '${metaFile}';`)
-      this.setDataApiToProps(props, { route, importee: metaImportee, meta: true })
-
-      if (route.hasComponent) {
-        // 命名导出
-        // 非懒加载组件
-        staticImport.push(`import * as ${importee} from '${componentPath}';`)
-        this.setDataApiToProps(props, { route, importee, meta: false })
-      }
-    } else {
-      // 遵循 react-router-dom 的约定
-      // 可自行导出 react-router-dom 支持的属性
-      // @see https://reactrouter.com/en/main/route/route
-
-      // eslint-disable-next-line no-lonely-if
-      if (!route.hasDefaultExport) {
-        // 非懒加载，把所有导出都认为是 Data API
-        staticImport.push(`import * as ${importee} from '${componentPath}';`)
-        this.setDataApiToProps(props, { route, importee, meta: false })
-      }
+    // 遵循 react-router-dom 的约定
+    // 可自行导出 react-router-dom 支持的属性
+    // @see https://reactrouter.com/en/main/route/route
+    if (!route.hasDefaultExport) {
+      // 非懒加载，把所有导出都认为是 Data API
+      staticImport.push(`import * as ${importee} from '${componentPath}';`)
+      this.setDataApiToProps(props, {
+        route,
+        importee,
+      })
     }
 
     if (route.children.length) {
-      const children = this.routesToString(route.children, staticImport)
+      const children = await this.routesToString(route.children, staticImport)
       setProps('children', children)
     }
 
@@ -197,23 +216,19 @@ export class RotueUtil {
     {
       route,
       importee,
-      meta,
     }: {
       route: Route | LegacyRoute
       importee: string
-      meta: boolean
     },
   ) {
     const { setProps } = this.createPropsSetter<R>(props)
 
     // React Element Exports
-
     setProps(
       'element',
       this.reactElementInExports(route, {
         importee,
         namedExport: 'Component',
-        field: meta ? 'metaComponent' : '',
       }),
     )
 
@@ -222,7 +237,6 @@ export class RotueUtil {
       this.reactElementInExports(route, {
         importee,
         namedExport: 'ErrorBoundary',
-        field: meta ? 'metaErrorBoundary' : '',
       }),
     )
 
@@ -232,7 +246,6 @@ export class RotueUtil {
       this.constantInExports(route, {
         importee,
         namedExport: 'loader',
-        field: meta ? 'metaLoader' : '',
       }),
     )
     setProps(
@@ -240,7 +253,6 @@ export class RotueUtil {
       this.constantInExports(route, {
         importee,
         namedExport: 'action',
-        field: meta ? 'metaAction' : '',
       }),
     )
 
@@ -249,7 +261,6 @@ export class RotueUtil {
       this.constantInExports(route, {
         importee,
         namedExport: 'handle',
-        field: meta ? 'metaHandle' : '',
       }),
     )
 
@@ -258,7 +269,6 @@ export class RotueUtil {
       this.constantInExports(route, {
         importee,
         namedExport: 'shouldRevalidate',
-        field: meta ? 'metaShouldRevalidate' : '',
       }),
     )
 
@@ -267,7 +277,6 @@ export class RotueUtil {
       this.constantInExports(route, {
         importee,
         namedExport: 'lazy',
-        field: meta ? 'metaLazy' : '',
       }),
     )
   }
@@ -293,8 +302,8 @@ export class RotueUtil {
     return this.isInExports(route, field || namedExport) ? `${importee}.${namedExport}` : ''
   }
 
-  async processRouteManifest(viteChildCompiler: Vite.ViteDevServer) {
-    const routeManifestExports = await getRouteManifestModuleExports(viteChildCompiler, this.ctx)
+  async processRouteManifest() {
+    const routeManifestExports = await getRouteManifestModuleExports(this.ctx)
 
     let routeManifest
     if (this.ctx.isLegacyMode) {
@@ -314,22 +323,12 @@ export class RotueUtil {
           hasDefaultExport: sourceExports.includes('default'),
           // Non-Lazy Component
           hasComponent: sourceExports.includes('Component'),
-
-          meta: this.resolveMetaFilePath(route.file),
         }
       }
     } else {
       routeManifest = this.ctx.routeManifest as ProcessedRouteManifest
 
       for (const [key, route] of Object.entries(routeManifest)) {
-        const metaFile = this.resolveMetaFilePath(route.file)
-
-        let metaSourceExports: string[] = []
-
-        if (metaFile) {
-          metaSourceExports = await getRouteModuleExports(viteChildCompiler, this.ctx, metaFile)
-        }
-
         const sourceExports = routeManifestExports[key]
 
         routeManifest[key] = {
@@ -356,27 +355,10 @@ export class RotueUtil {
           hasComponent: sourceExports.includes('Component'),
 
           hasDefaultExport: sourceExports.includes('default'),
-
-          // meta相关
-          metaFile,
-          hasMetaAction: metaSourceExports.includes('action'),
-          hasMetaLoader: metaSourceExports.includes('loader'),
-          hasMetaHandle: metaSourceExports.includes('handle'),
-          hasMetaShouldRevalidate: metaSourceExports.includes('shouldRevalidate'),
-          hasMetaErrorBoundary: metaSourceExports.includes('ErrorBoundary'),
         }
       }
     }
 
     return routeManifest
-  }
-
-  private resolveMetaFilePath(routeFile: string) {
-    const routeFileDir = path.dirname(routeFile)
-    let metaFile = findEntry(path.join(this.ctx.remixOptions.appDirectory, routeFileDir), this.ctx.meta)
-    if (metaFile) {
-      metaFile = path.join(routeFileDir, metaFile)
-    }
-    return metaFile ? normalizePath(metaFile) : undefined
   }
 }

@@ -10,9 +10,9 @@ declare module 'virtual:remix-flat-routes' {
      */
     lazyComponent?: () => Promise<any>
     /**
-     * 路由元信息 (legacy mode)
+     * 路由handle (legacy mode)
      */
-    meta?: {
+    handle?: {
       [key: string]: any
     }
     /**

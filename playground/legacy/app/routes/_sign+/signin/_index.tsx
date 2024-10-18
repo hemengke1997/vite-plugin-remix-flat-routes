@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
-import { type PropsWithMeta, useMetas } from 'vite-plugin-remix-flat-routes/client'
+import { type PropsWithMatchRoute, useMatchRoutes } from 'vite-plugin-remix-flat-routes/client'
 
 // 非懒加载路由组件
-export function Component(props: PropsWithMeta) {
-  const { metas } = useMetas()
+export function Component(props: PropsWithMatchRoute) {
+  const matchRoutes = useMatchRoutes()
   useEffect(() => {
-    console.log(metas, 'signin meta')
-    console.log(props.meta, 'signin props meta')
+    console.log(matchRoutes, 'signin matchRoutes')
+    console.log(props, 'signin props')
   }, [])
   return <div>/signin/index.jsx</div>
 }
