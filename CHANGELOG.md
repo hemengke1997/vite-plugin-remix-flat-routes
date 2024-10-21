@@ -1,5 +1,10 @@
 # [4.0.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.5.6...v4.0.0) (2024-10-21)
 
+In order to reduce the user's understanding burden, we deprecated the meta convention and used the data-api convention of react-router, which made the code more unified
+
+### Refactor
+
+* deprecated `meta` convention, use `handleAsync` instead
 
 
 ## [3.5.6](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.5.5...v3.5.6) (2024-09-25)
