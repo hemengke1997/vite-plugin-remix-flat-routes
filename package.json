@@ -63,7 +63,9 @@
     "react-dom": ">=17",
     "react-router": ">=6",
     "react-router-dom": ">=6",
-    "vite": ">=5"
+    "vite": ">=5",
+    "vite-plugin-react": ">=4.3.2",
+    "vite-plugin-react-swc": ">=3.6.0"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -76,6 +78,12 @@
       "optional": true
     },
     "react-router": {
+      "optional": true
+    },
+    "vite-plugin-react": {
+      "optional": true
+    },
+    "vite-plugin-react-swc": {
       "optional": true
     }
   },

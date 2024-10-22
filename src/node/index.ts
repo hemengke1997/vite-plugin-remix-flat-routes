@@ -6,7 +6,7 @@ import { importViteEsmSync, preloadViteEsm } from './import-vite-esm-sync'
 import { createClientRoutes, resolveRoutes } from './remix'
 import { RouteUtil } from './route-util'
 import { type Options, type PluginContext } from './types'
-import { getVitePluginName, validateRouteDir } from './utils'
+import { getVitePluginName, reactRefreshHack, validateRouteDir } from './utils'
 import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } from './virtual'
 
 function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
@@ -139,6 +139,11 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
 
         return {
           code: `import React from 'react';
+          ${reactRefreshHack({
+            appDirectory,
+            routeManifest,
+            viteConfig,
+          })}
           ${componentsString}
           export const routes = ${routesString};
           `,
