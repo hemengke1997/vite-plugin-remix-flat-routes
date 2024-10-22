@@ -1,3 +1,12 @@
+## [4.0.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.0.0...v4.0.1) (2024-10-22)
+
+
+### Bug Fixes
+
+* react-refresh support ([a312ed0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/a312ed0fc462f0e855d13037a95a2ef25b74c580))
+
+
+
 # [4.0.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v3.5.6...v4.0.0) (2024-10-21)
 
 In order to reduce the user's understanding burden, we deprecated the meta convention and used the data-api convention of react-router, which made the code more unified
