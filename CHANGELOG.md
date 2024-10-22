@@ -1,3 +1,12 @@
+## [4.0.2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.0.1...v4.0.2) (2024-10-22)
+
+
+### Bug Fixes
+
+* ssr edge case ([0148c97](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/0148c97144f58c75c081973ce2cdc1af71649f9d))
+
+
+
 ## [4.0.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.0.0...v4.0.1) (2024-10-22)
 
 
