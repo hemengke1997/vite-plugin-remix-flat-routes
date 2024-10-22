@@ -14,7 +14,7 @@ export const handle = {
   crumb: () => <Link to='/sign'>To Sign</Link>,
 }
 
-export default function () {
+export default function Page() {
   const matches = useMatches()
 
   useEffect(() => {

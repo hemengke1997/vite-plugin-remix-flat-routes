@@ -1,7 +1,7 @@
 import { Button, Card } from 'antd'
 import { useMatchRoutes } from 'vite-plugin-remix-flat-routes/client'
 
-export default function () {
+export default function Page() {
   const matchRoutes = useMatchRoutes<
     () => Promise<{
       fn: () => void

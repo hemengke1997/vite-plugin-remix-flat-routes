@@ -38,107 +38,108 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
     viteChildCompiler: null,
   }
 
-  return {
-    enforce: 'pre',
-    name: 'vite-plugin-remix-flat-routes',
-    /**
-     * @see `config` in @remix-run/dev/vite/plugin.ts
-     */
-    async config(_viteUserConfig, _viteConfigEnv) {
-      // Preload Vite's ESM build up-front as soon as we're in an async context
-      await preloadViteEsm()
+  return [
+    {
+      enforce: 'pre',
+      name: 'vite-plugin-remix-flat-routes',
+      /**
+       * @see `config` in @remix-run/dev/vite/plugin.ts
+       */
+      async config(_viteUserConfig, _viteConfigEnv) {
+        // Preload Vite's ESM build up-front as soon as we're in an async context
+        await preloadViteEsm()
 
-      viteUserConfig = _viteUserConfig
-      viteConfigEnv = _viteConfigEnv
-    },
-    /**
-     * @see `configResolved` in @remix-run/dev/vite/plugin.ts
-     */
-    async configResolved(resolvedViteConfig) {
-      await initEsModuleLexer
+        viteUserConfig = _viteUserConfig
+        viteConfigEnv = _viteConfigEnv
+      },
+      /**
+       * @see `configResolved` in @remix-run/dev/vite/plugin.ts
+       */
+      async configResolved(resolvedViteConfig) {
+        await initEsModuleLexer
 
-      viteConfig = resolvedViteConfig
+        viteConfig = resolvedViteConfig
 
-      ctx.rootDirectory = viteConfig.root
+        ctx.rootDirectory = viteConfig.root
 
-      if (viteConfig.plugins.some((plugin) => getVitePluginName(plugin) === 'remix')) {
-        // in Remix Context
-        ctx.inRemixContext = true
-      }
+        if (viteConfig.plugins.some((plugin) => getVitePluginName(plugin) === 'remix')) {
+          // in Remix Context
+          ctx.inRemixContext = true
+        }
 
-      // Only create the child compiler for `vite build` command
-      // Because we can reuse vite server as the child compiler for `vite serve`
-      if (viteConfig.command === 'build') {
-        const vite = importViteEsmSync()
+        // Only create the child compiler for `vite build` command
+        // Because we can reuse vite server as the child compiler for `vite serve`
+        if (viteConfig.command === 'build') {
+          const vite = importViteEsmSync()
 
-        // We load the same Vite config file again for the child compiler so
-        // that both parent and child compiler's plugins have independent state.
-        // If we re-used the `viteUserConfig.plugins` array for the child
-        // compiler, it could lead to mutating shared state between plugin
-        // instances in unexpected ways, e.g. during `vite build` the
-        // `configResolved` plugin hook would be called with `command = "build"`
-        // by parent and then `command = "serve"` by child, which some plugins
-        // may respond to by updating state referenced by the parent.
-        const childCompilerConfigFile = await vite.loadConfigFromFile(
-          {
-            command: viteConfig.command,
+          // We load the same Vite config file again for the child compiler so
+          // that both parent and child compiler's plugins have independent state.
+          // If we re-used the `viteUserConfig.plugins` array for the child
+          // compiler, it could lead to mutating shared state between plugin
+          // instances in unexpected ways, e.g. during `vite build` the
+          // `configResolved` plugin hook would be called with `command = "build"`
+          // by parent and then `command = "serve"` by child, which some plugins
+          // may respond to by updating state referenced by the parent.
+          const childCompilerConfigFile = await vite.loadConfigFromFile(
+            {
+              command: viteConfig.command,
+              mode: viteConfig.mode,
+              isSsrBuild: viteConfigEnv.isSsrBuild,
+            },
+            viteConfig.configFile,
+          )
+
+          ctx.viteChildCompiler = await vite.createServer({
+            ...viteUserConfig,
             mode: viteConfig.mode,
-            isSsrBuild: viteConfigEnv.isSsrBuild,
-          },
-          viteConfig.configFile,
-        )
+            server: {
+              watch: null,
+              preTransformRequests: false,
+              hmr: false,
+            },
+            configFile: ctx.inRemixContext ? undefined : false,
+            envFile: false,
+            plugins: [
+              ...(childCompilerConfigFile?.config.plugins ?? [])
+                .flat()
+                // Exclude this plugin from the child compiler to prevent an
+                // infinite loop (plugin creates a child compiler with the same
+                // plugin that creates another child compiler, repeat ad
+                // infinitum), and to prevent the manifest from being written to
+                // disk from the child compiler. This is important in the
+                // production build because the child compiler is a Vite dev
+                // server and will generate incorrect manifests.
+                .filter((plugin) => getVitePluginName(plugin) === 'vite-plugin-remix-flat-routes'),
+            ],
+          })
 
-        ctx.viteChildCompiler = await vite.createServer({
-          ...viteUserConfig,
-          mode: viteConfig.mode,
-          server: {
-            watch: null,
-            preTransformRequests: false,
-            hmr: false,
-          },
-          configFile: ctx.inRemixContext ? undefined : false,
-          envFile: false,
-          plugins: [
-            ...(childCompilerConfigFile?.config.plugins ?? [])
-              .flat()
-              // Exclude this plugin from the child compiler to prevent an
-              // infinite loop (plugin creates a child compiler with the same
-              // plugin that creates another child compiler, repeat ad
-              // infinitum), and to prevent the manifest from being written to
-              // disk from the child compiler. This is important in the
-              // production build because the child compiler is a Vite dev
-              // server and will generate incorrect manifests.
-              .filter((plugin) => getVitePluginName(plugin) === 'vite-plugin-remix-flat-routes'),
-          ],
-        })
+          await ctx.viteChildCompiler.pluginContainer.buildStart({})
+        }
+      },
+      configureServer(server) {
+        // viteConfig.command === 'serve'
+        ctx.viteChildCompiler = server
+      },
+      async resolveId(id) {
+        if (id === virtualModuleId) {
+          return resolvedVirtualModuleId
+        }
+        return null
+      },
+      async load(id) {
+        if (id === resolvedVirtualModuleId) {
+          const { routeManifest } = await resolveRoutes(ctx)
 
-        await ctx.viteChildCompiler.pluginContainer.buildStart({})
-      }
-    },
-    configureServer(server) {
-      // viteConfig.command === 'serve'
-      ctx.viteChildCompiler = server
-    },
-    async resolveId(id) {
-      if (id === virtualModuleId) {
-        return resolvedVirtualModuleId
-      }
-      return null
-    },
-    async load(id) {
-      if (id === resolvedVirtualModuleId) {
-        const { routeManifest } = await resolveRoutes(ctx)
+          ctx.routeManifest = routeManifest
+          const routeUtil = new RouteUtil(ctx)
 
-        ctx.routeManifest = routeManifest
-        const routeUtil = new RouteUtil(ctx)
+          await routeUtil.processRouteManifest()
+          const routes = createClientRoutes(ctx.routeManifest)
 
-        await routeUtil.processRouteManifest()
-        const routes = createClientRoutes(ctx.routeManifest)
+          const { routesString, componentsString } = await routeUtil.stringifyRoutes(routes)
 
-        const { routesString, componentsString } = await routeUtil.stringifyRoutes(routes)
-
-        return {
-          code: `import React from 'react';
+          return {
+            code: `import React from 'react';
           ${reactRefreshHack({
             appDirectory,
             routeManifest,
@@ -147,31 +148,32 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
           ${componentsString}
           export const routes = ${routesString};
           `,
-          map: null,
+            map: null,
+          }
         }
-      }
-      return null
-    },
-    /**
-     * @see `buildEnd` in @remix-run/dev/vite/plugin.ts
-     */
-    async buildEnd() {
-      ctx.viteChildCompiler?.httpServer?.close()
-      await ctx.viteChildCompiler?.close()
-    },
-    handleHotUpdate(ctx) {
-      invalidateVirtualModule(ctx.server)
-    },
-    watchChange(_, change) {
-      if (change.event === 'update') {
-        return
-      }
+        return null
+      },
+      /**
+       * @see `buildEnd` in @remix-run/dev/vite/plugin.ts
+       */
+      async buildEnd() {
+        ctx.viteChildCompiler?.httpServer?.close()
+        await ctx.viteChildCompiler?.close()
+      },
+      handleHotUpdate({ server }) {
+        invalidateVirtualModule(server)
+      },
+      watchChange(_, change) {
+        if (change.event === 'update') {
+          return
+        }
 
-      if (ctx.viteChildCompiler) {
-        invalidateVirtualModule(ctx.viteChildCompiler, true)
-      }
+        if (ctx.viteChildCompiler) {
+          invalidateVirtualModule(ctx.viteChildCompiler, true)
+        }
+      },
     },
-  }
+  ]
 }
 
 export { remixFlatRoutes, Options }

@@ -52,11 +52,13 @@ export function reactRefreshHack(config: {
   }
 
   const routeFiles = getRouteFiles({ viteConfig, appDirectory, routeManifest })
-  return /*js*/ `window.__getReactRefreshIgnoredExports = ({ id }) => {
-    const routeFiles = ${JSON.stringify(routeFiles)};
-    if (routeFiles.includes(id)) {
-      return ['handle', 'loader', 'action', 'shouldRevalidate', 'ErrorBoundary', 'lazy']
+  return /*js*/ `if (typeof window !== 'undefined' && import.meta.hot) {
+    window.__getReactRefreshIgnoredExports = ({ id }) => {
+      const routeFiles = ${JSON.stringify(routeFiles)};
+      if (routeFiles.includes(id)) {
+        return ['handle', 'loader', 'action', 'shouldRevalidate', 'lazy']
+      }
+      return []
     }
-    return []
   }`
 }

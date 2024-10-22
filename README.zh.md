@@ -125,7 +125,7 @@ export const handle = {
   test: '这是handle',
 }
 
-export default function () {
+export default function Page() {
   return <div>懒加载的路由</div>
 }
 
@@ -196,7 +196,7 @@ root.render(
 #### 默认导出（懒加载）
 
 ```tsx
-export default function () {
+export default function Page() {
   return <div>懒加载的路由</div>
 }
 

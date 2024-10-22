@@ -123,7 +123,7 @@ export const handle = {
   test: 'this is handle',
 }
 
-export default function () {
+export default function Page() {
   return <div>Lazy-loaded route</div>
 }
 
@@ -194,7 +194,7 @@ root.render(
 
 #### Default export (lazy-loaded)
 ```tsx
-export default function () {
+export default function Page() {
   return <div>Lazy-loaded route</div>
 }
 
