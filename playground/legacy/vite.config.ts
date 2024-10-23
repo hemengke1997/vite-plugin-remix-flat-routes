@@ -12,7 +12,6 @@ export default defineConfig({
       flatRoutesOptions: {
         ignoredRouteFiles: ['**/components/**', '**/hooks/**', '**/contexts/**'],
       },
-      handleAsync: true,
     }),
   ],
 })

@@ -2,6 +2,7 @@ import type * as Vite from 'vite'
 import fs from 'node:fs'
 import path from 'node:path'
 import isPromise from 'p-is-promise'
+import serializeJavascript from 'serialize-javascript'
 import { importViteEsmSync } from './import-vite-esm-sync'
 import { type RouteManifest } from './remix-flat-routes'
 
@@ -30,35 +31,57 @@ function getRouteFiles(config: {
   const vite = importViteEsmSync()
   return (
     Object.values(config.routeManifest).map((route) =>
-      vite.normalizePath(path.join(config.viteConfig.root, config.appDirectory, route.file)),
+      vite.normalizePath(path.join(config.appDirectory, route.file)),
     ) || []
   )
 }
 
+export const reactRefreshUnsupportedExports = ['handle', 'loader', 'action', 'shouldRevalidate', 'lazy']
+
 export function reactRefreshHack(config: {
-  viteConfig: Vite.ResolvedConfig | undefined
+  viteConfig: Vite.ResolvedConfig
   appDirectory: string
   routeManifest: RouteManifest
+  enable: boolean
 }) {
-  const { viteConfig, appDirectory, routeManifest } = config
-  if (
-    !viteConfig ||
-    viteConfig.isProduction ||
-    viteConfig.build.ssr ||
-    viteConfig.command === 'build' ||
-    viteConfig.server.hmr === false
-  ) {
-    return ''
-  }
+  const { viteConfig, appDirectory, routeManifest, enable } = config
+
+  if (!enable) return ''
 
   const routeFiles = getRouteFiles({ viteConfig, appDirectory, routeManifest })
-  return /*js*/ `if (typeof window !== 'undefined' && import.meta.hot) {
-    window.__getReactRefreshIgnoredExports = ({ id }) => {
-      const routeFiles = ${JSON.stringify(routeFiles)};
+
+  return `if (typeof window !== 'undefined' && import.meta.hot) {
+    window.__getReactRefreshIgnoredExports = ({ id, prevExports, nextExports }) => {
+      const routeFiles = ${JSON.stringify(routeFiles)}
+      
+      import.meta.hot.send('remix-flat-routes:react-refresh', {
+        id,
+        prevExports,
+        nextExports,
+      })
+      
       if (routeFiles.includes(id)) {
-        return ['handle', 'loader', 'action', 'shouldRevalidate', 'lazy']
+        return ${JSON.stringify(reactRefreshUnsupportedExports)}
       }
       return []
     }
-  }`
+  }
+  `
+}
+
+export function isObjEq<T extends Record<string, any>>(a: T, b: T): boolean {
+  const keys1 = Object.keys(a)
+  const keys2 = Object.keys(b)
+
+  if (keys1.length !== keys2.length) {
+    return false
+  }
+
+  for (const key of keys1) {
+    if (serializeJavascript(a[key]) !== serializeJavascript(b[key])) {
+      return false
+    }
+  }
+
+  return true
 }

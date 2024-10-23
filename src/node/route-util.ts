@@ -1,32 +1,14 @@
 import { type RouteObject } from 'react-router-dom'
 import { pascalSnakeCase } from 'change-case'
 import path from 'node:path'
-import serialize from 'serialize-javascript'
-import { normalizePath } from 'vite'
-import { ViteNodeRunner } from 'vite-node/client'
-import { ViteNodeServer } from 'vite-node/server'
+import { importViteEsmSync } from './import-vite-esm-sync'
 import { getRouteManifestModuleExports } from './remix'
 import { type PluginContext, type ProcessedRouteManifest, type Route, type RouteExports } from './types'
 import { type LegacyRoute, type LegacyRouteObject, type ProcessedLegacyRouteManifest } from './types.legacy'
 import { capitalize } from './utils'
 
 export class RouteUtil {
-  runner: ViteNodeRunner
-
-  constructor(public ctx: PluginContext) {
-    const server = new ViteNodeServer(ctx.viteChildCompiler!)
-
-    this.runner = new ViteNodeRunner({
-      root: ctx.viteChildCompiler!.config.root,
-      base: ctx.viteChildCompiler!.config.base,
-      fetchModule(id) {
-        return server.fetchModule(id)
-      },
-      resolveId(id, importer) {
-        return server.resolveId(id, importer)
-      },
-    })
-  }
+  constructor(public ctx: PluginContext) {}
 
   async stringifyRoutes(routes: Route[] | LegacyRoute[]) {
     const staticImport: string[] = []
@@ -103,7 +85,8 @@ export class RouteUtil {
    * 传统路由模式下的路由转换
    */
   async legacyRouteToString(route: LegacyRoute, staticImport: string[]) {
-    const componentPath = normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.file))
+    const vite = importViteEsmSync()
+    const componentPath = vite.normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.file))
     const componentName = pascalSnakeCase(route.id)
 
     const isLazyComponent = route.hasDefaultExport
@@ -111,21 +94,14 @@ export class RouteUtil {
     const { setProps, props } = this.createPropsSetter<LegacyRouteObject>()
 
     if (isLazyComponent) {
-      if (this.ctx.handleAsync) {
-        setProps(
-          'handle',
-          /*ts*/ `async () => {
-            const { handle } = await import('${componentPath}')
-            if (!handle) return
-            return handle
-          }`,
-        )
-      } else {
-        const { handle } = await this.runner.executeFile(componentPath)
-        if (handle && typeof handle === 'object') {
-          setProps('handle', serialize(handle))
-        }
-      }
+      setProps(
+        'handle',
+        /*js*/ `async () => {
+          const { handle } = await import('${componentPath}')
+          if (!handle) return
+          return handle
+        }`,
+      )
       setProps('lazyComponent', `() => import('${componentPath}')`)
     } else if (route.hasComponent) {
       staticImport.push(`import * as ${componentName} from '${componentPath}';`)
@@ -155,7 +131,10 @@ export class RouteUtil {
    */
   async dataApiRouteToString(route: Route, staticImport: string[]): Promise<string> {
     const importee = pascalSnakeCase(route.id)
-    const componentPath = normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.file))
+
+    const vite = importViteEsmSync()
+
+    const componentPath = vite.normalizePath(path.resolve(this.ctx.remixOptions.appDirectory, route.file))
 
     const { setProps, props } = this.createPropsSetter<RouteObject>()
 
@@ -305,60 +284,71 @@ export class RouteUtil {
   async processRouteManifest() {
     const routeManifestExports = await getRouteManifestModuleExports(this.ctx)
 
-    let routeManifest
     if (this.ctx.isLegacyMode) {
-      routeManifest = this.ctx.routeManifest as ProcessedLegacyRouteManifest
-      for (const [key, route] of Object.entries(routeManifest)) {
-        const sourceExports = routeManifestExports[key]
+      const routeManifest = this.ctx.routeManifest as ProcessedLegacyRouteManifest
+      await Promise.all(
+        Object.entries(routeManifest).map(async ([key, route]) => {
+          const sourceExports = routeManifestExports[key]
 
-        routeManifest[key] = {
-          ...route,
-          file: route.file,
-          id: route.id,
-          path: route.path,
-          index: route.index,
-          caseSensitive: route.caseSensitive,
+          routeManifest[key] = {
+            ...route,
+            file: route.file,
+            id: route.id,
+            path: route.path,
+            index: route.index,
+            caseSensitive: route.caseSensitive,
 
-          // lazy Component
-          hasDefaultExport: sourceExports.includes('default'),
-          // Non-Lazy Component
-          hasComponent: sourceExports.includes('Component'),
-        }
-      }
+            // lazy Component
+            hasDefaultExport: sourceExports.includes('default'),
+            // Non-Lazy Component
+            hasComponent: sourceExports.includes('Component'),
+          }
+        }),
+      )
+
+      return routeManifest
     } else {
-      routeManifest = this.ctx.routeManifest as ProcessedRouteManifest
+      const routeManifest = this.ctx.routeManifest as ProcessedRouteManifest
 
-      for (const [key, route] of Object.entries(routeManifest)) {
-        const sourceExports = routeManifestExports[key]
+      await Promise.all(
+        Object.entries(routeManifest).map(async ([key, route]) => {
+          const sourceExports = routeManifestExports[key]
 
-        routeManifest[key] = {
-          ...route,
-          file: route.file,
-          id: route.id,
-          parentId: route.parentId,
-          path: route.path,
-          index: route.index,
-          caseSensitive: route.caseSensitive,
-          /**
-           * @see https://reactrouter.com/en/main/route/route
-           */
-          hasAction: sourceExports.includes('action'),
-          hasLoader: sourceExports.includes('loader'),
-          hasHandle: sourceExports.includes('handle'),
-          hasShouldRevalidate: sourceExports.includes('shouldRevalidate'),
-          hasErrorBoundary: sourceExports.includes('ErrorBoundary'),
-          /**
-           * @ses https://reactrouter.com/en/main/route/lazy
-           * Lazy Component
-           */
-          hasLazy: sourceExports.includes('lazy'),
-          hasComponent: sourceExports.includes('Component'),
+          routeManifest[key] = {
+            ...route,
+            file: route.file,
+            id: route.id,
+            parentId: route.parentId,
+            path: route.path,
+            index: route.index,
+            caseSensitive: route.caseSensitive,
+            /**
+             * @see https://reactrouter.com/en/main/route/route
+             */
+            hasAction: sourceExports.includes('action'),
+            hasLoader: sourceExports.includes('loader'),
+            hasHandle: sourceExports.includes('handle'),
+            hasShouldRevalidate: sourceExports.includes('shouldRevalidate'),
+            hasErrorBoundary: sourceExports.includes('ErrorBoundary'),
+            /**
+             * @ses https://reactrouter.com/en/main/route/lazy
+             * Lazy Component
+             */
+            hasLazy: sourceExports.includes('lazy'),
+            hasComponent: sourceExports.includes('Component'),
 
-          hasDefaultExport: sourceExports.includes('default'),
-        }
-      }
+            hasDefaultExport: sourceExports.includes('default'),
+          }
+        }),
+      )
+      return routeManifest
     }
+  }
 
-    return routeManifest
+  getRoute(file: string): Route {
+    const vite = importViteEsmSync()
+    const routePath = vite.normalizePath(path.relative(this.ctx.remixOptions.appDirectory, file))
+    const route = Object.values(this.ctx.routeManifest).find((r) => vite.normalizePath(r.file) === routePath)
+    return route
   }
 }

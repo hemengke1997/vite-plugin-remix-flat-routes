@@ -1,6 +1,11 @@
 import { type PropsWithChildren } from 'react'
+import { toast } from 'react-atom-toast'
 import { Link, ScrollRestoration, useLocation, useOutlet, useRouteError } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
+
+toast.setDefaultOptions({
+  className: 'bg-slate-400',
+})
 
 function RouteAnimation({ children }: PropsWithChildren) {
   const location = useLocation()

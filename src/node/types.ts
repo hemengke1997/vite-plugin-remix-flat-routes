@@ -18,9 +18,24 @@ export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
    * 可以将此选项设置为 true，插件会将 handle 转化为异步函数，
    * 执行异步函数即可获取到懒加载路由的handle数据
    *
+   * 传统路由模式下，此选项无效，始终为异步handle
+   *
    * @default false
    */
   handleAsync?: boolean
+  /**
+   * @description 是否对 react-refresh 进行 hack
+   *
+   * react-refresh 无法处理非组件导出，hmr 会导致页面刷新
+   *
+   * 开启此选项，插件会 hack react-refresh，避免页面刷新
+   *
+   * 需要 @vitejs/plugin-react>=4.3.2
+   * 或 @vitejs/plugin-react-swc>=3.6.0
+   *
+   * @default true
+   */
+  reactRefresh?: boolean
 }
 
 export type RouteExports<T> = AddHasPrefix<T>
@@ -31,6 +46,7 @@ type AddHasPrefix<T> = {
 
 export type ProcessedRouteManifest = {
   [routeId: string]: ConfigRoute &
+    // Add `has` prefix to each key
     RouteExports<RouteObject> & {
       /**
        * 路由文件是否默认导出
@@ -75,6 +91,10 @@ export type PluginContext = {
    * handle 转化为异步函数获取数据
    */
   handleAsync: boolean
+  /**
+   * hack react-refresh
+   */
+  reactRefresh: boolean
 }
 
 export type RemixOptions = {
