@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-remix-flat-routes",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "remix-flat-routes convention-based routing, compatible with react-router-dom>=6 data routing and non-data routing",
   "type": "module",
   "keywords": [

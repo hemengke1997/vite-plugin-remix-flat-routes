@@ -1,3 +1,17 @@
+## [4.1.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.0.2...v4.1.1) (2024-10-23)
+
+
+### Bug Fixes
+
+* exports should be compared when not supported by react-refresh ([03de882](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/03de88202faab2b9998fc210a0c5bccc612b5ecd))
+
+
+### Features
+
+* react-refresh support ([ebc0542](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/ebc0542a7b751105ec5283d6727723008804fcd6))
+
+
+
 # [4.1.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.0.2...v4.1.0) (2024-10-23)
 
 
