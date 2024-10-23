@@ -69,7 +69,19 @@ export function reactRefreshHack(config: {
   `
 }
 
+function pick<T extends Record<string, any>>(obj: T, keys: string[]) {
+  const result = {} as Record<string, any>
+  for (const key of keys) {
+    if (obj[key] !== undefined) {
+      result[key] = obj[key]
+    }
+  }
+  return result as T
+}
+
 export function isObjEq<T extends Record<string, any>>(a: T, b: T): boolean {
+  a = pick(a, reactRefreshUnsupportedExports)
+  b = pick(b, reactRefreshUnsupportedExports)
   const keys1 = Object.keys(a)
   const keys2 = Object.keys(b)
 
