@@ -1,3 +1,12 @@
+# [4.1.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.0.2...v4.1.0) (2024-10-23)
+
+
+### Features
+
+* react-refresh support ([ebc0542](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/ebc0542a7b751105ec5283d6727723008804fcd6))
+
+
+
 ## [4.0.2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.0.1...v4.0.2) (2024-10-22)
 
 

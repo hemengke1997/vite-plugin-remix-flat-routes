@@ -2,6 +2,11 @@
 
 > Integrate [Remix](https://remix.run/docs/en/main/file-conventions/routes) & [remix-flat-routes](https://github.com/kiliman/remix-flat-routes) convention-based routing, supporting [react-router data routing/traditional routing](https://reactrouter.com/en/main/routers/create-browser-router)
 
+## Note
+
+For react-refresh HMR support, please install `@vitejs/plugin-react >= 4.3.2` or `@vitejs/plugin-react-swc >= 3.6.0`
+
+
 [中文文档](./README.zh.md)
 
 ## Installation

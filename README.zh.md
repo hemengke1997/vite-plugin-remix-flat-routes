@@ -2,6 +2,12 @@
 
 > 集成 [Remix](https://remix.run/docs/en/main/file-conventions/routes) & [remix-flat-routes](https://github.com/kiliman/remix-flat-routes) 约定式路由，支持 [react-router 数据路由/传统路由](https://reactrouter.com/en/main/routers/create-browser-router)
 
+## 注意
+
+为了支持 react-refresh hmr，请安装 `@vitejs/plugin-react >= 4.3.2` 或 `@vitejs/plugin-react-swc >= 3.6.0`
+
+[中文文档](./README.zh.md)
+
 [English Docs](./README.md)
 
 ## 安装
