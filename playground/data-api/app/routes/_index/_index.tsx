@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { type LoaderFunction } from 'react-router-dom'
 import { Link, useMatches } from 'react-router-dom'
 import { Button, Card } from 'antd'
+import { manifest } from 'virtual:public-typescript-manifest'
 import { useBearStore } from '../../store'
 
 const x = 1
@@ -16,6 +17,8 @@ export const handle = {
 
 export default function Page() {
   const matches = useMatches()
+
+  console.log(manifest)
 
   useEffect(() => {
     console.log(matches, 'matches')

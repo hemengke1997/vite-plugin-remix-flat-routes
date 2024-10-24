@@ -29,6 +29,7 @@ function RouteAnimation({ children }: PropsWithChildren) {
 
 export default function Root() {
   const outlet = useOutlet()
+
   return (
     <>
       <RouteAnimation>

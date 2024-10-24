@@ -1,3 +1,5 @@
+/// <reference types="vite-plugin-public-typescript/virtual" />
+
 import { matchRoutes, type RouteObject } from 'react-router-dom'
 import { createRoot } from 'react-dom/client'
 import { routes } from 'virtual:remix-flat-routes'

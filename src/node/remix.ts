@@ -106,7 +106,7 @@ export const getRouteModuleExports = async (
   // understand the exports from anything that Vite can compile to JS, not just
   // the route file formats that the Remix compiler historically supported.
 
-  const ssr = false
+  const ssr = true
   const { pluginContainer, moduleGraph } = viteChildCompiler
 
   const routePath = path.resolve(ctx.remixOptions.appDirectory, routeFile)
