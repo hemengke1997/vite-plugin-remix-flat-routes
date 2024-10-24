@@ -1,3 +1,12 @@
+## [4.1.2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.1.1...v4.1.2) (2024-10-24)
+
+
+### Bug Fixes
+
+* virtual module transform error ([eb28b27](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/eb28b27efd0df73054356efeb7031e9002b318d6))
+
+
+
 ## [4.1.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.0.2...v4.1.1) (2024-10-23)
 
 
