@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { type LoaderFunction } from 'react-router-dom'
 import { Link, useMatches } from 'react-router-dom'
 import { Button, Card } from 'antd'
+// @ts-ignore
 import { manifest } from 'virtual:public-typescript-manifest'
 import { useBearStore } from '../../store'
 

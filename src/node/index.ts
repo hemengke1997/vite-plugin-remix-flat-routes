@@ -10,7 +10,7 @@ import { getVitePluginName, isObjEq, reactRefreshHack, validateRouteDir } from '
 import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } from './virtual'
 
 function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
-  const { appDirectory = 'app', flatRoutesOptions, legacy, handleAsync = false, reactRefresh = true } = options
+  const { appDirectory = 'app', flatRoutesOptions, routes, legacy, handleAsync = false, reactRefresh = true } = options
 
   const routeDir = flatRoutesOptions?.routeDir || 'routes'
   const routeDirs = Array.isArray(routeDir) ? routeDir : [routeDir]
@@ -30,7 +30,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
   let routeUtil: RouteUtil
 
   const ctx: PluginContext = {
-    remixOptions: { appDirectory, flatRoutesOptions },
+    remixOptions: { appDirectory, flatRoutesOptions, routes },
     isLegacyMode,
     handleAsync,
     rootDirectory: process.cwd(),

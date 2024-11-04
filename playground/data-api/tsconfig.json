@@ -5,7 +5,7 @@
     "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "node",
-    "types": ["vite-plugin-remix-flat-routes/virtual"],
+    "types": ["vite-plugin-remix-flat-routes/virtual", "vite-plugin-public-typescript/virtual"],
     "esModuleInterop": true
   }
 }

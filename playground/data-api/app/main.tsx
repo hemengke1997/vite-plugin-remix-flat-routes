@@ -1,10 +1,19 @@
-/// <reference types="vite-plugin-public-typescript/virtual" />
-
-import { matchRoutes, type RouteObject } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { ConfigProvider, theme } from 'antd'
 import { createRoot } from 'react-dom/client'
 import { routes } from 'virtual:remix-flat-routes'
-import App from './app'
+import { GlobalContext } from './contexts/global-context'
 import './css/index.css'
 
-console.log(matchRoutes(routes as RouteObject[], window.location.pathname), 'matchRoutes')
-createRoot(document.querySelector('#root')!).render(<App />)
+createRoot(document.querySelector('#root')!).render(
+  <ConfigProvider
+    theme={{
+      cssVar: true,
+      algorithm: [theme.darkAlgorithm],
+    }}
+  >
+    <GlobalContext.Provider>
+      <RouterProvider router={createBrowserRouter(routes)} />
+    </GlobalContext.Provider>
+  </ConfigProvider>,
+)

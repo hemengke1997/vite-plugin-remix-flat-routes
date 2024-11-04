@@ -33,7 +33,7 @@ export default function Root() {
   return (
     <>
       <RouteAnimation>
-        <div className={'flex gap-2 mb-4'}>
+        <div className={'mb-4 flex gap-2'}>
           <Link to='/'>go home</Link>
           <Link to='/other'>go other</Link>
           <Link to='/signin'>go signin</Link>
