@@ -13,7 +13,7 @@
 - Type-safe and full typescript support
 - Extensible, flexible and configurable
 
-Read the [documentation](https://github.com/hemengke1997/vite-plugin-flat-routes) to learn more.
+Read the [documentation](https://hemengke1997.github.io/vite-plugin-remix-flat-routes/) to learn more.
 
 
 ## Inspiration
