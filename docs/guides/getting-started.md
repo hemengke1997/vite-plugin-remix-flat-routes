@@ -31,7 +31,7 @@ export default defineConfig({
 
 Create a `hello.tsx` file in the `app/routes` directory with the following
 contents. This directory contains all your application routes, and you can
-change it in the [plugin's configuration options](/reference/pluigin-api).
+change it in the [plugin's configuration options](/reference/plugin-api).
 
 ```bash
 mkdir app/routes && touch app/routes/hello.tsx
