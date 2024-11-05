@@ -8,7 +8,7 @@ hero:
   actions:
     - theme: brand
       text: 开始
-      link: /guides/getting-started
+      link: /zh/guides/getting-started
     - theme: alt
       text: Github
       link: https://github.com/hemengke1997/vite-plugin-remix-flat-routes
