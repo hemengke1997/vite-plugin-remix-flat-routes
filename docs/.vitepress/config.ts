@@ -16,7 +16,7 @@ export default defineConfig({
             link: '/reference/plugin-api',
           },
           {
-            text: 'Playground',
+            text: 'Examples',
             link: 'https://github.com/hemengke1997/vite-plugin-remix-flat-routes/tree/master/playground',
           },
         ],
@@ -104,6 +104,9 @@ export default defineConfig({
     footer: {
       message: 'Released under the MIT License.',
       copyright: 'Copyright © 2024 hemengke1997',
+    },
+    search: {
+      provider: 'local',
     },
   },
 })
