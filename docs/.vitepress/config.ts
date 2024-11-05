@@ -4,7 +4,6 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'vite-plugin-remix-flat-routes',
   description: 'Remix-flat-routes style file-system routing for React',
-  lastUpdated: true,
   locales: {
     root: {
       label: 'English',

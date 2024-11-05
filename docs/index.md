@@ -15,13 +15,18 @@ hero:
 
 features:
   - title: Remix-style file-system routing
+    icon: 📦
     details: Remix-flat-routes convention out of the box
   - title: Data API Support
+    icon: 💪
     details: React Router `action`, `loader`, `handle`, `errorElement`, `Component` etc.
   - title: Extensible
+    icon: 🧩
     details: Support custom route convention
   - title: Flexible
+    icon: 🎨
     details: Support legacy routing (react-router-dom<=6.3.0)
   - title: Configurable
+    icon: ⚙️
     details: Support configurable routing
 ---

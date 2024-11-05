@@ -15,13 +15,18 @@ hero:
 
 features:
   - title: Remix风格的文件系统路由
+    icon: 📦
     details: 开箱即用的Remix-flat-routes约定式路由
   - title: Data API
+    icon: 💪
     details: React Router `action`、`loader`、`handle`、`errorElement`、`Component` 等
   - title: 扩展
+    icon: 🧩
     details: 支持自定义路由约定
   - title: 灵活
+    icon: 🎨
     details: 支持传统路由 (react-router-dom<=6.3.0)
   - title: 配置化
+    icon: ⚙️
     details: 支持配置式路由
 ---
