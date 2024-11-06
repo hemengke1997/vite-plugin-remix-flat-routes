@@ -5,6 +5,9 @@ layout: home
 hero:
   name: "vite-plugin-remix-flat-routes"
   text: "Remix-style file-system routing for React"
+  image:
+    src: /logo.svg
+    alt: Logo
   actions:
     - theme: brand
       text: Get Started

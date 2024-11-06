@@ -5,6 +5,9 @@ layout: home
 hero:
   name: "vite-plugin-remix-flat-routes"
   text: "Remix 风格的 React 文件系统路由"
+  image:
+    src: /logo.svg
+    alt: Logo
   actions:
     - theme: brand
       text: 开始

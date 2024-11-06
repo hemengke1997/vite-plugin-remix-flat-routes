@@ -1,6 +1,10 @@
-# vite-plugin-remix-flat-routes
+<p align="center">
+  <img width="180" src="./logo.svg" alt="Logo" />
+</p>
 
-> Remix-flat-routes style file-system routing for React
+<h1 align="center">vite-plugin-remix-flat-routes</h1>
+<p align="center">Remix-flat-routes style file-system routing for React</p>
+
 
 ## Introduction
 
