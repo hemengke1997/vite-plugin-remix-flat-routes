@@ -52,6 +52,12 @@ export type ProcessedRouteManifest = {
        * 路由文件是否默认导出
        */
       hasDefaultExport?: boolean
+
+      /**
+       * react-router@7
+       */
+      hasClientLoader?: boolean
+      hasClientAction?: boolean
     }
 }
 

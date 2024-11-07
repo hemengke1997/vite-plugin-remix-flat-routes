@@ -99,7 +99,8 @@ import { remixFlatRoutes } from 'vite-plugin-remix-flat-routes'
 export default defineConfig({
   plugins: [
     react(),
-    remixFlatRoutes()],
+    remixFlatRoutes()
+  ],
 })
 ```
 

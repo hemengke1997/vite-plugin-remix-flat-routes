@@ -220,6 +220,7 @@ export class RouteUtil {
     )
 
     // Constant/Function Exports
+    setProps('clientLoader', this.constantInExports(route, { importee, namedExport: 'clientLoader' }))
     setProps(
       'loader',
       this.constantInExports(route, {
@@ -227,6 +228,8 @@ export class RouteUtil {
         namedExport: 'loader',
       }),
     )
+
+    setProps('clientAction', this.constantInExports(route, { importee, namedExport: 'clientAction' }))
     setProps(
       'action',
       this.constantInExports(route, {
@@ -326,7 +329,9 @@ export class RouteUtil {
              * @see https://reactrouter.com/en/main/route/route
              */
             hasAction: sourceExports.includes('action'),
+            hasClientAction: sourceExports.includes('clientAction'),
             hasLoader: sourceExports.includes('loader'),
+            hasClientLoader: sourceExports.includes('clientLoader'),
             hasHandle: sourceExports.includes('handle'),
             hasShouldRevalidate: sourceExports.includes('shouldRevalidate'),
             hasErrorBoundary: sourceExports.includes('ErrorBoundary'),

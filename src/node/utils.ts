@@ -36,7 +36,15 @@ function getRouteFiles(config: {
   )
 }
 
-export const reactRefreshUnsupportedExports = ['handle', 'loader', 'action', 'shouldRevalidate', 'lazy']
+export const reactRefreshUnsupportedExports = [
+  'handle',
+  'loader',
+  'clientLoader',
+  'action',
+  'clientAction',
+  'shouldRevalidate',
+  'lazy',
+]
 
 export function reactRefreshHack(config: {
   viteConfig: Vite.ResolvedConfig
