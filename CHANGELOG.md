@@ -1,3 +1,12 @@
+## [4.1.3](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.1.2...v4.1.3) (2024-11-14)
+
+
+### Bug Fixes
+
+* config-router render messup ([0fb9f14](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/0fb9f14488704a31ff6a29e6b33e3ddd7ed41921))
+
+
+
 ## [4.1.2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.1.1...v4.1.2) (2024-10-24)
 
 
