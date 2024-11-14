@@ -7,15 +7,19 @@ import { type AnyObject, type RouterProps } from './types'
 function ConfigurableRouter<M extends AnyObject = AnyObject>(props: RouterProps<M>) {
   const { routes, onRouteWillMount, onRouteMount, onRouteUnmount, render, suspense } = props
 
-  const router = new Router<M>({
-    routes,
-    onRouteWillMount,
-    onRouteMount,
-    onRouteUnmount,
-    suspense,
-  })
+  const router = useMemo(
+    () =>
+      new Router<M>({
+        routes,
+        onRouteWillMount,
+        onRouteMount,
+        onRouteUnmount,
+        suspense,
+      }),
+    [routes, onRouteWillMount, onRouteMount, onRouteUnmount, suspense],
+  )
 
-  const clientRoutes = router.createClientRoutes(routes)
+  const clientRoutes = useMemo(() => router.createClientRoutes(routes), [routes, router])
 
   const elements = useRoutes(clientRoutes)
   const RouteContext = useMemo(() => createRouteContext<M>(), [])
