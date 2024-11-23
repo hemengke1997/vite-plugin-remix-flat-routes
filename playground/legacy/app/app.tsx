@@ -4,7 +4,6 @@ import { ConfigProvider, theme } from 'antd'
 import { AnimatePresence, motion } from 'framer-motion'
 import { routes } from 'virtual:remix-flat-routes'
 import { LegacyRouterProvider } from 'vite-plugin-remix-flat-routes/client'
-import { GlobalContext } from './contexts/global-context'
 import './css/index.css'
 
 const RouteAnimation = ({ children }: PropsWithChildren) => {
@@ -37,21 +36,19 @@ export default function App() {
       }}
     >
       <BrowserRouter>
-        <GlobalContext.Provider>
-          <LegacyRouterProvider
-            routes={routes}
-            onRouteMount={(_payload) => {
-              // console.log(payload, 'onRouteMount')
-            }}
-            onRouteUnmount={(_payload) => {
-              // console.log(payload, 'onRouteUnmount')
-            }}
-            onRouteWillMount={(_payload) => {
-              // console.log(payload, 'onRouteWillMount')
-            }}
-            render={(children) => <RouteAnimation>{children}</RouteAnimation>}
-          />
-        </GlobalContext.Provider>
+        <LegacyRouterProvider
+          routes={routes}
+          onRouteMount={(_payload) => {
+            // console.log(payload, 'onRouteMount')
+          }}
+          onRouteUnmount={(_payload) => {
+            // console.log(payload, 'onRouteUnmount')
+          }}
+          onRouteWillMount={(_payload) => {
+            // console.log(payload, 'onRouteWillMount')
+          }}
+          render={(children) => <RouteAnimation>{children}</RouteAnimation>}
+        />
       </BrowserRouter>
     </ConfigProvider>
   )

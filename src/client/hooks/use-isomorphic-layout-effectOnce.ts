@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-type EffectHookType = typeof useEffect | typeof useLayoutEffect
+export type EffectHookType = typeof useEffect | typeof useLayoutEffect
 
 function creatEffectOnce(hook: EffectHookType) {
   return (cb: React.EffectCallback, deps?: React.DependencyList | undefined): void => {

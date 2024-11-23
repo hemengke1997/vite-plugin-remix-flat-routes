@@ -40,13 +40,7 @@ export default defineConfig({
           },
           {
             text: 'Reference',
-            items: [
-              { text: 'Plugin API', link: '/reference/plugin-api' },
-              {
-                text: 'Client API',
-                link: '/reference/client-api',
-              },
-            ],
+            items: [{ text: 'Plugin API', link: '/reference/plugin-api' }],
           },
         ],
       },
@@ -74,6 +68,7 @@ export default defineConfig({
               { text: '快速上手', link: '/zh/guides/getting-started' },
               { text: '定义路由', link: '/zh/guides/defining-routes' },
               { text: '使用 Data API', link: '/zh/guides/using-data-apis' },
+              { text: 'KeepAlive', link: '/zh/guides/keep-alive' },
               {
                 text: '传统路由',
                 link: '/zh/guides/legacy-route',
@@ -86,13 +81,7 @@ export default defineConfig({
           },
           {
             text: '参考',
-            items: [
-              { text: '插件 API', link: '/zh/reference/plugin-api' },
-              {
-                text: '客户端 API',
-                link: '/zh/reference/client-api',
-              },
-            ],
+            items: [{ text: '插件 API', link: '/zh/reference/plugin-api' }],
           },
         ],
       },

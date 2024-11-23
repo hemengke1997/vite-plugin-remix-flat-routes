@@ -12,7 +12,10 @@ export default defineConfig({
       flatRoutesOptions: {
         ignoredRouteFiles: ['**/components/**', '**/hooks/**', '**/contexts/**'],
       },
-      handleAsync: true,
     }),
   ],
+  optimizeDeps: {
+    force: true,
+    exclude: ['context-state', 'react-transition-preset'],
+  },
 })

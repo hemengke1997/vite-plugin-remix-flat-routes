@@ -10,7 +10,8 @@
     "remix-router",
     "remix-routes",
     "vite-plugin-remix-routes",
-    "vite-plugin-remix-router"
+    "vite-plugin-remix-router",
+    "keep-alive"
   ],
   "license": "MIT",
   "repository": {
@@ -65,10 +66,12 @@
   "peerDependencies": {
     "@vitejs/plugin-react": ">=4.3.2",
     "@vitejs/plugin-react-swc": ">=3.6.0",
+    "context-state": ">=3",
     "react": ">=17",
     "react-dom": ">=17",
     "react-router": ">=6",
     "react-router-dom": ">=6",
+    "react-transition-preset": ">=1",
     "vite": ">=5"
   },
   "peerDependenciesMeta": {
@@ -89,14 +92,22 @@
     },
     "@vitejs/plugin-react-swc": {
       "optional": true
+    },
+    "context-state": {
+      "optional": true
+    },
+    "react-transition-preset": {
+      "optional": true
     }
   },
   "dependencies": {
     "change-case": "^5.4.4",
     "context-state": "^3.1.2",
     "es-module-lexer": "^1.5.4",
+    "eventemitter3": "^5.0.1",
     "local-pkg": "^0.5.0",
     "minimatch": "5.1.0",
+    "react-transition-preset": "^2.0.0",
     "semver": "^7.6.3",
     "serialize-javascript": "^6.0.2",
     "type-fest": "^4.26.1"

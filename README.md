@@ -14,6 +14,7 @@
 
 - Remix-flat-routes style file-system routing out of the box
 - Route Router Data-API support
+- Route-level KeepAlive like Vue
 - Type-safe and full typescript support
 - Extensible, flexible and configurable
 

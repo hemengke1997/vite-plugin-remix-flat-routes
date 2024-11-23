@@ -1,7 +1,7 @@
 import { memo, type ReactNode, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import isPromise from 'p-is-promise'
-import { useIsomorphicLayoutEffectOnce } from './hooks/use-isomorphic-layout-effectOnce'
+import { useIsomorphicLayoutEffectOnce } from '../hooks/use-isomorphic-layout-effectOnce'
 import Navigator from './navigator'
 import { createRouteContext } from './route-context'
 import {

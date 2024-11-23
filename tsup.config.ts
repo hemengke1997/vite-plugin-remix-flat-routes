@@ -1,10 +1,10 @@
 import { defineConfig, type Options } from 'tsup'
 import { bundleless } from 'tsup-plugin-bundleless'
 
-const commonConfig = (option: Options): Options => {
+const commonConfig = (_option: Options): Options => {
   return {
     clean: false,
-    sourcemap: !!option.watch,
+    sourcemap: false,
     dts: true,
     minify: false,
     external: [/^virtual:.*/, 'react', 'react-dom', 'react-router-dom'],
@@ -14,38 +14,48 @@ const commonConfig = (option: Options): Options => {
   }
 }
 
-export const tsup = defineConfig((option) => [
-  {
-    ...commonConfig(option),
-    entry: {
-      'node/index': './src/node/index.ts',
+export const tsup = defineConfig((option) => {
+  let config: Options[] = [
+    {
+      ...commonConfig(option),
+      entry: {
+        'node/index': './src/node/index.ts',
+      },
+      format: ['esm', 'cjs'],
+      target: 'node16',
+      platform: 'node',
     },
-    format: ['esm'],
-    target: 'node16',
-    platform: 'node',
-  },
-  {
-    ...commonConfig(option),
-    entry: {
-      'node/index': './src/node/index.ts',
-    },
-    format: ['cjs'],
-    target: 'node16',
-    platform: 'node',
-  },
-  {
-    ...commonConfig(option),
-    entry: ['./src/client/**/*.{ts,tsx}'],
-    outDir: 'dist/client',
-    format: ['esm'],
-    platform: 'neutral',
-    ...bundleless(),
-  },
-  {
-    ...commonConfig(option),
-    entry: ['./src/client/index.tsx'],
-    outDir: 'dist/client',
-    format: ['cjs'],
-    platform: 'neutral',
-  },
-])
+  ]
+
+  if (option.watch) {
+    config = config.concat([
+      {
+        ...commonConfig(option),
+        entry: ['./src/client/index.ts'],
+        outDir: 'dist/client',
+        format: ['esm'],
+        platform: 'neutral',
+      },
+    ])
+  } else {
+    config = config.concat([
+      {
+        ...commonConfig(option),
+        entry: ['./src/client/**/*.{ts,tsx}'],
+        outDir: 'dist/client',
+        format: ['esm'],
+        platform: 'neutral',
+        ...bundleless(),
+      },
+      {
+        ...commonConfig(option),
+        entry: ['./src/client/index.ts'],
+        outDir: 'dist/client',
+        format: ['cjs'],
+        platform: 'neutral',
+      },
+    ])
+  }
+
+  return config
+})

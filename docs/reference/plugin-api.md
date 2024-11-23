@@ -84,9 +84,11 @@ Plugin will detect react-router-dom package version to decide the route type in 
 - **Type**: `boolean`
 - **Default**: `false`
 
-When the route is lazy-loaded but you want to get `handle` data before the route is loaded, you can set the `handleAsync` option to `true`, then the plugin will convert the `handle` into an asynchronous function. You can execute the async `handle` function to get `handle` data.
+When the route is lazy-loaded but you want to pre-fetch the handle data, you can set `handleAsync` to `true`. The plugin will convert the `handle` object into an asynchronous function, and you can manually execute the function to get the `handle` data.
 
+:::tip
 In `legacy` routing mode, this option is always `true`.
+:::
 
 ```ts
 import { defineConfig } from 'vite'
@@ -101,30 +103,64 @@ export default defineConfig({
 })
 ```
 
-```tsx
+For example, define a `handle` object in the route file:
+
+```ts
 export const handle = {
-  i18n: ['home']
+  prefetch: 'content',
 }
 ```
 
-```ts
-import { matchRoutes, type RouteObject } from 'react-router-dom'
+Then handle the async handle in the outer route file:
+```tsx
+// root.tsx
+import { type LoaderFunction, matchRoutes, type RouteObject } from 'react-router-dom'
 import { routes } from 'virtual:remix-flat-routes'
 
-export async function resolveNamespace(pathname = window.location.pathname) {
-  const res = await Promise.all(
-    matchRoutes(routes as RouteObject[], pathname)?.map(async (route) => {
+export const loader: LoaderFunction = async ({ request }) => {
+  await Promise.all(
+    matchRoutes(routes as RouteObject[], request.url)?.map(async (route) => {
       const { handle } = route.route
       if (typeof handle === 'function') {
+        // Execute the handle function to get data before the route loads
         return await handle()
       }
-      return handle
     }) || [],
   )
-  return res
-    .filter((t) => t?.i18n)
-    .map((t) => t.i18n)
-    .flat()
+}
+```
+
+In addition to enabling the `handleAsync` option, you can also use the `dataStrategy` of `react-router` to handle preloading logic uniformly, **which is our recommended approach**.
+
+```tsx
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
+function App() {
+  return (
+    <RouterProvider
+      router={createBrowserRouter(routes, {
+        dataStrategy: async ({ matches }) => {
+          const matchesToLoad = matches.filter((m) => m.shouldLoad)
+          const results = await Promise.all(
+            matchesToLoad.map(async (match) => {
+              const result = await match.resolve()
+              const handle = match.route.handle
+              // You can get the handle data here
+              console.log(handle, 'handle')
+              return result
+            }),
+          )
+          return results.reduce(
+            (acc, result, i) =>
+              Object.assign(acc, {
+                [matchesToLoad[i].route.id]: result,
+              }),
+            {},
+          )
+        },
+      })}
+    />
+  )
 }
 ```
 

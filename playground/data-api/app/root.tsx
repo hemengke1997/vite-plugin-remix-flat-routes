@@ -1,47 +1,28 @@
-import { type PropsWithChildren } from 'react'
 import { toast } from 'react-atom-toast'
-import { Link, ScrollRestoration, useLocation, useOutlet, useRouteError } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { Link, ScrollRestoration, useRouteError } from 'react-router-dom'
+import { getScrollRestoration, KeepAlive } from 'vite-plugin-remix-flat-routes/client'
 
 toast.setDefaultOptions({
   className: 'bg-slate-400',
 })
 
-function RouteAnimation({ children }: PropsWithChildren) {
-  const location = useLocation()
-  return (
-    <AnimatePresence mode={'wait'} initial={false}>
-      <motion.div
-        key={location.pathname}
-        initial={{
-          translateX: 10,
-          opacity: 0,
-        }}
-        animate={{ translateX: 0, opacity: 1 }}
-        exit={{ translateX: -10, opacity: 0 }}
-        transition={{ duration: 0.15 }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  )
+export const handle = {
+  layout: 'app',
 }
 
-export default function Root() {
-  const outlet = useOutlet()
-
+export function Component() {
   return (
     <>
-      <RouteAnimation>
-        <div className={'mb-4 flex gap-2'}>
-          <Link to='/'>go home</Link>
-          <Link to='/other'>go other</Link>
-          <Link to='/signin'>go signin</Link>
-          <Link to='/signup'>go signup</Link>
-        </div>
-        {outlet}
-      </RouteAnimation>
-      <ScrollRestoration />
+      <div className={'mb-4 flex gap-2'}>
+        <Link to='/'>go home</Link>
+        <Link to='/other'>go other</Link>
+        <Link to='/signin'>go signin</Link>
+        <Link to='/signup'>go signup</Link>
+      </div>
+      <>
+        <KeepAlive transition={true} />
+      </>
+      <ScrollRestoration getKey={getScrollRestoration} />
     </>
   )
 }

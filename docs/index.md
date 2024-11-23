@@ -23,6 +23,9 @@ features:
   - title: Data API Support
     icon: 💪
     details: React Router `action`, `loader`, `handle`, `errorElement`, `Component` etc.
+  - title: KeepAlive
+    icon: 🚀
+    details: Route-level KeepAlive
   - title: Extensible
     icon: 🧩
     details: Support custom route convention

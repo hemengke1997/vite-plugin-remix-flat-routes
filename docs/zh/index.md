@@ -23,6 +23,9 @@ features:
   - title: Data API
     icon: 💪
     details: React Router `action`、`loader`、`handle`、`errorElement`、`Component` 等
+  - title: KeepAlive
+    icon: 🚀
+    details: 路由级 KeepAlive
   - title: 扩展
     icon: 🧩
     details: 支持自定义路由约定

@@ -84,10 +84,12 @@ export default defineConfig({
 - **类型**: `boolean`
 - **默认值**: `false`
 
-当路由是懒加载，但你需要路由中的handle数据时，可以把 `handleAsync` 设置为 `true`。
-插件会将 `handle` 对象转化为异步函数，你可以手动直行函数来获取 `handle` 数据
+当路由是懒加载，但你想预先获取路由中的handle数据时，可以把 `handleAsync` 设置为 `true`。
+插件会将 `handle` 对象转化为异步函数，你可以手动执行函数来获取 `handle` 数据
 
+:::tip
 在 Legacy 传统路由模式下，此选项始终为 `true`
+:::
 
 ```ts
 import { defineConfig } from 'vite'
@@ -102,32 +104,67 @@ export default defineConfig({
 })
 ```
 
-```tsx
+例如，在某个路由文件中定义handle
+  
+```ts
 export const handle = {
-  i18n: ['home']
+  prefetch: 'content',
 }
 ```
 
-```ts
-import { matchRoutes, type RouteObject } from 'react-router-dom'
+然后在外层路由文件中统一处理异步handle
+```tsx
+// root.tsx
+import { type LoaderFunction, matchRoutes, type RouteObject, type ShouldRevalidateFunction } from 'react-router-dom'
 import { routes } from 'virtual:remix-flat-routes'
 
-export async function resolveNamespace(pathname = window.location.pathname) {
-  const res = await Promise.all(
-    matchRoutes(routes as RouteObject[], pathname)?.map(async (route) => {
+export const shouldRevalidate: ShouldRevalidateFunction = () => true
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return await Promise.all(
+    matchRoutes(routes as RouteObject[], request.url)?.map(async (route) => {
       const { handle } = route.route
       if (typeof handle === 'function') {
+        // 执行 handle 函数，在路由加载前获取数据
         return await handle()
       }
-      return handle
     }) || [],
   )
-  return res
-    .filter((t) => t?.i18n)
-    .map((t) => t.i18n)
-    .flat()
 }
 ```
+
+除了开启 `handleAsync` 选项外，你也可以通过 `react-router` 的 [`dataStrategy`](https://reactrouter.com/en/main/routers/create-browser-router#optsdatastrategy) 来统一处理预加载逻辑，**这也是我们推荐的做法**。
+
+```tsx
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
+function App() {
+  return <RouterProvider
+    router={createBrowserRouter(routes, {
+      dataStrategy: async ({ matches }) => {
+        const matchesToLoad = matches.filter((m) => m.shouldLoad)
+        const results = await Promise.all(
+          matchesToLoad.map(async (match) => {
+            const result = await match.resolve()
+            const handle = match.route.handle
+            // 可以在此获取到 handle 数据
+            console.log(handle, 'handle')
+            return result
+          }),
+        )
+        return results.reduce(
+          (acc, result, i) =>
+            Object.assign(acc, {
+              [matchesToLoad[i].route.id]: result,
+            }),
+          {},
+        )
+      },
+    })}
+  />
+}
+```
+
 
 ## reactRefresh
 

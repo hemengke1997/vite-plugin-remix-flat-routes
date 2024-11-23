@@ -92,4 +92,19 @@ export default function Home(props: PropsWithMatchRoute) {
 
 就是这样！现在你可以使用传统路由，但是仍然可以享受到 `vite-plugin-remix-flat-routes` 提供的所有功能。
 
-你可以查看[参考文档](/zh/reference/client-api)以了解更多关于传统路由的信息。
+## 进阶使用
+
+### LegacyRouterProvider
+
+`LegacyRouterProvider` 是传统路由渲染组件
+
+#### Props
+
+- **routes**: `Route[]` - 路由数组。
+- **onRouteWillMount**: `(payload: RouteWillMountPayload) => void` - 在路由挂载之前调用的回调函数。
+- **onRouteMount**: `(payload: RouteMountPayload) => void` - 在路由挂载时调用的回调函数。
+- **onRouteUnmount**: `(payload: RouteUnmountPayload) => void` - 在路由卸载时调用的回调函数。
+- **render**: `(children: ReactNode | null) => ReactNode` - 渲染路由组件，可用于增强渲染。
+- **suspense**: `ReactNode` - 路由加载时渲染的suspense组件。
+- **basename**: `string` - 路由 baseUrl
+

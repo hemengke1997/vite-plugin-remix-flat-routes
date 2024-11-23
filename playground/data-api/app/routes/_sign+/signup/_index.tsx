@@ -1,3 +1,40 @@
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Button, Card, Space } from 'antd'
+
 export default function Page() {
-  return <div>注册页</div>
+  const [count, setCount] = useState(0)
+
+  console.log('signup --- render')
+
+  useEffect(() => {
+    console.log('signup --- effect')
+    return () => {
+      console.log('signup --- cleanup')
+    }
+  }, [])
+
+  return (
+    <Card title={'注册页'}>
+      <Space>
+        <Button
+          onClick={() => {
+            setCount(count + 1)
+          }}
+        >
+          点击count+ {count}
+        </Button>
+        <Link to='/'>
+          <Button>跳转首页</Button>
+        </Link>
+        <Link to='/signin'>
+          <Button>跳转登录</Button>
+        </Link>
+      </Space>
+    </Card>
+  )
+}
+
+export const handle = {
+  keepAlive: false,
 }
