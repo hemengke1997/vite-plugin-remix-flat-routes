@@ -85,7 +85,6 @@ export default function flatRoutes(
 // this function uses the same signature as the one used in core remix
 // this way we can continue to enhance this package and still maintain
 // compatibility with remix
-// @remix-dev/config/flat-routes
 function _flatRoutes(
   appDir: string,
   ignoredFilePatternsOrOptions?: string[] | FlatRoutesOptions,
