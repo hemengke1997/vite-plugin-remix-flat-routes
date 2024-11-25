@@ -4,7 +4,12 @@
 import minimatch from 'minimatch'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { type ConfigRoute, type DefineRouteFunction } from './remix'
+import {
+  createRouteId,
+  type DefineRouteFunction,
+} from '../react-router/react-router-remix-routes-option-adapter/defineRoutes'
+import { type RouteManifest } from '../react-router/react-router-remix-routes-option-adapter/manifest'
+import { normalizeSlashes } from '../react-router/react-router-remix-routes-option-adapter/normalizeSlashes'
 
 type MatchRoute = {
   id: string
@@ -39,14 +44,11 @@ export type FlatRoutesOptions = {
   routeRegex?: RegExp
 }
 
-export type RouteManifest = {
-  [routeId: string]: ConfigRoute
-}
 export type DefineRoutesFunction = (
   callback: (route: DefineRouteFunction) => void,
 ) => RouteManifest | Promise<RouteManifest>
 
-export type { DefineRouteFunction, DefineRouteOptions, DefineRouteChildren, MatchRoute }
+export type { DefineRouteOptions, DefineRouteChildren, MatchRoute }
 export { flatRoutes }
 
 const defaultOptions: FlatRoutesOptions = {
@@ -374,7 +376,7 @@ function isPathSeparator(char: string) {
   return pathSeparatorRegex.test(char)
 }
 
-export function defaultVisitFiles(dir: string, visitor: (file: string) => void, baseDir = dir) {
+function defaultVisitFiles(dir: string, visitor: (file: string) => void, baseDir = dir) {
   for (const filename of fs.readdirSync(dir)) {
     const file = path.resolve(dir, filename)
     const stat = fs.statSync(file)
@@ -385,16 +387,4 @@ export function defaultVisitFiles(dir: string, visitor: (file: string) => void, 
       visitor(path.relative(baseDir, file))
     }
   }
-}
-
-export function createRouteId(file: string) {
-  return normalizeSlashes(stripFileExtension(file))
-}
-
-export function normalizeSlashes(file: string) {
-  return file.split(path.win32.sep).join('/')
-}
-
-function stripFileExtension(file: string) {
-  return file.replace(/\.[a-z0-9]+$/i, '')
 }

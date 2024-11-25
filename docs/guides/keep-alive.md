@@ -3,6 +3,8 @@
 
 :::warning WIP
 This feature is currently unstable, and the API may change.
+
+Only supports `data-api` mode.
 :::
 
 `KeepAlive` is a route-level caching component that can cache the state of components, so they are not destroyed even when switching routes.

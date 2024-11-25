@@ -1,8 +1,10 @@
 import { type RouteObject } from 'react-router-dom'
 import { pascalSnakeCase } from 'change-case'
 import path from 'node:path'
-import { importViteEsmSync } from './import-vite-esm-sync'
-import { getRouteManifestModuleExports } from './remix'
+import { type ValueOf } from 'type-fest'
+import { importViteEsmSync } from './react-router/react-router-dev/vite/import-vite-esm-sync'
+import { getRouteManifestModuleExports } from './react-router/react-router-dev/vite/plugin'
+import { type RouteManifest } from './react-router/react-router-remix-routes-option-adapter/manifest'
 import { type PluginContext, type ProcessedRouteManifest, type Route, type RouteExports } from './types'
 import { type LegacyRoute, type LegacyRouteObject, type ProcessedLegacyRouteManifest } from './types.legacy'
 import { capitalize } from './utils'
@@ -355,5 +357,29 @@ export class RouteUtil {
     const routePath = vite.normalizePath(path.relative(this.ctx.remixOptions.appDirectory, file))
     const route = Object.values(this.ctx.routeManifest).find((r) => vite.normalizePath(r.file) === routePath)
     return route
+  }
+
+  /**
+   * Adapted from `createClientRoutes` in react-router/lib/dom/ssr/routes.tsx
+   */
+  createClientRoutes(routeManifest: RouteManifest, parentId?: string): Route[] {
+    const routes = Object.keys(routeManifest)
+      .filter((key) => routeManifest[key].parentId === parentId)
+      .map((key) => {
+        const route = this.createClientRoute(routeManifest[key])
+        route.children = this.createClientRoutes(routeManifest, route.id)
+        return route
+      })
+
+    return routes
+  }
+
+  private createClientRoute(route: ValueOf<RouteManifest>): Route {
+    return {
+      ...route,
+      path: route.path || '',
+      index: !!route.index,
+      children: [],
+    }
   }
 }

@@ -1,5 +1,5 @@
-import { defineRoutes } from '../src/node/remix'
-import flatRoutes from '../src/node/remix-flat-routes'
+import { defineRoutes } from '@node/react-router/react-router-remix-routes-option-adapter/defineRoutes'
+import flatRoutes from '@node/remix-flat-routes'
 
 describe('define routes', () => {
   it('should define routes for flat-files', () => {

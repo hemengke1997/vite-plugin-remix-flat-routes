@@ -9,7 +9,7 @@ export type KeepAliveProps = {
    * @see react-transition-preset
    * @default false
    */
-  transition?: boolean | TransitionProps
+  transition?: boolean | Omit<TransitionProps, 'children' | 'mounted'>
 }
 
 export function KeepAlive(props: KeepAliveProps) {

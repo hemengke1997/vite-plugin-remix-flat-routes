@@ -3,8 +3,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import isPromise from 'p-is-promise'
 import serializeJavascript from 'serialize-javascript'
-import { importViteEsmSync } from './import-vite-esm-sync'
-import { type RouteManifest } from './remix-flat-routes'
+import { importViteEsmSync } from './react-router/react-router-dev/vite/import-vite-esm-sync'
+import { type RouteManifest } from './react-router/react-router-remix-routes-option-adapter/manifest'
 
 export function validateRouteDir(dir: string): void {
   if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {

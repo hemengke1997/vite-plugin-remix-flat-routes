@@ -2,8 +2,8 @@ import type * as Vite from 'vite'
 import { init as initEsModuleLexer } from 'es-module-lexer'
 import path from 'node:path'
 import { resolveLegacyMode } from './detect-legacy'
-import { importViteEsmSync, preloadViteEsm } from './import-vite-esm-sync'
-import { createClientRoutes, resolveRoutes } from './remix'
+import { resolveConfig } from './react-router/react-router-dev/config/config'
+import { importViteEsmSync, preloadViteEsm } from './react-router/react-router-dev/vite/import-vite-esm-sync'
 import { RouteUtil } from './route-util'
 import { type Options, type PluginContext } from './types'
 import { getVitePluginName, isObjEq, reactRefreshHack, validateRouteDir } from './utils'
@@ -152,7 +152,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
       },
       async load(id) {
         if (id === resolvedVirtualModuleId) {
-          const { routeManifest } = await resolveRoutes(ctx)
+          const { routeManifest } = await resolveConfig(ctx)
 
           routeUtil = new RouteUtil({
             ...ctx,
@@ -161,7 +161,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
 
           ctx.routeManifest = await routeUtil.processRouteManifest()
 
-          const routes = createClientRoutes(ctx.routeManifest)
+          const routes = routeUtil.createClientRoutes(ctx.routeManifest)
 
           const { routesString, componentsString } = await routeUtil.stringifyRoutes(routes)
 

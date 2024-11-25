@@ -1,7 +1,7 @@
 import type * as Vite from 'vite'
 import { type RouteObject } from 'react-router-dom'
 import { type SetOptional, type ValueOf } from 'type-fest'
-import { type ConfigRoute } from './remix'
+import { type RouteManifestEntry } from './react-router/react-router-remix-routes-option-adapter/manifest'
 import { type DefineRoutesFunction, type FlatRoutesOptions } from './remix-flat-routes'
 import { type ProcessedLegacyRouteManifest } from './types.legacy'
 
@@ -45,7 +45,7 @@ type AddHasPrefix<T> = {
 }
 
 export type ProcessedRouteManifest = {
-  [routeId: string]: ConfigRoute &
+  [routeId: string]: RouteManifestEntry &
     // Add `has` prefix to each key
     RouteExports<RouteObject> & {
       /**

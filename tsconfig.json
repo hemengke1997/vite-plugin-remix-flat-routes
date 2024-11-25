@@ -1,6 +1,11 @@
 {
   "extends": "@minko-fe/tsconfig/tsconfig.lib",
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@node/*": ["src/node/*"],
+      "@client/*": ["src/client/*"]
+    },
     "types": ["vitest/globals"],
     "isolatedModules": false,
     "strictNullChecks": true,
