@@ -28,6 +28,7 @@ export default defineConfig({
               { text: 'Getting Started', link: '/guides/getting-started' },
               { text: 'Defining Routes', link: '/guides/defining-routes' },
               { text: 'Using Data APIs', link: '/guides/using-data-apis' },
+              { text: 'KeepAlive', link: '/guides/keep-alive' },
               {
                 text: 'Legacy Route',
                 link: '/guides/legacy-route',
