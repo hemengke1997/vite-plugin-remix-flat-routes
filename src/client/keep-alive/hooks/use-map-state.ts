@@ -16,17 +16,15 @@ export function useMapState<S extends Map<string, any>>(initialState: S | (() =>
     })
   })
 
-  const mapDeleteState = useMemoFn((key: string) => {
+  const mapDeleteState = useMemoFn((keys: string[]) => {
     setState((state) => {
       const nextState = new Map(state)
-      nextState.delete(key)
+      keys.forEach((key) => {
+        nextState.delete(key)
+      })
       return nextState as S
     })
   })
 
-  const clearMapState = useMemoFn(() => {
-    setState(new Map() as S)
-  })
-
-  return [state, { mapDeleteState, mapSetState, clearMapState }] as const
+  return [state, { mapDeleteState, mapSetState }] as const
 }

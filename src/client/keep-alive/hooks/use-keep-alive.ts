@@ -1,14 +1,14 @@
+import { useLocation } from 'react-router-dom'
+import { ensureArray } from '@client/utils'
 import { useMemoFn } from 'context-state'
 import { useUpdate } from '../../hooks/use-update'
-import { KeepAliveContext } from '../keep-alive-context'
+import { KeepAliveContext } from '../contexts/keep-alive'
 import { useEventListener } from './use-event-listener'
 
 export function useKeepAlive() {
-  const { aliveRoutes, deleteAliveRoutes, clearAliveRoutes } = KeepAliveContext.usePicker([
-    'aliveRoutes',
-    'deleteAliveRoutes',
-    'clearAliveRoutes',
-  ])
+  const { aliveRoutes, deleteAliveRoutes } = KeepAliveContext.usePicker(['aliveRoutes', 'deleteAliveRoutes'])
+
+  const { pathname } = useLocation()
 
   const update = useUpdate()
 
@@ -20,12 +20,14 @@ export function useKeepAlive() {
     },
   })
 
-  const destroy = useMemoFn((pathname: string) => {
+  const destroy = useMemoFn((pathname: string | string[]) => {
+    pathname = ensureArray(pathname)
     deleteAliveRoutes(pathname)
   })
 
   const destroyAll = useMemoFn(() => {
-    clearAliveRoutes()
+    const diff = getAliveRoutes().filter((t) => t !== pathname)
+    deleteAliveRoutes(diff)
   })
 
   const getAliveRoutes = useMemoFn(() =>

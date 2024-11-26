@@ -3,7 +3,7 @@
 :::warning WIP
 This feature is currently unstable, and the API may change.
 
-Only supports `data-api` mode
+Only supports `Data API` mode
 :::
 
 `KeepAlive` is a route-level caching component that can cache the state of components, so they are not destroyed even when switching routes.
@@ -14,19 +14,21 @@ Only supports `data-api` mode
 
 ## Usage
 
-First, we need to replace the `outlet` in the `root` with the `KeepAlive` component.
+First, we need to replace the `Outlet` in the `root` with the `KeepAlive` component.
 
-```tsx
+```jsx
 // root.tsx
 
 import { Outlet } from 'react-router-dom' // [!code --]
-import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
+import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client' // [!code ++]
 
 export function Component() {
   return (
    <>
       <Outlet /> // [!code --]
-      <KeepAlive /> // [!code ++]
+      <KeepAliveProvider> {/* Provider is essential */} // [!code ++]
+        <KeepAlive /> // [!code ++]
+      </KeepAliveProvider> // [!code ++]
    </>
   )
 }
@@ -59,11 +61,13 @@ To use this feature, please install `react-transition-preset`.
 ```tsx
 // root.tsx
 
-import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
+import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client'
 
 export function Component() {
   return (
-    <KeepAlive transition={true} />
+    <KeepAliveProvider>
+      <KeepAlive transition={true} /> // [!code highlight]
+    </KeepAliveProvider>
   )
 }
 ```
@@ -81,11 +85,13 @@ If you use `scrollRestoration`, do not import `ScrollRestoration` from `react-ro
 ```tsx
 // root.tsx
 
-import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
+import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client'
 
 export function Component() {
   return (
-    <KeepAlive scrollRestoration={} />
+    <KeepAliveProvider>
+      <KeepAlive scrollRestoration={} /> // [!code highlight]
+    </KeepAliveProvider>
   )
 }
 ```
@@ -104,7 +110,7 @@ export default function Page() {
 
 #### destroy
 
-- **Type**: `(pathname: string) => void`
+- **Type**: `(pathname: string | string[]) => void`
 
 Destroy the cache of a specified route.
 
@@ -112,7 +118,7 @@ Destroy the cache of a specified route.
 
 - **Type**: `() => void`
 
-Destroy all route caches.
+Destroy all route caches. If the current route is a cached route, it will not be destroyed.
 
 #### getAliveRoutes
 

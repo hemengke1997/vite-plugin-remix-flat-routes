@@ -2,7 +2,8 @@ import { toast } from 'react-atom-toast'
 import { Link, useRouteError } from 'react-router-dom'
 import { useUpdate } from 'ahooks'
 import { Button } from 'antd'
-import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
+import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client'
+import { GlobalContext } from './contexts/global-context'
 
 toast.setDefaultOptions({
   className: 'bg-slate-400',
@@ -25,7 +26,11 @@ export function Component() {
         <Button onClick={() => update()}>render</Button>
       </div>
       <>
-        <KeepAlive transition={true} scrollRestoration={false} />
+        <KeepAliveProvider>
+          <GlobalContext.Provider>
+            <KeepAlive transition={true} scrollRestoration={false} />
+          </GlobalContext.Provider>
+        </KeepAliveProvider>
       </>
     </>
   )

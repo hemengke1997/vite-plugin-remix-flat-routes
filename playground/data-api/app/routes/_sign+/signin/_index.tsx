@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Card, Space } from 'antd'
 import { useActiveChanged } from 'vite-plugin-remix-flat-routes/client'
+import { GlobalContext } from '../../../contexts/global-context'
 
 export default function Page() {
   const [count, setCount] = useState(0)
@@ -16,6 +17,8 @@ export default function Page() {
       setCount((count) => count - 1)
     }
   })
+
+  const { destroyAll } = GlobalContext.usePicker(['destroyAll'])
 
   return (
     <div className={'mt-36 min-h-screen'}>
@@ -34,6 +37,8 @@ export default function Page() {
           <Link to='/signup'>
             <Button>跳转注册</Button>
           </Link>
+
+          <Button onClick={() => destroyAll()}>清除所有路由缓存</Button>
         </Space>
       </Card>
     </div>

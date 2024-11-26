@@ -1,7 +1,7 @@
 import { useLocation, useMatches, useOutlet } from 'react-router-dom'
-import { useAsyncEffect } from '../hooks/use-async-effect'
+import { useAsyncLayoutEffect } from '../hooks/use-async-layout-effect'
 import { isFunction } from '../utils'
-import { KeepAliveContext } from './keep-alive-context'
+import { KeepAliveContext } from './contexts/keep-alive'
 import OffScreen from './off-screen'
 import { OnScreen } from './on-screen'
 
@@ -11,7 +11,7 @@ function KeepAliveIn() {
   const { pathname } = useLocation()
   const matches = useMatches()
 
-  useAsyncEffect(async () => {
+  useAsyncLayoutEffect(async () => {
     let shouldKeepAlive = false
     for (let i = 0; i < matches.length; i++) {
       const match = matches[i]

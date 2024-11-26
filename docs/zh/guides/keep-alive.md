@@ -3,7 +3,7 @@
 :::warning WIP
 此功能目前还不稳定，API 可能会有变动
 
-仅支持 `data-api` 模式
+仅支持 `Data API` 模式
 :::
 
 `KeepAlive` 是一个路由级别的缓存组件，可以缓存组件的状态，即使切换路由也不会销毁组件。
@@ -14,19 +14,21 @@
 
 ## 使用
 
-首先，我们需要将 `root` 中的 `outlet` 替换为 `KeepAlive` 组件。
+首先，我们需要将 `root` 中的 `Outlet` 替换为 `KeepAlive` 组件。
 
 ```jsx
 // root.tsx
 
 import { Outlet } from 'react-router-dom' // [!code --]
-import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
+import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client' // [!code ++]
 
 export function Component() {
   return (
    <>
       <Outlet /> // [!code --]
-      <KeepAlive /> // [!code ++]
+      <KeepAliveProvider> {/* Provider 必不可少 */} // [!code ++]
+        <KeepAlive /> // [!code ++]
+      </KeepAliveProvider> // [!code ++]
    </>
   )
 }
@@ -41,7 +43,6 @@ export const handle = {
   keepAlive: true
 }
 ```
-
 
 就是这样！现在组件就会被缓存了！
 
@@ -59,11 +60,13 @@ export const handle = {
 ```tsx
 // root.tsx
 
-import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
+import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client'
 
 export function Component() {
   return (
-    <KeepAlive transiton={true} />
+    <KeepAliveProvider>
+      <KeepAlive transiton={true} /> // [!code highlight]
+    </KeepAliveProvider>
   )
 }
 ```
@@ -81,11 +84,14 @@ export function Component() {
 ```tsx
 // root.tsx
 
-import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
+import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client'
+
 
 export function Component() {
   return (
-    <KeepAlive scrollRestoration={} />
+    <KeepAliveProvider>
+      <KeepAlive scrollRestoration={} /> // [!code highlight]
+    </KeepAliveProvider>
   )
 }
 ```
@@ -104,7 +110,7 @@ export default function Page() {
 
 #### destory
 
-- **类型**: `(pathname: string) => void`
+- **类型**: `(pathname: string | string[]) => void`
 
 销毁指定路由缓存。
 
@@ -112,7 +118,7 @@ export default function Page() {
 
 - **类型**: `() => void`
 
-销毁所有路由缓存。
+销毁所有路由缓存。如果当前路由是 `KeepAlive` 路由，则不会销毁当前路由。
 
 #### getAliveRoutes
 

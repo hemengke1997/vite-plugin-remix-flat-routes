@@ -1,5 +1,5 @@
 import type { DependencyList } from 'react'
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { isFunction } from '../utils'
 
 function isAsyncGenerator(
@@ -9,8 +9,11 @@ function isAsyncGenerator(
   return isFunction(val[Symbol.asyncIterator])
 }
 
-export function useAsyncEffect(effect: () => AsyncGenerator<void, void, void> | Promise<void>, deps?: DependencyList) {
-  useEffect(() => {
+export function useAsyncLayoutEffect(
+  effect: () => AsyncGenerator<void, void, void> | Promise<void>,
+  deps?: DependencyList,
+) {
+  useLayoutEffect(() => {
     const e = effect()
     let cancelled = false
     async function execute() {
