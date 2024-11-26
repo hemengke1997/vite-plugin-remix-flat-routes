@@ -1,3 +1,12 @@
+# [4.3.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.2.0...v4.3.0) (2024-11-26)
+
+
+### Features
+
+* keep-alive-provider ([358363c](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/358363cd62501e2f560efd6bbd2ba2e1fe826051))
+
+
+
 # [4.2.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.2.0-beta.2...v4.2.0) (2024-11-26)
 
 
