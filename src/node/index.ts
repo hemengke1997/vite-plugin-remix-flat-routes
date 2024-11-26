@@ -45,7 +45,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
       enforce: 'pre',
       name: 'vite-plugin-remix-flat-routes',
       /**
-       * @see `config` in @remix-run/dev/vite/plugin.ts
+       * @see `config` in react-router-dev/vite/plugin.ts
        */
       async config(_viteUserConfig, _viteConfigEnv) {
         // Preload Vite's ESM build up-front as soon as we're in an async context
@@ -55,7 +55,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
         viteConfigEnv = _viteConfigEnv
       },
       /**
-       * @see `configResolved` in @remix-run/dev/vite/plugin.ts
+       * @see `configResolved` in react-router-dev/vite/plugin.ts
        */
       async configResolved(resolvedViteConfig) {
         await initEsModuleLexer
@@ -182,7 +182,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
         return null
       },
       /**
-       * @see `buildEnd` in @remix-run/dev/vite/plugin.ts
+       * @see `buildEnd` in react-router-dev/vite/plugin.ts
        */
       async buildEnd() {
         ctx.viteChildCompiler?.httpServer?.close()

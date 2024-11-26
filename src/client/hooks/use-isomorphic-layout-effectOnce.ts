@@ -6,7 +6,7 @@ function creatEffectOnce(hook: EffectHookType) {
   return (cb: React.EffectCallback, deps?: React.DependencyList | undefined): void => {
     const mountRef = useRef(false)
     hook(() => {
-      let returnValue
+      let returnValue: any
       if (mountRef.current === false) {
         returnValue = cb()
         mountRef.current = true
