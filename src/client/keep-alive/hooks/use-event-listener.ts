@@ -23,7 +23,7 @@ type Ev<T extends Events, EventName extends EventEmitter.EventNames<T> = EventEm
 }
 
 type Events = {
-  modeChange: [
+  activeChange: [
     {
       pathname: string
       mode: ActivityMode

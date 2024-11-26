@@ -14,7 +14,7 @@ export function useKeepAlive() {
 
   useEventListener({
     on: {
-      modeChange: () => {
+      activeChange: () => {
         update()
       },
     },

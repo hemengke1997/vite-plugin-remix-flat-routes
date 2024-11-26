@@ -3,7 +3,7 @@ import { useMapState } from './hooks/use-map-state'
 import { type KeepAliveProps } from './keep-alive'
 
 function useKeepAliveContext(initialValue: { transition?: KeepAliveProps['transition'] }) {
-  const { transition = false } = initialValue
+  const { transition } = initialValue
 
   const [
     aliveRoutes,

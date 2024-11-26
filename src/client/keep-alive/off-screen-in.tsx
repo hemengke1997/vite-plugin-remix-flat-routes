@@ -21,6 +21,7 @@ export default function OffScreenIn(props: OffScreenInProps) {
       promiseRef.current = null
     }
   })
+
   useEffect(() => () => resolvePromise(true), [])
 
   if (mode === 'hidden') {

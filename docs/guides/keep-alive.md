@@ -1,10 +1,9 @@
-```markdown
 # KeepAlive
 
 :::warning WIP
 This feature is currently unstable, and the API may change.
 
-Only supports `data-api` mode.
+Only supports `data-api` mode
 :::
 
 `KeepAlive` is a route-level caching component that can cache the state of components, so they are not destroyed even when switching routes.
@@ -15,16 +14,20 @@ Only supports `data-api` mode.
 
 ## Usage
 
-First, we need to place the `KeepAlive` component in the `root`.
+First, we need to replace the `outlet` in the `root` with the `KeepAlive` component.
 
 ```tsx
 // root.tsx
 
+import { Outlet } from 'react-router-dom' // [!code --]
 import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
 
 export function Component() {
   return (
-    <KeepAlive />
+   <>
+      <Outlet /> // [!code --]
+      <KeepAlive /> // [!code ++]
+   </>
   )
 }
 ```
@@ -46,10 +49,12 @@ That's it! Now the component will be cached!
 
 ### transition
 
-- **Type**: `boolean | TransitionProps`
+- **Type**: `TransitionProps | boolean`
 - **Default**: `false`
 
-`KeepAlive` has built-in support for route component transition animations. The transition is provided by `react-transition-preset`. For more details, see [react-transition-preset](https://github.com/hemengke1997/react-transition-preset).
+`KeepAlive` has built-in support for route component transition animations. The transition capability is driven by `react-transition-preset`. For more details, see [react-transition-preset](https://github.com/hemengke1997/react-transition-preset).
+
+To use this feature, please install `react-transition-preset`.
 
 ```tsx
 // root.tsx
@@ -59,6 +64,28 @@ import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
 export function Component() {
   return (
     <KeepAlive transition={true} />
+  )
+}
+```
+
+### scrollRestoration
+
+- **Type**: `ScrollRestorationProps | false`
+
+Enabled by default.
+
+Caches the scroll position of `KeepAlive` routes. When re-entering a cached route, the scroll position will be automatically restored. Non-`KeepAlive` routes will not cache the scroll position.
+
+If you use `scrollRestoration`, do not import `ScrollRestoration` from `react-router-dom`.
+
+```tsx
+// root.tsx
+
+import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
+
+export function Component() {
+  return (
+    <KeepAlive scrollRestoration={} />
   )
 }
 ```
@@ -105,33 +132,4 @@ export default function Page() {
     console.log(active)
   })
 }
-```
-
-### getScrollRestoration
-
-::: danger Note
-Not supported in `handleAsync` mode.
-:::
-
-- **Type**: `GetScrollRestorationKeyFunction`
-
-Used to maintain the scroll state of cached routes.
-
-For more details, see the [ScrollRestoration](https://reactrouter.com/6.28.0/components/scroll-restoration#getkey) in react-router.
-
-```tsx
-// root.tsx
-
-import { ScrollRestoration } from 'react-router-dom'
-import { getScrollRestoration, KeepAlive } from 'vite-plugin-remix-flat-routes/client'
-
-export function Component() {
-  return (
-    <>
-      <KeepAlive />
-      <ScrollRestoration getKey={getScrollRestoration} />
-    </>
-  )
-}
-```
 ```

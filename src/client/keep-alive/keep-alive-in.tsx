@@ -1,11 +1,9 @@
 import { useLocation, useMatches, useOutlet } from 'react-router-dom'
-import { useMemoFn } from 'context-state'
 import { useAsyncEffect } from '../hooks/use-async-effect'
 import { isFunction } from '../utils'
 import { KeepAliveContext } from './keep-alive-context'
 import OffScreen from './off-screen'
-import { RouteTransition } from './route-transition'
-import { type ActivityMode } from './types'
+import { OnScreen } from './on-screen'
 
 function KeepAliveIn() {
   const { aliveRoutes, setAliveRoutes } = KeepAliveContext.usePicker(['aliveRoutes', 'setAliveRoutes'])
@@ -42,28 +40,17 @@ function KeepAliveIn() {
     }
   }, [pathname])
 
-  const mode = useMemoFn((key): ActivityMode => {
-    return pathname === key ? 'visible' : 'hidden'
-  })
-
   return (
     <>
       {Array.from(aliveRoutes).map(([key, route]) =>
         route.shouldKeepAlive ? (
-          <OffScreen key={key} pathname={key} mode={mode(key)}>
+          <OffScreen key={key} pathname={key} mode={pathname === key ? 'visible' : 'hidden'}>
             {route.component}
           </OffScreen>
         ) : (
-          <RouteTransition
-            key={key}
-            mounted={pathname === key}
-            transition={{
-              keepMounted: false,
-              exitDuration: 60,
-            }}
-          >
+          <OnScreen key={key} mounted={pathname === key}>
             {route.component}
-          </RouteTransition>
+          </OnScreen>
         ),
       )}
     </>

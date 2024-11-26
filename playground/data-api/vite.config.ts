@@ -16,6 +16,6 @@ export default defineConfig({
   ],
   optimizeDeps: {
     force: true,
-    exclude: ['context-state', 'react-transition-preset'],
+    exclude: ['react-transition-preset'],
   },
 })

@@ -23,6 +23,7 @@ Read the [documentation](https://hemengke1997.github.io/vite-plugin-remix-flat-r
 
 ## Inspiration
 - [remix](https://remix.run)
+- [react-router](https://reactrouter.com)
 - [remix-flat-routes](https://github.com/kiliman/remix-flat-routes)
 - [vite-plugin-remix-routes](https://github.com/vjee/vite-plugin-remix-routes)
 - [vite-plugin-remix-router](https://github.com/mammadataei/vite-plugin-remix-router)

@@ -14,16 +14,20 @@
 
 ## 使用
 
-首先，我们需要将 `KeepAlive` 组件写在 `root` 中
+首先，我们需要将 `root` 中的 `outlet` 替换为 `KeepAlive` 组件。
 
-```tsx
+```jsx
 // root.tsx
 
+import { Outlet } from 'react-router-dom' // [!code --]
 import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
 
 export function Component() {
   return (
-    <KeepAlive />
+   <>
+      <Outlet /> // [!code --]
+      <KeepAlive /> // [!code ++]
+   </>
   )
 }
 ```
@@ -45,10 +49,12 @@ export const handle = {
 
 ### transition
 
-- **类型**: `boolean | TransitionProps`
+- **类型**: `TransitionProps | boolean`
 - **默认值**: `false`
 
-`KeepAlive` 内置了路由组件的切换动画能力。动画过渡由 `react-transition-preset` 提供，具体可见 [react-transition-preset](https://github.com/hemengke1997/react-transition-preset)
+`KeepAlive` 内置了路由组件的切换动画支持。动画过渡能力由 `react-transition-preset` 驱动，具体可见 [react-transition-preset](https://github.com/hemengke1997/react-transition-preset)
+
+如需使用此功能，请自行安装 `react-transition-preset`。
 
 ```tsx
 // root.tsx
@@ -58,6 +64,28 @@ import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
 export function Component() {
   return (
     <KeepAlive transiton={true} />
+  )
+}
+```
+
+### scrollRestoration
+
+- **类型**: `ScrollRestorationProps | false`
+
+默认开启。
+
+缓存 `KeepAlive` 路由的滚动位置，当再次进入缓存的路由时，会自动恢复滚动位置。非 `KeepAlive` 路由不会缓存滚动位置。
+
+如果使用了 `scrollRestoration`，请勿再引入 `react-router-dom` 的 `ScrollRestoration`
+
+```tsx
+// root.tsx
+
+import { KeepAlive } from 'vite-plugin-remix-flat-routes/client'
+
+export function Component() {
+  return (
+    <KeepAlive scrollRestoration={} />
   )
 }
 ```
@@ -103,33 +131,5 @@ export default function Page() {
   useActiveChanged((active) => {
     console.log(active)
   })
-}
-```
-
-### getScrollRestoration
-
-::: danger 注意
-不支持 `handleAsync` 模式
-:::
-
-- **类型**: `GetScrollRestorationKeyFunction`
-
-用于保持缓存路由的滚动状态。
-
-具体可见 react-router 的 [ScrollRestoration](https://reactrouter.com/6.28.0/components/scroll-restoration#getkey)。
-
-```tsx
-// root.tsx
-
-import { ScrollRestoration } from 'react-router-dom'
-import { getScrollRestoration, KeepAlive } from 'vite-plugin-remix-flat-routes/client'
-
-export function Component() {
-  return (
-    <>
-      <KeepAlive />
-      <ScrollRestoration getKey={getScrollRestoration} />
-    </>
-  )
 }
 ```

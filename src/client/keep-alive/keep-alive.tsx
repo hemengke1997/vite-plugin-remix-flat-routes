@@ -1,6 +1,8 @@
+import { type ScrollRestorationProps } from 'react-router-dom'
 import { type TransitionProps } from 'react-transition-preset'
 import { KeepAliveContext } from './keep-alive-context'
 import KeepAliveIn from './keep-alive-in'
+import { ScrollRestoration } from './scroll-restoration'
 
 export type KeepAliveProps = {
   children?: React.ReactNode
@@ -9,18 +11,25 @@ export type KeepAliveProps = {
    * @see react-transition-preset
    * @default false
    */
-  transition?: boolean | Omit<TransitionProps, 'children' | 'mounted'>
+  transition?: Omit<TransitionProps, 'children' | 'mounted'> | boolean
+  /**
+   * @description Scroll restoration
+   */
+  scrollRestoration?: ScrollRestorationProps | false
 }
 
 export function KeepAlive(props: KeepAliveProps) {
+  const { transition = false, scrollRestoration, children } = props
+
   return (
     <KeepAliveContext.Provider
       value={{
-        transition: props.transition,
+        transition,
       }}
     >
       <KeepAliveIn />
-      {props.children}
+      <ScrollRestoration scrollRestoration={scrollRestoration} />
+      {children}
     </KeepAliveContext.Provider>
   )
 }

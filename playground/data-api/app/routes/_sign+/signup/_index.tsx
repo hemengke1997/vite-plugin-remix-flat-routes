@@ -15,26 +15,24 @@ export default function Page() {
   }, [])
 
   return (
-    <Card title={'注册页'}>
-      <Space>
-        <Button
-          onClick={() => {
-            setCount(count + 1)
-          }}
-        >
-          点击count+ {count}
-        </Button>
-        <Link to='/'>
-          <Button>跳转首页</Button>
-        </Link>
-        <Link to='/signin'>
-          <Button>跳转登录</Button>
-        </Link>
-      </Space>
-    </Card>
+    <div className={'mt-32 flex min-h-screen items-center'}>
+      <Card title={'注册页'}>
+        <Space>
+          <Button
+            onClick={() => {
+              setCount(count + 1)
+            }}
+          >
+            点击count+ {count}
+          </Button>
+          <Link to='/'>
+            <Button>跳转首页</Button>
+          </Link>
+          <Link to='/signin'>
+            <Button>跳转登录</Button>
+          </Link>
+        </Space>
+      </Card>
+    </div>
   )
-}
-
-export const handle = {
-  keepAlive: false,
 }

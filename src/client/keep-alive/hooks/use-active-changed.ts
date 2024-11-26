@@ -6,7 +6,7 @@ export function useActiveChanged(callback: (active: boolean) => void) {
 
   useEventListener({
     on: {
-      modeChange: ({ pathname, mode }) => {
+      activeChange: ({ pathname, mode }) => {
         if (pathname === activePathname) {
           const active = mode === 'visible'
           callback(active)

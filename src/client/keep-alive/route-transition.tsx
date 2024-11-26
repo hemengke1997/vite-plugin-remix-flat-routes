@@ -1,6 +1,9 @@
-import { Transition } from 'react-transition-preset'
+import type React from 'react'
+import { lazy, Suspense } from 'react'
 import { type KeepAliveProps } from './keep-alive'
 import { KeepAliveContext } from './keep-alive-context'
+
+const LazyTransition = lazy(() => import('react-transition-preset').then((module) => ({ default: module.Transition })))
 
 export function RouteTransition(props: {
   children: React.ReactNode
@@ -11,17 +14,25 @@ export function RouteTransition(props: {
   const { children, mounted, transition: transitionProps } = props
 
   if (!transition) {
-    return children
+    if (transitionProps?.keepMounted) {
+      return children
+    }
+    return mounted ? children : null
   }
 
   return (
-    <Transition
-      initial={true}
-      {...(typeof transition === 'boolean' ? {} : transition)}
-      {...transitionProps}
-      mounted={mounted}
-    >
-      {(style) => <div style={style}>{children}</div>}
-    </Transition>
+    <Suspense fallback={null}>
+      <LazyTransition
+        initial={true}
+        duration={200}
+        transition={'fade-right'}
+        {...(typeof transition === 'boolean' ? {} : transition)}
+        {...transitionProps}
+        exitDuration={0}
+        mounted={mounted}
+      >
+        {(style: React.CSSProperties) => <div style={style}>{children}</div>}
+      </LazyTransition>
+    </Suspense>
   )
 }

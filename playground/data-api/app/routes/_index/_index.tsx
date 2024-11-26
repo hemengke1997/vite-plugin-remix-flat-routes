@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { type LoaderFunction } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { Button, Card, Modal } from 'antd'
-import { useKeepAlive } from 'vite-plugin-remix-flat-routes/client'
 import LoadMore from '../../components/load-more'
 
 const x = 1
@@ -19,7 +18,7 @@ export const handle = {
 export default function Page() {
   const [count, setCount] = useState(0)
 
-  const { getAliveRoutes } = useKeepAlive()
+  // const { getAliveRoutes } = useKeepAlive()
 
   console.log('index --- render')
 
@@ -45,7 +44,7 @@ export default function Page() {
           <Button onClick={() => setModalOpen(true)}>打开modal</Button>
           <Button
             onClick={() => {
-              console.log(getAliveRoutes())
+              // console.log(getAliveRoutes())
             }}
           >
             输出已缓存路由

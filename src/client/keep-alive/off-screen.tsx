@@ -12,8 +12,8 @@ export default function OffScreen(props: OffScreenInProps) {
 
   const emitted = useRef(false)
 
-  const emit = useMemoFn(() => {
-    eventListener.emit('modeChange', {
+  const emitActiveChange = useMemoFn(() => {
+    eventListener.emit('activeChange', {
       pathname,
       mode,
     })
@@ -21,11 +21,11 @@ export default function OffScreen(props: OffScreenInProps) {
 
   useUpdateEffect(() => {
     if (mode === 'visible') {
-      emit()
+      emitActiveChange()
       emitted.current = true
     } else if (emitted.current) {
       // hidden
-      emit()
+      emitActiveChange()
     }
   }, [mode])
 
@@ -34,6 +34,7 @@ export default function OffScreen(props: OffScreenInProps) {
       mounted={mode === 'visible'}
       transition={{
         keepMounted: true,
+        unsafe_alwaysMounted: true,
       }}
     >
       <Suspense fallback={null}>
