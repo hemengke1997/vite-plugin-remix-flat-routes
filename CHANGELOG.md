@@ -1,3 +1,12 @@
+## [4.3.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.3.0...v4.3.1) (2024-11-26)
+
+
+### Bug Fixes
+
+* dts ([a1259a6](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/a1259a6ef5d7bc6c2da044eb6dc616867f872d63))
+
+
+
 # [4.3.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.2.0...v4.3.0) (2024-11-26)
 
 
