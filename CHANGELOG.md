@@ -1,3 +1,12 @@
+# [4.2.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.2.0-beta.2...v4.2.0) (2024-11-26)
+
+
+### Features
+
+* restore scroll position ([7fd19c2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/7fd19c2a37b1408135711037637eb14274fce0d5))
+
+
+
 # [4.2.0-beta.2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.2.0-beta.1...v4.2.0-beta.2) (2024-11-25)
 
 
