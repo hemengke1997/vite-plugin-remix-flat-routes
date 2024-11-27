@@ -98,5 +98,5 @@ export default defineConfig({
     },
     logo: '/logo.svg',
   },
-  head: [['link', { rel: 'icon', href: '/logo.svg' }]],
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/vite-plugin-remix-flat-routes/logo.svg' }]],
 })
