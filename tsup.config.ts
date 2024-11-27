@@ -15,7 +15,7 @@ const commonConfig = (_option: Options): Options => {
 }
 
 export const tsup = defineConfig((option) => {
-  let config: Options[] = [
+  return [
     {
       ...commonConfig(option),
       entry: {
@@ -25,37 +25,20 @@ export const tsup = defineConfig((option) => {
       target: 'node16',
       platform: 'node',
     },
+    {
+      ...commonConfig(option),
+      entry: ['./src/client/**/*.{ts,tsx}'],
+      outDir: 'dist/client',
+      format: ['esm'],
+      platform: 'neutral',
+      ...bundleless(),
+    },
+    {
+      ...commonConfig(option),
+      entry: ['./src/client/index.ts'],
+      outDir: 'dist/client',
+      format: ['cjs'],
+      platform: 'neutral',
+    },
   ]
-
-  if (option.watch) {
-    config = config.concat([
-      {
-        ...commonConfig(option),
-        entry: ['./src/client/index.ts'],
-        outDir: 'dist/client',
-        format: ['esm'],
-        platform: 'neutral',
-      },
-    ])
-  } else {
-    config = config.concat([
-      {
-        ...commonConfig(option),
-        entry: ['./src/client/**/*.{ts,tsx}'],
-        outDir: 'dist/client',
-        format: ['esm'],
-        platform: 'neutral',
-        ...bundleless(),
-      },
-      {
-        ...commonConfig(option),
-        entry: ['./src/client/index.ts'],
-        outDir: 'dist/client',
-        format: ['cjs'],
-        platform: 'neutral',
-      },
-    ])
-  }
-
-  return config
 })

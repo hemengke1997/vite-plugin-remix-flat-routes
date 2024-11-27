@@ -1,32 +1,35 @@
 import { useState } from 'react'
-import { type LoaderFunction } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { Button, Card, Modal } from 'antd'
+import { Button, Card, Modal, Space } from 'antd'
+import { useActivated, useDeactivated, useKeepAlive } from 'keepalive-react-router'
 import LoadMore from '../../components/load-more'
-
-const x = 1
+import { GlobalContext } from '../../contexts/global-context'
 
 export const handle = {
-  i18n: ['namespace'],
-  fn: () => {
-    console.log('this is fn', x)
-  },
-  crumb: () => <Link to='/sign'>To Sign</Link>,
   keepAlive: true,
 }
 
 export default function Page() {
   const [count, setCount] = useState(0)
 
-  // const { getAliveRoutes } = useKeepAlive()
+  const { globalCount, setGlobalCount } = GlobalContext.usePicker(['globalCount', 'setGlobalCount'])
+  const { getAliveRoutes, destroyAll } = useKeepAlive()
 
   console.log('index --- render')
+
+  useActivated(() => {
+    console.log('index --- actived')
+  })
+
+  useDeactivated(() => {
+    console.log('index --- deactived')
+  })
 
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
     <div className={'h-screen'}>
-      <Card title={'首页'}>
+      <Card title={'首页 KeepAlive'}>
         <div className={'flex gap-2'}>
           <Button
             onClick={() => {
@@ -35,19 +38,21 @@ export default function Page() {
           >
             +1 {count}
           </Button>
-          <Link to='/signin'>
-            <Button>跳转登录</Button>
-          </Link>
-          <Link to='/signup'>
-            <Button>跳转注册</Button>
-          </Link>
           <Button onClick={() => setModalOpen(true)}>打开modal</Button>
           <Button
             onClick={() => {
-              // console.log(getAliveRoutes())
+              console.log(getAliveRoutes())
             }}
           >
             输出已缓存路由
+          </Button>
+          <Button onClick={() => destroyAll()}>清除所有路由缓存</Button>
+          <Button
+            onClick={() => {
+              setGlobalCount((t) => t + 1)
+            }}
+          >
+            GlobalCount: {globalCount}
           </Button>
         </div>
       </Card>
@@ -60,17 +65,15 @@ export default function Page() {
         }}
         footer={null}
       >
-        <Link to='/signin'>
-          <Button>跳转登录</Button>
-        </Link>
-        <Link to='/signup'>
-          <Button>跳转注册</Button>
-        </Link>
+        <Space>
+          <Link to='/signin'>
+            <Button>跳转登录</Button>
+          </Link>
+          <Link to='/signup'>
+            <Button>跳转注册</Button>
+          </Link>
+        </Space>
       </Modal>
     </div>
   )
-}
-
-export const loader: LoaderFunction = () => {
-  return null
 }

@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="180" src="/logo.svg" alt="Logo" />
+  <img width="180" src="./logo.svg" alt="Logo" />
 </p>
 
 <h1 align="center">vite-plugin-remix-flat-routes</h1>

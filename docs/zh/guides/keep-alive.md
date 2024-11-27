@@ -1,141 +1,47 @@
 # KeepAlive
 
-:::warning WIP
-此功能目前还不稳定，API 可能会有变动
+We can easily integrate `keepalive-react-router` to achieve route-level KeepAlive caching.
 
-仅支持 `Data API` 模式
-:::
+## Install Dependencies
 
-`KeepAlive` 是一个路由级别的缓存组件，可以缓存组件的状态，即使切换路由也不会销毁组件。
+```bash
+npm install keepalive-react-router
+```
 
-`Vue` 原生支持了 [`KeepAlive`](https://cn.vuejs.org/guide/built-ins/keep-alive)，而 `React` 中并没有类似的功能，`vite-plugin-remix-flat-routes` 提供了路由级的 `KeepAlive` 实现。
+## Usage
 
-`KeepAlive` 使用非常简单！请往下看。
+Just two simple steps!
 
-## 使用
+First, in the `root` route component, replace `Outlet`:
 
-首先，我们需要将 `root` 中的 `Outlet` 替换为 `KeepAlive` 组件。
-
-```jsx
+```tsx
 // root.tsx
+import { KeepAlive, KeepAliveProvider } from 'keepalive-react-router'
 
-import { Outlet } from 'react-router-dom' // [!code --]
-import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client' // [!code ++]
-
-export function Component() {
+export function Root() {
   return (
-   <>
+    <>
       <Outlet /> // [!code --]
-      <KeepAliveProvider> {/* Provider 必不可少 */} // [!code ++]
+      <KeepAliveProvider> // [!code ++]
         <KeepAlive /> // [!code ++]
       </KeepAliveProvider> // [!code ++]
-   </>
+    </>
   )
 }
 ```
 
-然后我们可以在每个路由文件中，通过 `handle` 来控制是否缓存路由组件。
-
-如果你想要缓存组件，只需要在 `handle` 中添加 `keepAlive: true` 即可
-```tsx
-// app/index/index.tsx
-export const handle = {
-  keepAlive: true
-}
-```
-
-就是这样！现在组件就会被缓存了！
-
-## 进阶使用
-
-### transition
-
-- **类型**: `TransitionProps | boolean`
-- **默认值**: `false`
-
-`KeepAlive` 内置了路由组件的切换动画支持。动画过渡能力由 `react-transition-preset` 驱动，具体可见 [react-transition-preset](https://github.com/hemengke1997/react-transition-preset)
-
-如需使用此功能，请自行安装 `react-transition-preset`。
+Then, in the route component, export `keepAlive` to enable route caching.
 
 ```tsx
-// root.tsx
+// Route component
 
-import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client'
-
-export function Component() {
-  return (
-    <KeepAliveProvider>
-      <KeepAlive transiton={true} /> // [!code highlight]
-    </KeepAliveProvider>
-  )
-}
-```
-
-### scrollRestoration
-
-- **类型**: `ScrollRestorationProps | false`
-
-默认开启。
-
-缓存 `KeepAlive` 路由的滚动位置，当再次进入缓存的路由时，会自动恢复滚动位置。非 `KeepAlive` 路由不会缓存滚动位置。
-
-如果使用了 `scrollRestoration`，请勿再引入 `react-router-dom` 的 `ScrollRestoration`
-
-```tsx
-// root.tsx
-
-import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client'
-
-
-export function Component() {
-  return (
-    <KeepAliveProvider>
-      <KeepAlive scrollRestoration={} /> // [!code highlight]
-    </KeepAliveProvider>
-  )
-}
-```
-
-### useKeepAlive
-
-`useKeepAlive` 获取路由缓存和控制缓存。
-
-```tsx
-import { useKeepAlive } from 'vite-plugin-remix-flat-routes/client'
+export const handle = { keepAlive: true }
 
 export default function Page() {
-  const { destory, destroyAll, getAliveRoutes } = useKeepAlive()
+  return <div>Page</div>
 }
 ```
 
-#### destory
+It's that simple! The route component now has caching capability.
 
-- **类型**: `(pathname: string | string[]) => void`
-
-销毁指定路由缓存。
-
-#### destroyAll
-
-- **类型**: `() => void`
-
-销毁所有路由缓存。如果当前路由是 `KeepAlive` 路由，则不会销毁当前路由。
-
-#### getAliveRoutes
-
-- **类型**: `() => string[]`
-
-获取所有缓存的路由。
-
-### useActiveChanged
-
-监听路由是否被激活。可以简单理解成 `Vue` 中的 `onActivated` 和 `onDeactivated`。
-
-```tsx
-import { useActiveChanged } from 'vite-plugin-remix-flat-routes/client'
-
-export default function Page() {
-  useActiveChanged((active) => {
-    console.log(active)
-  })
-}
-```
+For more configurations, please refer to the [keepalive-react-router](https://hemengke1997.github.io/keepalive-react-router/) documentation.

@@ -1,34 +1,47 @@
-import { toast } from 'react-atom-toast'
+import { useState } from 'react'
 import { Link, useRouteError } from 'react-router-dom'
-import { useUpdate } from 'ahooks'
-import { Button } from 'antd'
-import { KeepAlive, KeepAliveProvider } from 'vite-plugin-remix-flat-routes/client'
+import { Button, Space } from 'antd'
+import { KeepAlive, KeepAliveProvider } from 'keepalive-react-router'
 import { GlobalContext } from './contexts/global-context'
 
-toast.setDefaultOptions({
-  className: 'bg-slate-400',
-})
-
-export const handle = {
-  layout: 'app',
-}
-
 export function Component() {
-  const update = useUpdate()
-  console.log('root render')
+  const [enableScroll, setEnableScroll] = useState(true)
+  const [enableTransition, setEnableTransition] = useState(true)
   return (
     <>
       <div className={'mb-4 flex items-center gap-2'}>
-        <Link to='/'>go home</Link>
-        <Link to='/other'>go other</Link>
-        <Link to='/signin'>go signin</Link>
-        <Link to='/signup'>go signup</Link>
-        <Button onClick={() => update()}>render</Button>
+        <Space>
+          <Button
+            onClick={() => {
+              setEnableScroll((t) => !t)
+            }}
+          >
+            {enableScroll ? '关闭' : '开启'}滚动恢复
+          </Button>
+          <Button
+            onClick={() => {
+              setEnableTransition((t) => !t)
+            }}
+          >
+            {enableTransition ? '关闭' : '开启'}路由动画
+          </Button>
+        </Space>
+        <Space>
+          <Link to='/'>
+            <Button>跳转首页</Button>
+          </Link>
+          <Link to='/signin'>
+            <Button>跳转登录</Button>
+          </Link>
+          <Link to='/signup'>
+            <Button>跳转注册</Button>
+          </Link>
+        </Space>
       </div>
       <>
         <KeepAliveProvider>
           <GlobalContext.Provider>
-            <KeepAlive transition={true} scrollRestoration={false} />
+            <KeepAlive transition={enableTransition} scrollRestoration={enableScroll ? {} : false} />
           </GlobalContext.Provider>
         </KeepAliveProvider>
       </>

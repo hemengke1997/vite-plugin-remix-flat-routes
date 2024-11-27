@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Button, Card, Space } from 'antd'
 
 export default function Page() {
@@ -15,8 +14,8 @@ export default function Page() {
   }, [])
 
   return (
-    <div className={'mt-32 flex min-h-screen items-center'}>
-      <Card title={'注册页'}>
+    <div className={'min-h-screen'}>
+      <Card title={'注册页 非KeepAlive'}>
         <Space>
           <Button
             onClick={() => {
@@ -25,12 +24,6 @@ export default function Page() {
           >
             点击count+ {count}
           </Button>
-          <Link to='/'>
-            <Button>跳转首页</Button>
-          </Link>
-          <Link to='/signin'>
-            <Button>跳转登录</Button>
-          </Link>
         </Space>
       </Card>
     </div>

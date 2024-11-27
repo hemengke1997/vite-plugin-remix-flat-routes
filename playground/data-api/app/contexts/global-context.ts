@@ -1,11 +1,12 @@
+import { useState } from 'react'
 import { createContainer } from 'context-state'
-import { useKeepAlive } from 'vite-plugin-remix-flat-routes/client'
 
 function useGlobalContext() {
-  const { destroyAll } = useKeepAlive()
+  const [globalCount, setGlobalCount] = useState(0)
 
   return {
-    destroyAll,
+    globalCount,
+    setGlobalCount,
   }
 }
 

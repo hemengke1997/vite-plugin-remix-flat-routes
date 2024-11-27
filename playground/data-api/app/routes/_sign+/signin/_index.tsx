@@ -1,28 +1,29 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { Button, Card, Space } from 'antd'
-import { useActiveChanged } from 'vite-plugin-remix-flat-routes/client'
+import { useActivated, useDeactivated, useKeepAlive } from 'keepalive-react-router'
 import { GlobalContext } from '../../../contexts/global-context'
 
 export default function Page() {
   const [count, setCount] = useState(0)
 
+  const { globalCount, setGlobalCount } = GlobalContext.usePicker(['globalCount', 'setGlobalCount'])
+
   console.log('signin --- render')
 
-  useActiveChanged((active) => {
-    console.log('signin --- active changed', active)
-    if (active) {
-      setCount((count) => count + 1)
-    } else {
-      setCount((count) => count - 1)
-    }
+  useActivated(() => {
+    console.log('signin --- actived')
   })
 
-  const { destroyAll } = GlobalContext.usePicker(['destroyAll'])
+  useDeactivated(() => {
+    console.log('signin --- deactived')
+  })
+
+  const { destroyAll } = useKeepAlive()
 
   return (
-    <div className={'mt-36 min-h-screen'}>
-      <Card title={'登录页'}>
+    <div className={'min-h-screen'}>
+      <Card title={'登录页 KeepAlive'}>
         <Space>
           <Button
             onClick={() => {
@@ -31,16 +32,12 @@ export default function Page() {
           >
             点击count+ {count}
           </Button>
-          <Link to='/'>
-            <Button>跳转首页</Button>
-          </Link>
-          <Link to='/signup'>
-            <Button>跳转注册</Button>
-          </Link>
 
           <Button onClick={() => destroyAll()}>清除所有路由缓存</Button>
+          <Button onClick={() => setGlobalCount((t) => t - 1)}>GlobalCount: {globalCount}</Button>
         </Space>
       </Card>
+      <Outlet />
     </div>
   )
 }
