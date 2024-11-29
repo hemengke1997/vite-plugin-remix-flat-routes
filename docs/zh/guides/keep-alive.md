@@ -1,8 +1,8 @@
 # KeepAlive
 
-We can easily integrate `keepalive-react-router` to achieve route-level KeepAlive caching.
+我们可以使用 `keepalive-react-router` 轻松实现路由级别的 KeepAlive 缓存。
 
-## Install Dependencies
+## 安装依赖
 
 ```bash
 npm install keepalive-react-router
@@ -10,9 +10,9 @@ npm install keepalive-react-router
 
 ## Usage
 
-Just two simple steps!
+只需两个简单的步骤！
 
-First, in the `root` route component, replace `Outlet`:
+首先，在 `root` 路由组件中，替换 `Outlet`：
 
 ```tsx
 // root.tsx
@@ -30,7 +30,7 @@ export function Root() {
 }
 ```
 
-Then, in the route component, export `keepAlive` to enable route caching.
+然后，在路由组件中，导出 `keepAlive` 以启用路由缓存。
 
 ```tsx
 // Route component
@@ -42,6 +42,6 @@ export default function Page() {
 }
 ```
 
-It's that simple! The route component now has caching capability.
+就是这么简单！路由组件现在具有缓存功能了。
 
-For more configurations, please refer to the [keepalive-react-router](https://hemengke1997.github.io/keepalive-react-router/) documentation.
+有关更多配置，请参阅 [keepalive-react-router](https://hemengke1997.github.io/keepalive-react-router/) 文档。

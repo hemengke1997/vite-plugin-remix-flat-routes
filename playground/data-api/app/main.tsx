@@ -11,6 +11,15 @@ createRoot(document.querySelector('#root')!).render(
       algorithm: [theme.darkAlgorithm],
     }}
   >
-    <RouterProvider router={createBrowserRouter(routes)} />
+    <RouterProvider
+      router={createBrowserRouter(routes, {
+        dataStrategy: async ({ matches }) => {
+          const matchesToLoad = matches.filter((m) => m.shouldLoad)
+          const results = await Promise.all(matchesToLoad.map((m) => m.resolve()))
+
+          return results.reduce((acc, result, i) => Object.assign(acc, { [matchesToLoad[i].route.id]: result }), {})
+        },
+      })}
+    />
   </ConfigProvider>,
 )

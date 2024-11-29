@@ -69,7 +69,6 @@
     "react": ">=18",
     "react-dom": ">=18",
     "react-router-dom": "^6",
-    "react-transition-preset": "^2.1.0",
     "vite": ">=5"
   },
   "peerDependenciesMeta": {
@@ -87,9 +86,6 @@
     },
     "@vitejs/plugin-react-swc": {
       "optional": true
-    },
-    "react-transition-preset": {
-      "optional": true
     }
   },
   "dependencies": {
@@ -99,7 +95,6 @@
     "eventemitter3": "^5.0.1",
     "local-pkg": "^0.5.1",
     "minimatch": "5.1.0",
-    "react-transition-preset": "^2.1.0",
     "semver": "^7.6.3",
     "serialize-javascript": "^6.0.2",
     "type-fest": "^4.28.1"

@@ -14,11 +14,10 @@ export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
   /**
    * @description handle 转化为异步函数获取数据
    *
-   * 当路由懒加载，但希望在路由加载前获取handle数据 (如 i18n namespace)，
-   * 可以将此选项设置为 true，插件会将 handle 转化为异步函数，
+   * 若选项为 true，插件会将 handle 转化为异步函数，
    * 执行异步函数即可获取到懒加载路由的handle数据
    *
-   * 传统路由模式下，此选项无效，始终为异步handle
+   * 传统路由模式下，此选项无效，始终为 true
    *
    * @default false
    */

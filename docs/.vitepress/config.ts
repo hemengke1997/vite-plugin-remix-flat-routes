@@ -28,6 +28,7 @@ export default defineConfig({
               { text: 'Getting Started', link: '/guides/getting-started' },
               { text: 'Defining Routes', link: '/guides/defining-routes' },
               { text: 'Using Data APIs', link: '/guides/using-data-apis' },
+              { text: 'KeepAlive', link: '/guides/keep-alive' },
               {
                 text: 'Legacy Route',
                 link: '/guides/legacy-route',
@@ -68,6 +69,7 @@ export default defineConfig({
               { text: '快速上手', link: '/zh/guides/getting-started' },
               { text: '定义路由', link: '/zh/guides/defining-routes' },
               { text: '使用 Data API', link: '/zh/guides/using-data-apis' },
+              { text: 'KeepAlive', link: '/zh/guides/keep-alive' },
               {
                 text: '传统路由',
                 link: '/zh/guides/legacy-route',
