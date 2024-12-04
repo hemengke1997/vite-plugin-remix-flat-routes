@@ -16,14 +16,14 @@ First, in the `root` route component, replace `Outlet`:
 
 ```tsx
 // root.tsx
-import { KeepAlive, KeepAliveProvider } from 'keepalive-react-router'
+import { KeepAliveOutlet, KeepAliveProvider } from 'keepalive-react-router'
 
 export function Root() {
   return (
     <>
       <Outlet /> // [!code --]
       <KeepAliveProvider> // [!code ++]
-        <KeepAlive /> // [!code ++]
+        <KeepAliveOutlet /> // [!code ++]
       </KeepAliveProvider> // [!code ++]
     </>
   )
