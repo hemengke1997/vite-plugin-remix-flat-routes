@@ -169,8 +169,9 @@ function App() {
 ## reactRefresh
 
 - **类型**: `boolean`
-- **默认值**: `true`
 
 `@vitejs/plugin-react` 的 hmr 只支持 React 组件。启用此选项以支持 react router 数据 api
 
 你需要安装 `@vitejs/plugin-react>=4.3.2` 或 `@vitejs/plugin-react-swc>=3.6.0`
+
+如果你安装了满足上述条件的插件，会自动检测并开启 `reactRefresh` 选项。

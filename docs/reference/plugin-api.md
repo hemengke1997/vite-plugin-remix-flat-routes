@@ -172,3 +172,5 @@ function App() {
 `@vitejs/plugin-react` hmr only support React components. Enable this option to hack the hmr to support react router data api
 
 You should install `@vitejs/plugin-react>=4.3.2`  or `@vitejs/plugin-react-swc>=3.6.0`
+
+If you have installed a plugin that meets the above conditions, we will automatically detect and enable the `reactRefresh` option.
