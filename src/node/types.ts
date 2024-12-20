@@ -32,7 +32,7 @@ export type Options = SetOptional<RemixOptions, 'appDirectory'> & {
    * 需要 @vitejs/plugin-react>=4.3.2
    * 或 @vitejs/plugin-react-swc>=3.6.0
    *
-   * @default true
+   * 插件默认自动探测
    */
   reactRefresh?: boolean
 }

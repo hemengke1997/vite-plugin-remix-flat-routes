@@ -1,23 +1,28 @@
 import type * as Vite from 'vite'
 import { init as initEsModuleLexer } from 'es-module-lexer'
 import path from 'node:path'
-import { resolveLegacyMode } from './detect-legacy'
+import { detectLegacyMode, detectReactRefresh } from './detect'
 import { resolveConfig } from './react-router/react-router-dev/config/config'
 import { importViteEsmSync, preloadViteEsm } from './react-router/react-router-dev/vite/import-vite-esm-sync'
 import { RouteUtil } from './route-util'
 import { type Options, type PluginContext } from './types'
 import { getVitePluginName, isObjEq, reactRefreshHack, validateRouteDir } from './utils'
-import { invalidateVirtualModule, resolvedVirtualModuleId, virtualModuleId } from './virtual'
+import { invalidateVirtualModule, resolvedVirtualModuleId, routesId, vmods } from './virtual'
 
 function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
-  const { appDirectory = 'app', flatRoutesOptions, routes, legacy, handleAsync = false, reactRefresh = true } = options
+  const { appDirectory = 'app', flatRoutesOptions, routes, legacy, handleAsync = false, reactRefresh } = options
 
   const routeDir = flatRoutesOptions?.routeDir || 'routes'
   const routeDirs = Array.isArray(routeDir) ? routeDir : [routeDir]
 
   let isLegacyMode = legacy
   if (isLegacyMode === undefined) {
-    isLegacyMode = resolveLegacyMode()
+    isLegacyMode = detectLegacyMode()
+  }
+
+  let reactRefreshEnabled = reactRefresh
+  if (reactRefreshEnabled === undefined) {
+    reactRefreshEnabled = detectReactRefresh()
   }
 
   for (const routeDir of routeDirs) {
@@ -27,7 +32,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
   let viteUserConfig: Vite.UserConfig
   let viteConfig: Vite.ResolvedConfig | undefined
   let viteConfigEnv: Vite.ConfigEnv
-  let routeUtil: RouteUtil
+  let routeUtil: RouteUtil | undefined
 
   const ctx: PluginContext = {
     remixOptions: { appDirectory, flatRoutesOptions, routes },
@@ -37,7 +42,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
     inRemixContext: false,
     routeManifest: {},
     viteChildCompiler: null,
-    reactRefresh,
+    reactRefresh: reactRefreshEnabled,
   }
 
   return [
@@ -145,40 +150,46 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
         )
       },
       async resolveId(id) {
-        if (id === virtualModuleId) {
-          return resolvedVirtualModuleId
+        if (vmods.includes(id)) {
+          return resolvedVirtualModuleId(id)
         }
         return null
       },
       async load(id) {
-        if (id === resolvedVirtualModuleId) {
-          const { routeManifest } = await resolveConfig(ctx)
+        switch (id) {
+          case resolvedVirtualModuleId(routesId): {
+            const { routeManifest } = await resolveConfig(ctx)
 
-          routeUtil = new RouteUtil({
-            ...ctx,
-            routeManifest,
-          })
-
-          ctx.routeManifest = await routeUtil.processRouteManifest()
-
-          const routes = routeUtil.createClientRoutes(ctx.routeManifest)
-
-          const { routesString, componentsString } = await routeUtil.stringifyRoutes(routes)
-
-          return {
-            code: `import React from 'react';
-            ${reactRefreshHack({
-              appDirectory: ctx.remixOptions.appDirectory,
+            routeUtil = new RouteUtil({
+              ...ctx,
               routeManifest,
-              viteConfig: viteConfig!,
-              enable: ctx.reactRefresh,
-            })}
-            ${componentsString}
-            export const routes = ${routesString};
-          `,
-            map: null,
+            })
+
+            ctx.routeManifest = await routeUtil.processRouteManifest()
+
+            const routes = routeUtil.createClientRoutes(ctx.routeManifest)
+
+            const { routesString, componentsString } = await routeUtil.stringifyRoutes(routes)
+
+            return {
+              code: `import React from 'react';
+                ${reactRefreshHack({
+                  appDirectory: ctx.remixOptions.appDirectory,
+                  routeManifest,
+                  viteConfig: viteConfig!,
+                  enable: ctx.reactRefresh,
+                })}
+                ${componentsString}
+                export const routes = ${routesString};
+              `,
+              map: null,
+            }
           }
+
+          default:
+            break
         }
+
         return null
       },
       /**
@@ -189,7 +200,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
         await ctx.viteChildCompiler?.close()
       },
       async handleHotUpdate({ server, file }) {
-        const route = routeUtil.getRoute(file)
+        const route = routeUtil?.getRoute(file)
 
         if (route) {
           invalidateVirtualModule(server)

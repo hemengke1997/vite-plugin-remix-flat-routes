@@ -146,7 +146,7 @@ export class RouteUtil {
 
     // 只要是默认导出，就视为懒加载组件
     if (route.hasDefaultExport) {
-      const escapeHandle = /*ts*/ `async () => {
+      const escapeHandle = /*js*/ `async () => {
             const { default: Component, handle, ...rest } = await import('${componentPath}');
             return {
               Component,
@@ -158,7 +158,7 @@ export class RouteUtil {
         setProps('lazy', escapeHandle)
         setProps(
           'handle',
-          /*ts*/ `async () => {
+          /*js*/ `async () => {
             const { handle } = await import('${componentPath}')
             if (!handle) return
             return handle
