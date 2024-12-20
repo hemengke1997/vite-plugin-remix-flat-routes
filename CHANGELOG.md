@@ -1,3 +1,12 @@
+## [4.4.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.4.0...v4.4.1) (2024-12-20)
+
+
+### Bug Fixes
+
+* routeUtil maybe undefined ([88a3893](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/88a38933a52e7eaeb82ad3f04676ca183c4a3ab4))
+
+
+
 # [4.4.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.3.1...v4.4.0) (2024-11-27)
 
 
