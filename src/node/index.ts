@@ -195,9 +195,12 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
       /**
        * @see `buildEnd` in react-router-dev/vite/plugin.ts
        */
-      async buildEnd() {
+      buildEnd() {
         ctx.viteChildCompiler?.httpServer?.close()
-        await ctx.viteChildCompiler?.close()
+        // vite6
+        // Unexpected early exit. This happens when Promises returned by plugins cannot //resolve. Unfinished hook action(s) on exit:
+        // (vite-plugin-remix-flat-routes) buildEnd
+        ctx.viteChildCompiler?.close()
       },
       async handleHotUpdate({ server, file }) {
         const route = routeUtil?.getRoute(file)

@@ -9,19 +9,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "antd": "^5.22.2",
-    "framer-motion": "^11.11.17",
+    "antd": "^5.22.7",
+    "framer-motion": "^11.15.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "6.3.0",
-    "zustand": "^5.0.1"
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.7.2",
-    "vite": "^5.4.11",
+    "vite": "^6.0.6",
     "vite-plugin-istanbul-widget": "^1.9.1",
     "vite-plugin-remix-flat-routes": "workspace:*"
   }

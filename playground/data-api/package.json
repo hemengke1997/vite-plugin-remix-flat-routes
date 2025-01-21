@@ -9,21 +9,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ahooks": "^3.8.1",
-    "antd": "^5.22.2",
-    "context-state": "^3.1.2",
-    "keepalive-react-router": "^1.1.1",
+    "ahooks": "^3.8.4",
+    "antd": "^5.22.7",
+    "context-state": "^3.2.0",
+    "keepalive-react-router": "^1.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "6.27.0",
-    "react-transition-preset": "^2.1.0"
+    "react-transition-preset": "^2.2.1"
   },
   "devDependencies": {
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.7.2",
-    "vite": "^5.4.11",
+    "vite": "^6.0.6",
     "vite-plugin-public-typescript": "^4.1.2",
     "vite-plugin-remix-flat-routes": "workspace:*"
   }
