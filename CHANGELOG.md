@@ -1,3 +1,12 @@
+## [4.4.2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.4.1...v4.4.2) (2025-01-21)
+
+
+### Bug Fixes
+
+* vite6 ([a3e3275](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/a3e3275eda55570306a467939cc5b7ac00318bb0))
+
+
+
 ## [4.4.1](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.4.0...v4.4.1) (2024-12-20)
 
 
