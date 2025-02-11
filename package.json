@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-remix-flat-routes",
-  "version": "4.4.2",
+  "version": "4.5.0",
   "packageManager": "pnpm@9.15.2",
   "description": "Remix-flat-routes style file-system routing for React",
   "type": "module",

@@ -1,3 +1,12 @@
+# [4.5.0](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.4.2...v4.5.0) (2025-02-11)
+
+
+### Features
+
+* support remix-flat-routes nestedDirectoryChar ([87440df](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/commit/87440df400b965130248f55264d93b10bc128d8d))
+
+
+
 ## [4.4.2](https://github.com/hemengke1997/vite-plugin-remix-flat-routes/compare/v4.4.1...v4.4.2) (2025-01-21)
 
 
