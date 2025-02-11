@@ -30,8 +30,6 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
   }
 
   let viteUserConfig: Vite.UserConfig
-  let viteConfig: Vite.ResolvedConfig | undefined
-  let viteConfigEnv: Vite.ConfigEnv
   let routeUtil: RouteUtil | undefined
 
   const ctx: PluginContext = {
@@ -39,9 +37,9 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
     isLegacyMode,
     handleAsync,
     rootDirectory: process.cwd(),
-    inRemixContext: false,
     routeManifest: {},
     viteChildCompiler: null,
+    viteConfig: undefined,
     reactRefresh: reactRefreshEnabled,
   }
 
@@ -52,20 +50,19 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
       /**
        * @see `config` in react-router-dev/vite/plugin.ts
        */
-      async config(_viteUserConfig, _viteConfigEnv) {
+      async config(_viteUserConfig) {
         // Preload Vite's ESM build up-front as soon as we're in an async context
         await preloadViteEsm()
 
         viteUserConfig = _viteUserConfig
-        viteConfigEnv = _viteConfigEnv
       },
       /**
        * @see `configResolved` in react-router-dev/vite/plugin.ts
        */
-      async configResolved(resolvedViteConfig) {
+      async configResolved(viteConfig) {
         await initEsModuleLexer
 
-        viteConfig = resolvedViteConfig
+        ctx.viteConfig = viteConfig
 
         if (
           !viteConfig ||
@@ -79,11 +76,6 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
 
         ctx.rootDirectory = viteConfig.root
         ctx.remixOptions.appDirectory = path.resolve(viteConfig.root, appDirectory)
-
-        if (viteConfig.plugins.some((plugin) => getVitePluginName(plugin) === 'remix')) {
-          // in Remix Context
-          ctx.inRemixContext = true
-        }
 
         // Only create the child compiler for `vite build` command
         // Because we can reuse vite server as the child compiler for `vite serve`
@@ -102,7 +94,6 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
             {
               command: viteConfig.command,
               mode: viteConfig.mode,
-              isSsrBuild: viteConfigEnv.isSsrBuild,
             },
             viteConfig.configFile,
           )
@@ -115,7 +106,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
               preTransformRequests: false,
               hmr: false,
             },
-            configFile: ctx.inRemixContext ? undefined : false,
+            configFile: false,
             envFile: false,
             plugins: [
               ...(childCompilerConfigFile?.config.plugins ?? [])
@@ -176,7 +167,7 @@ function remixFlatRoutes(options: Options = {}): Vite.PluginOption {
                 ${reactRefreshHack({
                   appDirectory: ctx.remixOptions.appDirectory,
                   routeManifest,
-                  viteConfig: viteConfig!,
+                  viteConfig: ctx.viteConfig!,
                   enable: ctx.reactRefresh,
                 })}
                 ${componentsString}

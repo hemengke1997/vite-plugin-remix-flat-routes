@@ -67,15 +67,6 @@ export class RouteUtil {
     return {
       props,
       setProps: (name: keyof T, value: string | boolean) => {
-        if (this.ctx.inRemixContext) {
-          const necessary: Array<keyof RouteObject> = ['handle', 'id', 'index', 'caseSensitive', 'children', 'path']
-
-          // @ts-ignore
-          if (!necessary.includes(name)) {
-            return
-          }
-        }
-
         if (value) {
           props.set(name, `${value}`)
         }

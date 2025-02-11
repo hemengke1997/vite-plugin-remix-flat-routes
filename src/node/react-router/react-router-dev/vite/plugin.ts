@@ -4,12 +4,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { resolveFileUrl } from './resolve-file-url'
 
-export const getRouteModuleExports = async (
+const compileRouteFile = async (
   ctx: PluginContext,
   routeFile: string,
   readRouteFile?: () => string | Promise<string>,
-): Promise<string[]> => {
-  const { viteChildCompiler } = ctx
+): Promise<string> => {
+  const { viteChildCompiler, viteConfig } = ctx
   if (!viteChildCompiler) {
     throw new Error('Vite child compiler not found')
   }
@@ -19,7 +19,7 @@ export const getRouteModuleExports = async (
   // understand the exports from anything that Vite can compile to JS, not just
   // the route file formats that the Remix compiler historically supported.
 
-  const ssr = true
+  const ssr = viteConfig?.command === 'build'
   const { pluginContainer, moduleGraph } = viteChildCompiler
 
   const routePath = path.resolve(ctx.remixOptions.appDirectory, routeFile)
@@ -39,10 +39,26 @@ export const getRouteModuleExports = async (
   ])
 
   const transformed = await pluginContainer.transform(code, id, { ssr })
-  const [, exports] = esModuleLexer(transformed.code)
-  const exportNames = exports.map((e) => e.n)
+  return transformed.code
+}
 
-  return exportNames
+const getRouteModuleExports = async (
+  ctx: PluginContext,
+  routeFile: string,
+  readRouteFile?: () => string | Promise<string>,
+): Promise<string[]> => {
+  if (!ctx.viteChildCompiler) {
+    throw new Error('Vite child compiler not found')
+  }
+
+  const code = await compileRouteFile(ctx, routeFile, readRouteFile)
+
+  return getExportNames(code)
+}
+
+const getExportNames = (code: string): string[] => {
+  const [, exportSpecifiers] = esModuleLexer(code)
+  return exportSpecifiers.map(({ n: name }) => name)
 }
 
 export const getRouteManifestModuleExports = async (ctx: PluginContext): Promise<Record<string, string[]>> => {

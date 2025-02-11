@@ -85,13 +85,13 @@ export type PluginContext = {
    */
   isLegacyMode: boolean
   /**
-   * 是否在remix环境中
-   */
-  inRemixContext: boolean
-  /**
    * vite编译器
    */
   viteChildCompiler: Vite.ViteDevServer | null
+  /**
+   * vite配置
+   */
+  viteConfig: Vite.ResolvedConfig | undefined
   /**
    * handle 转化为异步函数获取数据
    */
