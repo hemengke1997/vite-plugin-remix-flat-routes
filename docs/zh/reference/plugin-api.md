@@ -24,7 +24,7 @@ export default defineConfig({
 
 `flatRoutesOptions` 与 `remix-flat-routes` 的选项相同，你可以将选项传递给插件。
 
-了解有关选项的更多信息，请参阅 [remix-flat-routes 文档](ttps://github.com/kiliman/remix-flat-routes)
+了解有关选项的更多信息，请参阅 [remix-flat-routes 文档](https://github.com/kiliman/remix-flat-routes)
 
 ```ts
 import { defineConfig } from 'vite'
